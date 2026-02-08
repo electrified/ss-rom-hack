@@ -1,0 +1,13 @@
+we are attempting to create a rom hack of sensible soccer international for the megadrive, with different team names. in the workspace directory i have provided the rom for sensible soccer international (md5sum 403ceb23b4cf27d3d9c8965409960bb4), and the rom for the original sensible soccer game (md5sum f6fcf5843786bd44f8df6b648661a437) which mainly only differ in the team/ player names they have. the team names in the game have been ocr'd from the team selection screen and put in the file team-names.txt. these can be used as strings to look for within the rom. the team and player names are not in plain text in the rom, they must be compressed / in a non standard format. the first step is figuring out how where the names are stored and how they are compressed/encoded. we think rob northen compression (RNC) may be in use. do not get distracted by finding the text liverpool / R. S. Belgrade - these are contained in plain text in the rom but are not the source of the other team data, that must be in a different format. radare2 is available for disassembling the rom. the tool ancient, available at https://github.com/temisu/ancient can be used for decompressing rnc blocks. The executable for ancient is also in the workspace directory.
+
+First step: create a python script which identifies and extracts the RNC blocks from the ROM, and then tests each of the blocks with ancient to see if it is actually and RNC block
+
+aston villa is 100% within the international rom. perform a more complete analysis of the data within the rnc block. have you considered disassembling the rom? and analyzing how the 68000 assembler works to figure out where the team names are coming from?
+
+radare2 is available for disassembling the rom
+
+the real team names including aston villa are within the rom. this is a fact. investigate how the placeholder slots get populated perhaps
+
+the rom i am using is the one with the md5 403ceb23b4cf27d3d9c8965409960bb4. this is the original unmodified international rom.
+
+the team names in the game have been ocr'd from the team selection screen and put in the file team-names.txt

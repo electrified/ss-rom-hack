@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(md5sum:*)",
+      "Bash(xxd:*)",
+      "Bash(for offset in 14066 356690 402732 427836 437142)",
+      "Bash(done)",
+      "Bash(for offset in 14074 358152 404194 429298 438604)",
+      "Bash(# Compare the RNC data blocks between the two ROMs # Block 2: International at 356690, Original at 358152, packed size 0x027d + 18 header dd if=\"\"Sensible Soccer - International Edition \\(Europe\\) \\(En,Fr,De,It\\).md\"\" bs=1 skip=356690 count=655)",
+      "Bash(cmp:*)",
+      "Bash(./ancient:*)",
+      "Bash(for f in extracted/intl_dec_*.bin)",
+      "Bash(do echo \"=== $f ===\")",
+      "Bash(python3:*)",
+      "Bash(# Use r2 to search for strings and analyze the ROM structure r2 -q -c ''iz~team'' \"\"Sensible Soccer - International Edition \\(Europe\\) \\(En,Fr,De,It\\).md\"\")",
+      "Bash(# Search for all readable strings in the ROM r2 -q -c ''iz'' \"\"Sensible Soccer - International Edition \\(Europe\\) \\(En,Fr,De,It\\).md\"\")",
+      "Bash(# r2 needs Mega Drive arch - let''s try raw search for strings r2 -q -c ''/z 4'' \"\"Sensible Soccer - International Edition \\(Europe\\) \\(En,Fr,De,It\\).md\"\")",
+      "Bash(ls:*)",
+      "Bash(wc:*)"
+    ]
+  }
+}
