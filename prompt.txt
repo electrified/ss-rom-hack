@@ -11,3 +11,5 @@ the real team names including aston villa are within the rom. this is a fact. in
 the rom i am using is the one with the md5 403ceb23b4cf27d3d9c8965409960bb4. this is the original unmodified international rom.
 
 the team names in the game have been ocr'd from the team selection screen and put in the file team-names.txt
+
+claude --resume 625f8795-dfd6-4ab9-8038-a5d1e3f85ef0  

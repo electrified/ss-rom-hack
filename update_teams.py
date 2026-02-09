@@ -67,30 +67,25 @@ def main():
         sys.exit(1)
 
     # Extract attribute bytes for each team
+    # The game reads attributes from word-aligned (even) addresses.
+    # When text_end falls on an odd byte, there's a 0x00 padding byte
+    # before the 150-byte attribute block. We skip that padding and
+    # always extract exactly 150 bytes.
+    ATTR_SIZE = 150
     attr_blocks = []
     for i, offset in enumerate(offsets):
         info = decode_team_block(rom, offset)
         text_end = info['text_end']
-
-        if i < len(offsets) - 1:
-            # Attribute bytes run from text_end to the start of the next team
-            next_offset = offsets[i + 1]
-            attr_bytes = rom[text_end:next_offset]
-        else:
-            # Last team: determine attr size from the first byte pattern
-            # 0x00 at text_end means 151 bytes of attrs, 0x01 means 150 bytes
-            if rom[text_end] == 0x00:
-                attr_len = 151
-            else:
-                attr_len = 150
-            attr_bytes = rom[text_end:text_end + attr_len]
-
+        attr_start = text_end + (text_end % 2)  # round up to even address
+        attr_bytes = rom[attr_start:attr_start + ATTR_SIZE]
         attr_blocks.append(bytes(attr_bytes))
 
     # Calculate original region bounds
     region_start = offsets[0]
     last_info = decode_team_block(rom, offsets[-1])
-    region_end = last_info['text_end'] + len(attr_blocks[-1])
+    last_text_end = last_info['text_end']
+    last_attr_start = last_text_end + (last_text_end % 2)
+    region_end = last_attr_start + ATTR_SIZE
     original_size = region_end - region_start
 
     # Load edited JSON
@@ -135,6 +130,9 @@ def main():
     for i, team in enumerate(teams_json):
         text_bytes = encode_team_text(team)
         new_region.extend(text_bytes)
+        # Pad to word-align the attribute block (game reads from even addresses)
+        if (region_start + len(new_region)) % 2 != 0:
+            new_region.append(0x00)
         new_region.extend(attr_blocks[i])
 
         # Check if text changed

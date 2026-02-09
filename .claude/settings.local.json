@@ -16,7 +16,15 @@
       "Bash(# Search for all readable strings in the ROM r2 -q -c ''iz'' \"\"Sensible Soccer - International Edition \\(Europe\\) \\(En,Fr,De,It\\).md\"\")",
       "Bash(# r2 needs Mega Drive arch - let''s try raw search for strings r2 -q -c ''/z 4'' \"\"Sensible Soccer - International Edition \\(Europe\\) \\(En,Fr,De,It\\).md\"\")",
       "Bash(ls:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(file:*)",
+      "Bash(while read hash msg)",
+      "Bash(do)",
+      "Bash(echo:*)",
+      "Bash(.venv/bin/python3:*)",
+      "Bash(.venv/bin/pip install:*)",
+      "Bash(/home/ed/dev/ss-md-hack/.venv/bin/pip install capstone)",
+      "Bash(/home/ed/dev/ss-md-hack/.venv/bin/python3:*)"
     ]
   }
 }

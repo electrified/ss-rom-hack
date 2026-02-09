@@ -173,9 +173,10 @@ def main():
 
     offsets = auto_find_teams(rom)
     if not offsets:
-        print("No teams found!")
+        print("No teams found!", file=sys.stderr)
         sys.exit(1)
-    print(f"Found {len(offsets)} teams\n")
+    if not json_output:
+        print(f"Found {len(offsets)} teams\n")
 
     teams = []
     for offset in offsets:
