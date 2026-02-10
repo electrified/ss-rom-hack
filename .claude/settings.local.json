@@ -26,7 +26,8 @@
       "Bash(/home/ed/dev/ss-md-hack/.venv/bin/pip install capstone)",
       "Bash(/home/ed/dev/ss-md-hack/.venv/bin/python3:*)",
       "Bash(grep:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "WebSearch"
     ]
   }
 }

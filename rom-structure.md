@@ -213,42 +213,137 @@ Offset  Length  Description
   2       2     Packed position: team name (always 0x12C0)
   4       2     Packed position: country
   6       2     Packed position: manager
-  8      14     Formation and tactics
- 22     128     Player records (16 x 8 bytes)
+  8      14     Kit attributes (see below)
+ 22     128     Player records (16 x 8 bytes, see below)
 ------  ------
  Total  150
 ```
 
-Player records at offsets 22–149 (16 x 8 bytes) contain packed text
-positions at their first 2 bytes (offsets 22, 30, 38, ..., 142) which
-get overwritten at load time.
 
-### Player Records (bytes 22–149)
-
-16 players x 8 bytes each = 128 bytes.
-
-```
-Byte  Meaning
-----  -------
- 0-1  Packed text position (overwritten at load time)
-  2   Stat byte 1
-  3   Stat byte 2
- 4-7  Additional data (often 0x00)
-```
-
-Note: The player index/ID that was previously thought to be at byte 0 of
-each record is actually the high byte of the packed text position. The
-game reads it before overwriting.
-
-### Team Header (bytes 0–21)
+### Team Header (bytes 0–7)
 
 ```
 Bytes 0-1:   Block size word (total block size)
 Bytes 2-3:   Packed position for team name (0x12C0)
 Bytes 4-5:   Packed position for country
 Bytes 6-7:   Packed position for manager
-Bytes 8-21:  Formation/tactics data
 ```
+
+
+### Kit Attributes (bytes 8–21)
+
+Each team has two kits (first and second) plus 4 extra bytes:
+
+```
+Offset  Field            Values
+------  -----            ------
+  8     First kit style   0-3 (see style table)
+  9     First shirt 1     0-15 (primary colour, see colour table)
+ 10     First shirt 2     0-15 (secondary colour, same as shirt 1 for plain)
+ 11     First shorts      0-15
+ 12     First socks       0-15
+ 13     Second kit style  0-3
+ 14     Second shirt 1    0-15
+ 15     Second shirt 2    0-15
+ 16     Second shorts     0-15
+ 17     Second socks      0-15
+ 18-19  Unknown           Often paired (e.g. 03 03, 04 04), possibly GK kit
+ 20     Unknown           Always 0x00
+ 21     Unknown           Varies (formation/tactic code?)
+```
+
+**Kit style values:**
+
+| Value | Style             |
+|-------|-------------------|
+| 0     | Plain             |
+| 1     | Hoops / stripes   |
+| 2     | Vertical stripes  |
+| 3     | Halves            |
+
+**Colour palette indices:**
+
+| Value | Colour     | Value | Colour     |
+|-------|------------|-------|------------|
+| 0x00  | (varies)   | 0x08  | (varies)   |
+| 0x02  | White      | 0x0A  | Red        |
+| 0x03  | Black      | 0x0B  | Blue       |
+| 0x04  | (varies)   | 0x0C  | Dark red   |
+| 0x06  | Orange     | 0x0D  | Light blue |
+| 0x07  | (varies)   | 0x0E  | Green      |
+|       |            | 0x0F  | Yellow     |
+
+Example (Lazio): `00 0D 0D 02 02  00 0F 0F 0F 0F  00 00 00 09`
+→ First kit: plain, light blue shirt, white shorts & socks.
+→ Second kit: plain, yellow all over.
+
+
+### Player Records (bytes 22–149)
+
+16 players × 8 bytes each = 128 bytes.
+
+```
+Byte  Meaning
+----  -------
+ 0-1  Packed text position (rewritten at load time — do not use for player data)
+  2   Position byte
+  3   Appearance byte
+ 4-7  Unused (always 0x00)
+```
+
+#### Position byte (byte 2)
+
+Encodes the formation slot and shirt number in a single byte:
+
+```
+  High nibble (bits 7-4): formation slot
+  Low nibble  (bits 3-0): shirt number minus 1
+```
+
+**Formation slot values:**
+
+| Value | Meaning                                  |
+|-------|------------------------------------------|
+| 0     | Goalkeeper                               |
+| 1–4   | Defender (slot 1=leftmost … 4=rightmost) |
+| 5–8   | Midfielder (slot 5=leftmost … 8=rightmost) |
+| 9–10  | Forward (slot 9=left, 10=right)          |
+| 15 (F)| Substitute (not on pitch)                |
+
+**Shirt number** is the low nibble + 1, giving values 1–16.
+
+Examples:
+- `0x00` = GK, shirt #1
+- `0xFB` = substitute, shirt #12
+- `0x79` = midfielder slot 7, shirt #10
+- `0xA8` = forward slot 10, shirt #9
+
+#### Appearance byte (byte 3)
+
+```
+  Bits 0-1: skin colour (0=light, 1=medium, 2=dark)
+  Bits 2-3: position type (0=GK, 1=DEF, 2=MID, 3=FWD)
+  Bit  4:   hair colour (0=dark, 1=light)
+  Bits 5-7: unused (always 0)
+```
+
+**Position type** determines the letter shown in the game's squad
+screen (G / D / M / F). For starting players this matches the
+formation slot; for substitutes (formation slot = F) it indicates
+what role the sub plays.
+
+**Skin and hair** control the player sprite appearance. The game only
+renders **3 visual combinations**:
+
+| Skin  | Hair  | Appearance              |
+|-------|-------|-------------------------|
+| 0 / 1 | 0    | Light skin, dark hair   |
+| 0 / 1 | 1    | Light skin, light hair  |
+| 2     | 0 / 1 | Dark skin, dark hair   |
+
+Skin values 0 (light) and 1 (medium) look identical on screen.
+Dark-skinned players always appear with dark hair regardless of
+the hair bit.
 
 Example (Partizani Tirana, block size 0x0148 = 328 bytes):
 ```

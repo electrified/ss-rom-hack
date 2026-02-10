@@ -29,6 +29,9 @@ from decode_teams import (
     decode_team_block,
     find_pointer_table,
     chain_walk_region,
+    COLOUR_VALUES, STYLE_VALUES,
+    HEAD_VALUES,
+    ROLE_VALUES, POSITION_VALUES,
 )
 
 ATTR_SIZE = 150
@@ -120,33 +123,73 @@ def compute_packed_positions(text_bytes):
     return positions
 
 
+def _resolve_colour(val):
+    """Convert a colour string or int to its byte value."""
+    if isinstance(val, str):
+        return COLOUR_VALUES[val]
+    return val
+
+
+def _resolve_style(val):
+    """Convert a style string or int to its byte value."""
+    if isinstance(val, str):
+        return STYLE_VALUES[val]
+    return val
+
+
 def apply_kit_attrs(attrs, kit):
     """Write kit attributes into bytes 8-17 and extra into bytes 18-21."""
     b = 8
     for prefix in ('first', 'second'):
         k = kit[prefix]
-        attrs[b] = k['style']
-        attrs[b + 1] = k['shirt1']
-        attrs[b + 2] = k['shirt2']
-        attrs[b + 3] = k['shorts']
-        attrs[b + 4] = k['socks']
+        attrs[b] = _resolve_style(k['style'])
+        attrs[b + 1] = _resolve_colour(k['shirt1'])
+        attrs[b + 2] = _resolve_colour(k['shirt2'])
+        attrs[b + 3] = _resolve_colour(k['shorts'])
+        attrs[b + 4] = _resolve_colour(k['socks'])
         b += 5
     extra_bytes = bytes.fromhex(kit.get('extra', '00000000'))
     attrs[18:22] = extra_bytes
+
+
+def _resolve_position(val):
+    """Convert a position string or int to its numeric slot."""
+    if isinstance(val, str):
+        return POSITION_VALUES[val]
+    return val
+
+
+def _resolve_role(val):
+    """Convert a role string or int to its numeric value."""
+    if isinstance(val, str):
+        return ROLE_VALUES[val]
+    return val
+
+
+def _resolve_head(val):
+    """Convert a head type string or int to its numeric value."""
+    if isinstance(val, str):
+        return HEAD_VALUES[val]
+    return val
 
 
 def apply_player_attrs(attrs, players):
     """Write player position and appearance into the attribute block.
 
     Each player has an 8-byte record starting at offset 22.
-    Byte 0 = position, byte 1 = (extra << 4) | (hair << 2) | skin.
+    Byte 2 = (position << 4) | (number - 1).
+    Byte 3 = (bit4 << 4) | (role << 2) | head.
+    bit4 is derived from head: 1 if head==1 (blonde), 0 otherwise.
     """
     base = 22
     for i, p in enumerate(players):
         rec_off = base + i * 8 + 2  # skip 2-byte packed text position
-        attrs[rec_off] = p['position']
-        extra_nibble = int(p.get('extra', '0'), 16) & 0x0F
-        attrs[rec_off + 1] = (extra_nibble << 4) | ((p['hair'] & 0x03) << 2) | (p['skin'] & 0x03)
+        pos = _resolve_position(p['position'])
+        role = _resolve_role(p.get('role', p.get('type', 0)))
+        head = _resolve_head(p['head'])
+        extra = int(p.get('extra', '0'), 16)
+        attrs[rec_off] = ((pos & 0x0F) << 4) | ((p['number'] - 1) & 0x0F)
+        attrs[rec_off + 1] = ((extra & 0x0F) << 4) | ((role & 0x03) << 2) | (head & 0x03)
 
 
 def build_region(rom, block_offsets, teams_json):
@@ -259,18 +302,31 @@ def main():
             # Validate kit attributes
             kit = team.get('kit')
             if kit:
+                allowed_styles = set(STYLE_VALUES.keys())
+                allowed_colours = set(COLOUR_VALUES.keys())
                 for prefix in ('first', 'second'):
                     k = kit.get(prefix, {})
-                    style = k.get('style', 0)
-                    if not (0 <= style <= 255):
+                    style = k.get('style', 'plain')
+                    if isinstance(style, str):
+                        if style not in allowed_styles:
+                            errors.append(f"{cat} team {i+1} '{tname}' {prefix} kit: "
+                                          f"style must be one of {sorted(allowed_styles)}, got '{style}'")
+                    elif not (0 <= style <= 3):
                         errors.append(f"{cat} team {i+1} '{tname}' {prefix} kit: "
-                                      f"style must be 0-255, got {style}")
+                                      f"style must be 0-3, got {style}")
                     for field in ('shirt1', 'shirt2', 'shorts', 'socks'):
-                        val = k.get(field, 0)
-                        if not (0 <= val <= 15):
+                        val = k.get(field, 'white')
+                        if isinstance(val, str):
+                            if val not in allowed_colours:
+                                errors.append(f"{cat} team {i+1} '{tname}' {prefix} kit: "
+                                              f"{field} must be one of {sorted(allowed_colours)}, got '{val}'")
+                        elif not (0 <= val <= 15):
                             errors.append(f"{cat} team {i+1} '{tname}' {prefix} kit: "
                                           f"{field} must be 0-15, got {val}")
             # Validate player attributes
+            allowed_positions = set(POSITION_VALUES.keys())
+            allowed_roles = set(ROLE_VALUES.keys())
+            allowed_heads = set(HEAD_VALUES.keys())
             for j, p in enumerate(players):
                 if not isinstance(p, dict):
                     errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
@@ -280,18 +336,34 @@ def main():
                 if bad:
                     errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
                                   f"invalid chars {bad!r} in '{p['name']}'")
-                skin = p.get('skin', 0)
-                if not (0 <= skin <= 3):
+                num = p.get('number', 1)
+                if not (1 <= num <= 16):
                     errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
-                                  f"skin must be 0-3, got {skin}")
-                hair = p.get('hair', 0)
-                if not (0 <= hair <= 3):
+                                  f"number must be 1-16, got {num}")
+                pos = p.get('position', 'GK')
+                if isinstance(pos, str):
+                    if pos not in allowed_positions:
+                        errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
+                                      f"position must be one of {sorted(allowed_positions)}, got '{pos}'")
+                elif not (0 <= pos <= 15):
                     errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
-                                  f"hair must be 0-3, got {hair}")
-                pos = p.get('position', 0)
-                if not (0 <= pos <= 255):
+                                  f"position must be 0-15, got {pos}")
+                role = p.get('role', p.get('type', 'GK'))
+                if isinstance(role, str):
+                    if role not in allowed_roles:
+                        errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
+                                      f"role must be one of {sorted(allowed_roles)}, got '{role}'")
+                elif not (0 <= role <= 3):
                     errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
-                                  f"position must be 0-255, got {pos}")
+                                  f"role must be 0-3, got {role}")
+                head = p.get('head', 'white_dark')
+                if isinstance(head, str):
+                    if head not in allowed_heads:
+                        errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
+                                      f"head must be one of {sorted(allowed_heads)}, got '{head}'")
+                elif not (0 <= head <= 2):
+                    errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
+                                  f"head must be 0-2, got {head}")
 
     if errors:
         print("Validation errors:", file=sys.stderr)

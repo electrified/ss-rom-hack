@@ -30,6 +30,32 @@ import struct
 
 CHARSET = "\x00ABCDEFGHIJKLMNOPQRSTUVWXYZ -'."
 
+# --- Human-readable mapping tables ---
+
+COLOUR_NAMES = {
+    0x01: "grey", 0x02: "white", 0x03: "black", 0x04: "brown",0x05: "dark_orange", 0x06: "orange",
+    0x07: "light_grey",0x08: "dark_grey",0x09: "dark_grey_2",
+    0x0A: "red", 0x0B: "blue", 0x0C: "dark_red", 0x0D: "light_blue",
+    0x0E: "green", 0x0F: "yellow",
+}
+COLOUR_VALUES = {v: k for k, v in COLOUR_NAMES.items()}
+
+STYLE_NAMES = {0: "plain", 1: "sleeves", 2: "vertical", 3: "horizontal"}
+STYLE_VALUES = {v: k for k, v in STYLE_NAMES.items()}
+
+HEAD_NAMES = {0: "white_dark", 1: "white_blonde", 2: "black_dark"}
+HEAD_VALUES = {v: k for k, v in HEAD_NAMES.items()}
+
+ROLE_NAMES = {0: "GK", 1: "DEF", 2: "MID", 3: "FWD"}
+ROLE_VALUES = {v: k for k, v in ROLE_NAMES.items()}
+
+POSITION_NAMES = {
+    0: "goalkeeper", 1: "right_back", 2: "left_back", 3: "defender", 4: "DEF4",
+    5: "MID1", 6: "MID2", 7: "MID3", 8: "MID4",
+    9: "FWD1", 10: "FWD2", 15: "SUB",
+}
+POSITION_VALUES = {v: k for k, v in POSITION_NAMES.items()}
+
 
 def decode_5bit_string(data, byte_offset, bit_start=0):
     """Decode a single 5-bit packed null-terminated string.
@@ -89,25 +115,35 @@ def decode_player_attrs(rom, block_offset):
     """Decode the 16 player attribute records from the attribute block.
 
     Each player has an 8-byte record starting at block_offset + 22.
-    Bytes 0-1 are position and appearance; bytes 2-7 are unused.
+    Bytes 0-1 are the packed text position (rewritten by the tool).
+    Byte 2: position byte — high nibble = formation slot (0=GK, 1-4=DEF,
+            5-8=MID, 9-A=FWD, F=sub), low nibble = shirt number - 1.
+    Byte 3: appearance — bits 0-1=head type (0=white/dark hair,1=white/blonde,
+            2=black/dark), bits 2-3=type (0=GK,1=DEF,2=MID,3=FWD),
+            bit 4=redundant hair bit (kept in sync).
+    Bytes 4-7: unused (always 00).
 
-    Returns list of 16 dicts with position, skin, hair, extra.
+    Returns list of 16 dicts.
     """
     players = []
     base = block_offset + 22
     for i in range(16):
         rec_off = base + i * 8 + 2  # skip 2-byte packed text position
-        position = rom[rec_off]
-        appearance = rom[rec_off + 1]
-        skin = appearance & 0x03
-        hair = (appearance >> 2) & 0x03
-        extra = format((appearance >> 4) & 0x0F, 'x')
-        players.append({
-            'position': position,
-            'skin': skin,
-            'hair': hair,
-            'extra': extra,
-        })
+        pos_byte = rom[rec_off]
+        app_byte = rom[rec_off + 1]
+        pos_slot = (pos_byte >> 4) & 0x0F
+        role_val = (app_byte >> 2) & 0x03
+        head_val = app_byte & 0x03
+        extra_val = (app_byte >> 4) & 0x0F
+        p = {
+            'number': (pos_byte & 0x0F) + 1,
+            'position': POSITION_NAMES.get(pos_slot, pos_slot),
+            'role': ROLE_NAMES.get(role_val, role_val),
+            'head': HEAD_NAMES.get(head_val, head_val),
+        }
+        if extra_val:
+            p['extra'] = format(extra_val, 'X')
+        players.append(p)
     return players
 
 
@@ -117,20 +153,24 @@ def decode_kit_attrs(rom, block_offset):
     Returns dict with first kit, second kit, and extra bytes.
     """
     b = block_offset + 8
+    def _colour(v):
+        return COLOUR_NAMES.get(v, v)
+    def _style(v):
+        return STYLE_NAMES.get(v, v)
     return {
         'first': {
-            'style': rom[b],
-            'shirt1': rom[b + 1],
-            'shirt2': rom[b + 2],
-            'shorts': rom[b + 3],
-            'socks': rom[b + 4],
+            'style': _style(rom[b]),
+            'shirt1': _colour(rom[b + 1]),
+            'shirt2': _colour(rom[b + 2]),
+            'shorts': _colour(rom[b + 3]),
+            'socks': _colour(rom[b + 4]),
         },
         'second': {
-            'style': rom[b + 5],
-            'shirt1': rom[b + 6],
-            'shirt2': rom[b + 7],
-            'shorts': rom[b + 8],
-            'socks': rom[b + 9],
+            'style': _style(rom[b + 5]),
+            'shirt1': _colour(rom[b + 6]),
+            'shirt2': _colour(rom[b + 7]),
+            'shorts': _colour(rom[b + 8]),
+            'socks': _colour(rom[b + 9]),
         },
         'extra': rom[b + 10:b + 14].hex(),
     }
@@ -332,13 +372,16 @@ def main():
                 players = []
                 for j, name in enumerate(t['players']):
                     pa = t['player_attrs'][j]
-                    players.append({
+                    pd = {
                         'name': name,
+                        'number': pa['number'],
                         'position': pa['position'],
-                        'skin': pa['skin'],
-                        'hair': pa['hair'],
-                        'extra': pa['extra'],
-                    })
+                        'role': pa['role'],
+                        'head': pa['head'],
+                    }
+                    if 'extra' in pa:
+                        pd['extra'] = pa['extra']
+                    players.append(pd)
                 output[cat_name].append({
                     'team': t['team'],
                     'country': t['country'],
