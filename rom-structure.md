@@ -1,18 +1,64 @@
 # Sensible Soccer (Mega Drive) - ROM Structure
 
-## Team Data Region
+## Team Regions Overview
 
-Both ROM editions store 64 teams as contiguous variable-size blocks in a
-single region. Each block contains a 150-byte attribute blob (kit colours,
-formation, player stats, and packed text positions) followed by 5-bit packed
-text.
+Both ROM editions store teams in **3 contiguous regions** separated by 2-byte
+zero gaps:
 
-### Known Offsets
+```
+[national teams] [00 00] [club teams] [00 00] [custom teams]
+```
 
-| Edition | Decode routine | Charset table | Team data region (incl. attrs) |
-|---------|---------------|---------------|--------------------------------|
-| International | `0x019658` | `0x0196A4` | `0x024346` – `0x029262` (20,252 bytes) |
-| Original | `0x0193AE` | `0x01941A` | `0x022F3E` – `0x027DE2` (20,132 bytes) |
+| Edition       | National | Club | Custom | Total |
+|---------------|----------|------|--------|-------|
+| International | 51       | 64   | 64     | 179   |
+| Original/Euro | 40       | 64   | 64     | 168   |
+
+Each region contains variable-size team blocks packed end-to-end with no
+internal gaps. The game chain-walks blocks using the 2-byte size word at the
+start of each block, and stops at the region end pointer.
+
+
+## Region Pointer Table
+
+A table of **6 consecutive big-endian longwords** in the ROM code area stores
+the start and end addresses for all 3 regions:
+
+```
++0:   national_start
++4:   club_start
++8:   custom_start
++12:  national_end
++16:  club_end
++20:  custom_end
+```
+
+| Edition       | Table base | Region span                          |
+|---------------|------------|--------------------------------------|
+| International | `0x01EF22` | `0x020576` – `0x02D5C6` (53,328 B)  |
+| Original/Euro | `0x01EA42` | `0x01FEAC` – `0x02C146` (49,818 B)  |
+
+The end pointer of one region + 2 equals the start pointer of the next
+(`club_start = national_end + 2`, etc.). There are only ~2 bytes free after
+the custom region in the International edition.
+
+### Finding the pointer table
+
+`find_pointer_table()` in `decode_teams.py` locates the table automatically:
+
+1. Use `auto_find_teams()` to find team text offsets in the ROM
+2. For each candidate block start address, search the code area (0–0x30000)
+   for it as a BE 32-bit value
+3. Try interpreting the match as slot 0, 1, or 2 of the table
+4. Validate the 6 pointers have correct ordering
+
+
+## Known Offsets
+
+| Edition | Decode routine | Charset table | Attr offset lookup |
+|---------|---------------|---------------|-------------------|
+| International | `0x019658` | `0x0196A4` | `0x019630` (19 entries) |
+| Original | `0x0193AE` | `0x01941A` | — |
 
 The Original Edition uses city names instead of club names and misspelled
 player names (licensing workaround).
@@ -26,8 +72,9 @@ Each team block is laid out as **[attributes][text][pad]**:
 Team block N:
 ┌──────────────────────────────────┐
 │ Attribute data (150 bytes)       │  fixed size
-│  - Team header (22 bytes)        │
-│  - Player records (128 bytes)    │
+│  - Bytes 0-1: block size word   │
+│  - Team header (22 bytes)       │
+│  - Player records (128 bytes)   │
 ├──────────────────────────────────┤
 │ 5-bit packed text                │  variable length
 │ (19 null-terminated strings)     │
@@ -43,7 +90,12 @@ Each block's total size (attrs + text + pad) is always **even**, ensuring
 the next block starts at a word-aligned address. The pad byte is added when
 the text section has an odd number of bytes.
 
-All 64 blocks are packed contiguously with no gaps.
+### Block Size Word (bytes 0–1)
+
+The first 2 bytes of the attribute block hold a 16-bit big-endian size word
+equal to the **total block size** (150 + text bytes + pad). The game uses
+this to chain-walk through blocks within a region. Valid sizes range from
+~160 (short names) to ~500 (maximum names).
 
 
 ## 5-Bit Text Encoding
@@ -75,7 +127,7 @@ Index  Char        Index  Char
 Each team block contains 19 null-terminated strings packed end-to-end:
 
 1. Team name
-2. Country name
+2. Country name (empty for national teams)
 3. Manager name
 4. 16 player names
 
@@ -157,8 +209,7 @@ position back to the attribute copy in RAM.
 ```
 Offset  Length  Description
 ------  ------  -----------
-  0       1     Always 0x01 (marker byte)
-  1       1     Kit/stat data (shared with packed position high byte)
+  0       2     Block size word (total block size in bytes)
   2       2     Packed position: team name (always 0x12C0)
   4       2     Packed position: country
   6       2     Packed position: manager
@@ -192,15 +243,14 @@ game reads it before overwriting.
 ### Team Header (bytes 0–21)
 
 ```
-Byte  0:     0x01 marker
-Byte  1:     Kit/stat byte
+Bytes 0-1:   Block size word (total block size)
 Bytes 2-3:   Packed position for team name (0x12C0)
 Bytes 4-5:   Packed position for country
 Bytes 6-7:   Packed position for manager
 Bytes 8-21:  Formation/tactics data
 ```
 
-Example (Partizani Tirana):
+Example (Partizani Tirana, block size 0x0148 = 328 bytes):
 ```
 01 48 12 c0 14 05 14 8d 00 0c 0c 02 0c 00 02 02 02 02 04 04 00 21
 ```

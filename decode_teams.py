@@ -160,6 +160,93 @@ def auto_find_teams(rom, scan_start=0x020000, scan_end=0x030000):
     return found
 
 
+def find_pointer_table(rom):
+    """Find the 6-longword pointer table for the 3 team regions.
+
+    Uses auto_find_teams() to locate the club region start address, then
+    searches the ROM code area for that address as a BE 32-bit value.
+    The table layout is 6 consecutive longwords:
+      nat_start, club_start, cust_start, nat_end, club_end, cust_end
+
+    Returns dict with those keys plus 'table_base'.
+    """
+    text_offsets = auto_find_teams(rom)
+    if not text_offsets:
+        raise RuntimeError("No teams found in ROM")
+
+    # auto_find_teams returns text start offsets; block starts are 150 bytes before.
+    # The club region start is the block start of the first club team.
+    # Club teams come after national teams. We need to find where club starts
+    # by searching for the first text_offset - 150 as a pointer in the code area.
+    # But we don't yet know which teams are national vs club. Instead, search for
+    # each candidate block start address in the code area until we find one that's
+    # part of a valid 6-pointer table.
+
+    for text_off in text_offsets:
+        block_start = text_off - 150
+        target = struct.pack('>I', block_start)
+        pos = 0
+        while pos < 0x30000:
+            found = rom.find(target, pos, 0x30000)
+            if found == -1:
+                break
+            # This could be nat_start (+0), club_start (+4), or cust_start (+8)
+            # Try each possibility
+            for slot in range(3):
+                table_base = found - slot * 4
+                if table_base < 0:
+                    continue
+                if table_base + 24 > len(rom):
+                    continue
+                ptrs = struct.unpack_from('>6I', rom, table_base)
+                nat_s, club_s, cust_s, nat_e, club_e, cust_e = ptrs
+                # Validate ordering
+                if (nat_s < club_s < cust_s and
+                        nat_s < nat_e <= club_s and
+                        club_s < club_e <= cust_s and
+                        cust_s < cust_e and
+                        0x010000 < nat_s < 0x040000):
+                    return {
+                        'nat_start': nat_s, 'club_start': club_s, 'cust_start': cust_s,
+                        'nat_end': nat_e, 'club_end': club_e, 'cust_end': cust_e,
+                        'table_base': table_base,
+                    }
+            pos = found + 1
+
+    raise RuntimeError("Could not find pointer table in ROM code area")
+
+
+def chain_walk_region(rom, region_start, region_end):
+    """Chain-walk team blocks within a region using the 2-byte BE size word.
+
+    Returns list of block start offsets.
+    """
+    blocks = []
+    pos = region_start
+    while pos < region_end:
+        sz = struct.unpack_from('>H', rom, pos)[0]
+        if sz < 160 or sz > 500:
+            raise RuntimeError(f"Bad block size {sz} at 0x{pos:06X}")
+        blocks.append(pos)
+        pos += sz
+    if pos != region_end:
+        raise RuntimeError(
+            f"Chain walk ended at 0x{pos:06X}, expected 0x{region_end:06X}")
+    return blocks
+
+
+def decode_region(rom, region_start, region_end):
+    """Decode all teams in a region. Returns list of team info dicts."""
+    blocks = chain_walk_region(rom, region_start, region_end)
+    teams = []
+    for block_off in blocks:
+        text_off = block_off + 150
+        info = decode_team_block(rom, text_off)
+        info['block_offset'] = block_off
+        teams.append(info)
+    return teams
+
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: decode_teams.py <rom_file> [--json]")
@@ -171,40 +258,48 @@ def main():
     with open(rom_path, 'rb') as f:
         rom = f.read()
 
-    offsets = auto_find_teams(rom)
-    if not offsets:
-        print("No teams found!", file=sys.stderr)
-        sys.exit(1)
-    if not json_output:
-        print(f"Found {len(offsets)} teams\n")
+    ptrs = find_pointer_table(rom)
 
-    teams = []
-    for offset in offsets:
-        info = decode_team_block(rom, offset)
-        teams.append(info)
+    categories = [
+        ('national', ptrs['nat_start'], ptrs['nat_end']),
+        ('club', ptrs['club_start'], ptrs['club_end']),
+        ('custom', ptrs['cust_start'], ptrs['cust_end']),
+    ]
+
+    all_teams = {}
+    for cat_name, start, end in categories:
+        all_teams[cat_name] = decode_region(rom, start, end)
 
     if json_output:
         import json
-        output = []
-        for t in teams:
-            output.append({
-                'offset': f"0x{t['offset']:06X}",
-                'team': t['team'],
-                'country': t['country'],
-                'manager': t['manager'],
-                'players': t['players'],
-            })
+        output = {}
+        for cat_name in ('national', 'club', 'custom'):
+            output[cat_name] = []
+            for t in all_teams[cat_name]:
+                output[cat_name].append({
+                    'team': t['team'],
+                    'country': t['country'],
+                    'manager': t['manager'],
+                    'players': t['players'],
+                })
         print(json.dumps(output, indent=2))
-    elif not teams:
-        print("No teams decoded.")
     else:
-        for i, t in enumerate(teams):
-            print(f"\n{'='*60}")
-            print(f"Team {i+1:2d}: {t['team']} ({t['country']}) @ 0x{t['offset']:06X}")
-            print(f"Manager: {t['manager']}")
-            print(f"Players:")
-            for j, p in enumerate(t['players']):
-                print(f"  {j+1:2d}. {p}")
+        for cat_name, start, end in categories:
+            teams = all_teams[cat_name]
+            print(f"\n{'#'*60}")
+            print(f"# {cat_name.upper()} TEAMS ({len(teams)})  "
+                  f"0x{start:06X}-0x{end:06X}")
+            print(f"{'#'*60}")
+            for i, t in enumerate(teams):
+                print(f"\n{'='*60}")
+                print(f"Team {i+1:2d}: {t['team']} ({t['country']}) "
+                      f"@ 0x{t['block_offset']:06X}")
+                print(f"Manager: {t['manager']}")
+                print(f"Players:")
+                for j, p in enumerate(t['players']):
+                    print(f"  {j+1:2d}. {p}")
+        total = sum(len(all_teams[c]) for c in all_teams)
+        print(f"\nTotal: {total} teams")
 
 
 if __name__ == '__main__':

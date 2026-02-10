@@ -6,6 +6,8 @@ Reads an edited JSON file (produced by decode_teams.py --json) and writes
 the modified team/player names back into the ROM, preserving all binary
 attribute data (stats, kit colors, formation) unchanged.
 
+Handles all 3 team regions: national, club, and custom.
+
 Team block layout in ROM: [150 bytes attributes][variable-length 5-bit text]
 The attribute block contains packed text positions at specific offsets that
 the game uses to locate each of the 19 strings. These positions must be
@@ -25,7 +27,8 @@ from decode_teams import (
     encode_5bit_string,
     pack_5bit_values,
     decode_team_block,
-    auto_find_teams,
+    find_pointer_table,
+    chain_walk_region,
 )
 
 ATTR_SIZE = 150
@@ -33,6 +36,8 @@ ATTR_SIZE = 150
 # Offsets within the 150-byte attribute block where packed text positions
 # are stored (19 entries for: team, country, manager, 16 players)
 ATTR_OFFSETS = [2, 4, 6, 22, 30, 38, 46, 54, 62, 70, 78, 86, 94, 102, 110, 118, 126, 134, 142]
+
+CATEGORIES = ('national', 'club', 'custom')
 
 
 def validate_string(text, context):
@@ -113,6 +118,48 @@ def compute_packed_positions(text_bytes):
     return positions
 
 
+def build_region(rom, block_offsets, teams_json):
+    """Build a new region from attribute blocks and edited JSON.
+
+    Returns (new_region_bytes, changes_count, original_teams).
+    """
+    # Extract attribute bytes for each team
+    attr_blocks = []
+    for block_off in block_offsets:
+        attr_blocks.append(bytearray(rom[block_off:block_off + ATTR_SIZE]))
+
+    # Decode original teams for change detection
+    original_teams = []
+    for block_off in block_offsets:
+        original_teams.append(decode_team_block(rom, block_off + ATTR_SIZE))
+
+    new_region = bytearray()
+    changes = 0
+
+    for i, team in enumerate(teams_json):
+        text_bytes = encode_team_text(team)
+        positions = compute_packed_positions(text_bytes)
+
+        attrs = bytearray(attr_blocks[i])
+        for str_idx, attr_off in enumerate(ATTR_OFFSETS):
+            struct.pack_into('>H', attrs, attr_off, positions[str_idx])
+
+        block_size = ATTR_SIZE + len(text_bytes) + (len(text_bytes) % 2)
+        struct.pack_into('>H', attrs, 0, block_size)
+
+        new_region.extend(attrs)
+        new_region.extend(text_bytes)
+        if len(text_bytes) % 2 != 0:
+            new_region.append(0x00)
+
+        orig = original_teams[i]
+        if (team['team'] != orig['team'] or team['country'] != orig['country'] or
+                team['manager'] != orig['manager'] or team['players'] != orig['players']):
+            changes += 1
+
+    return bytes(new_region), changes, original_teams
+
+
 def main():
     parser = argparse.ArgumentParser(description='Update team names in a Sensible Soccer ROM')
     parser.add_argument('rom', help='Input ROM file')
@@ -128,56 +175,51 @@ def main():
     with open(args.rom, 'rb') as f:
         rom = bytearray(f.read())
 
-    # Find existing teams (auto_find_teams returns TEXT start offsets)
-    text_offsets = auto_find_teams(rom)
-    if not text_offsets:
-        print("Error: no teams found in ROM", file=sys.stderr)
-        sys.exit(1)
+    # Find pointer table and all 3 regions
+    ptrs = find_pointer_table(rom)
+    region_info = [
+        ('national', ptrs['nat_start'], ptrs['nat_end']),
+        ('club', ptrs['club_start'], ptrs['club_end']),
+        ('custom', ptrs['cust_start'], ptrs['cust_end']),
+    ]
 
-    if len(text_offsets) != 64:
-        print(f"Error: expected 64 teams in ROM, found {len(text_offsets)}", file=sys.stderr)
-        sys.exit(1)
-
-    # Team block layout: [attrs (150 bytes)][text (variable)]
-    # auto_find_teams returns text start, so attr block is 150 bytes before
-    block_offsets = [t - ATTR_SIZE for t in text_offsets]
-
-    # Extract attribute bytes for each team (first 150 bytes of each block)
-    attr_blocks = []
-    for block_off in block_offsets:
-        attr_blocks.append(bytearray(rom[block_off:block_off + ATTR_SIZE]))
-
-    # Calculate original region bounds
-    region_start = block_offsets[0]
-    # End of last team: text end + padding to make block even-sized
-    last_info = decode_team_block(rom, text_offsets[-1])
-    last_text_bytes = (last_info['text_bits'] + 7) // 8
-    region_end = text_offsets[-1] + last_text_bytes + (last_text_bytes % 2)
-    original_size = region_end - region_start
+    # Chain-walk all regions to get block offsets
+    all_block_offsets = {}
+    for cat, start, end in region_info:
+        all_block_offsets[cat] = chain_walk_region(rom, start, end)
 
     # Load edited JSON
     with open(args.teams_json, 'r') as f:
         teams_json = json.load(f)
 
-    if len(teams_json) != 64:
-        print(f"Error: expected 64 teams in JSON, found {len(teams_json)}", file=sys.stderr)
+    if not isinstance(teams_json, dict) or not all(k in teams_json for k in CATEGORIES):
+        print("Error: JSON must be a dict with 'national', 'club', 'custom' keys",
+              file=sys.stderr)
         sys.exit(1)
+    teams_by_cat = teams_json
 
-    # Validate all teams
+    # Validate team counts and content
     errors = []
-    for i, team in enumerate(teams_json):
-        if len(team['players']) != 16:
-            errors.append(f"Team {i+1} '{team['team']}': expected 16 players, got {len(team['players'])}")
-
-        for label, s in [('team', team['team']), ('country', team['country']), ('manager', team['manager'])]:
-            bad = validate_string(s, label)
-            if bad:
-                errors.append(f"Team {i+1} '{team['team']}' {label}: invalid chars {bad!r} in '{s}'")
-
-        for j, p in enumerate(team['players']):
-            bad = validate_string(p, f"player {j+1}")
-            if bad:
-                errors.append(f"Team {i+1} '{team['team']}' player {j+1}: invalid chars {bad!r} in '{p}'")
+    for cat, start, end in region_info:
+        rom_count = len(all_block_offsets[cat])
+        json_teams = teams_by_cat[cat]
+        if len(json_teams) != rom_count:
+            errors.append(f"{cat}: expected {rom_count} teams in JSON, got {len(json_teams)}")
+            continue
+        for i, team in enumerate(json_teams):
+            if len(team.get('players', [])) != 16:
+                errors.append(f"{cat} team {i+1} '{team['team']}': expected 16 players, "
+                              f"got {len(team.get('players', []))}")
+            for label in ('team', 'country', 'manager'):
+                bad = validate_string(team.get(label, ''), label)
+                if bad:
+                    errors.append(f"{cat} team {i+1} '{team['team']}' {label}: "
+                                  f"invalid chars {bad!r} in '{team[label]}'")
+            for j, p in enumerate(team.get('players', [])):
+                bad = validate_string(p, f"player {j+1}")
+                if bad:
+                    errors.append(f"{cat} team {i+1} '{team['team']}' player {j+1}: "
+                                  f"invalid chars {bad!r} in '{p}'")
 
     if errors:
         print("Validation errors:", file=sys.stderr)
@@ -185,59 +227,87 @@ def main():
             print(f"  {e}", file=sys.stderr)
         sys.exit(1)
 
-    # Rebuild all team blocks: [attrs][text] for each team
-    original_teams = []
-    for text_off in text_offsets:
-        original_teams.append(decode_team_block(rom, text_off))
+    # Build new region data for each category
+    region_data = {}
+    total_changes = {}
+    for cat, start, end in region_info:
+        data, changes, _ = build_region(rom, all_block_offsets[cat], teams_by_cat[cat])
+        region_data[cat] = data
+        total_changes[cat] = changes
 
-    new_region = bytearray()
-    changes = 0
+    # Calculate total available space: from nat_start to end of custom data area
+    # Find the first non-zero byte after custom_end to determine where the next
+    # data region actually starts
+    nat_start = ptrs['nat_start']
+    cust_end = ptrs['cust_end']
+    max_end = cust_end
+    # Scan forward for non-zero data (the next real data region)
+    scan_pos = cust_end
+    while scan_pos < len(rom) - 1:
+        word = struct.unpack_from('>H', rom, scan_pos)[0]
+        if word != 0:
+            max_end = scan_pos
+            break
+        scan_pos += 2
 
-    for i, team in enumerate(teams_json):
-        # Encode the new text
-        text_bytes = encode_team_text(team)
+    # Concatenate regions with 2-byte zero gaps
+    combined = bytearray()
+    combined.extend(region_data['national'])
+    combined.extend(b'\x00\x00')
+    club_offset_in_combined = len(combined)
+    combined.extend(region_data['club'])
+    combined.extend(b'\x00\x00')
+    cust_offset_in_combined = len(combined)
+    combined.extend(region_data['custom'])
 
-        # Compute packed text positions for the new text
-        positions = compute_packed_positions(text_bytes)
-
-        # Update the attribute block with new positions
-        attrs = bytearray(attr_blocks[i])
-        for str_idx, attr_off in enumerate(ATTR_OFFSETS):
-            struct.pack_into('>H', attrs, attr_off, positions[str_idx])
-
-        # Write block: [attrs][text][pad]
-        # Each block must be an even number of bytes (word-aligned for 68000)
-        new_region.extend(attrs)
-        new_region.extend(text_bytes)
-        if len(text_bytes) % 2 != 0:
-            new_region.append(0x00)
-
-        # Check if text changed
-        orig = original_teams[i]
-        if (team['team'] != orig['team'] or team['country'] != orig['country'] or
-                team['manager'] != orig['manager'] or team['players'] != orig['players']):
-            changes += 1
-
-    new_size = len(new_region)
-    if new_size > original_size:
-        print(f"Error: new team data ({new_size} bytes) exceeds original region ({original_size} bytes) by {new_size - original_size} bytes",
-              file=sys.stderr)
+    total_available = max_end - nat_start
+    if len(combined) > total_available:
+        overflow = len(combined) - total_available
+        print(f"Error: new team data ({len(combined)} bytes) overflows available space "
+              f"({total_available} bytes) by {overflow} bytes", file=sys.stderr)
         sys.exit(1)
 
-    # Pad to original size if shorter (fill with 0x00)
-    if new_size < original_size:
-        new_region.extend(b'\x00' * (original_size - new_size))
+    # Compute new pointer values
+    new_nat_start = nat_start  # unchanged
+    new_nat_end = nat_start + len(region_data['national'])
+    new_club_start = new_nat_end + 2
+    new_club_end = new_club_start + len(region_data['club'])
+    new_cust_start = new_club_end + 2
+    new_cust_end = new_cust_start + len(region_data['custom'])
 
-    # Write into ROM
-    rom[region_start:region_start + original_size] = new_region
+    # Write combined data into ROM
+    rom[nat_start:nat_start + len(combined)] = combined
+
+    # Zero-fill any leftover space
+    old_total = cust_end - nat_start
+    if len(combined) < old_total:
+        rom[nat_start + len(combined):nat_start + old_total] = b'\x00' * (old_total - len(combined))
+
+    # Update all 6 pointers in the table
+    tb = ptrs['table_base']
+    struct.pack_into('>I', rom, tb + 0, new_nat_start)
+    struct.pack_into('>I', rom, tb + 4, new_club_start)
+    struct.pack_into('>I', rom, tb + 8, new_cust_start)
+    struct.pack_into('>I', rom, tb + 12, new_nat_end)
+    struct.pack_into('>I', rom, tb + 16, new_club_end)
+    struct.pack_into('>I', rom, tb + 20, new_cust_end)
 
     # Write output
     with open(args.output, 'wb') as f:
         f.write(rom)
 
-    print(f"Teams changed: {changes}/64")
-    print(f"Region: 0x{region_start:06X} - 0x{region_start + original_size:06X}")
-    print(f"Bytes used: {new_size}/{original_size} ({original_size - new_size} bytes free)")
+    # Summary
+    for cat, start, end in region_info:
+        old_size = end - start
+        new_size = len(region_data[cat])
+        delta = new_size - old_size
+        delta_str = f"+{delta}" if delta >= 0 else str(delta)
+        rom_count = len(all_block_offsets[cat])
+        print(f"{cat:8s}: {total_changes[cat]:2d}/{rom_count} changed, "
+              f"{new_size:5d} bytes ({delta_str})")
+
+    print(f"Total: {len(combined)} / {total_available} bytes used "
+          f"({total_available - len(combined)} free)")
     print(f"Written to: {args.output}")
 
 
