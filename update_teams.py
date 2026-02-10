@@ -50,9 +50,11 @@ def validate_string(text, context):
 
 
 def encode_team_text(team):
-    """Encode all 19 strings (team + country + manager + 16 players) into packed bytes."""
+    """Encode all 19 strings (team + country + coach + 16 players) into packed bytes."""
     all_values = []
-    for s in [team['team'], team['country'], team['manager']] + team['players']:
+    names = [team['team'], team['country'], team.get('coach', team.get('manager', ''))]
+    names += [p['name'] for p in team['players']]
+    for s in names:
         all_values.extend(encode_5bit_string(s))
     packed, _total_bits = pack_5bit_values(all_values)
     return packed
@@ -118,6 +120,35 @@ def compute_packed_positions(text_bytes):
     return positions
 
 
+def apply_kit_attrs(attrs, kit):
+    """Write kit attributes into bytes 8-17 and extra into bytes 18-21."""
+    b = 8
+    for prefix in ('first', 'second'):
+        k = kit[prefix]
+        attrs[b] = k['style']
+        attrs[b + 1] = k['shirt1']
+        attrs[b + 2] = k['shirt2']
+        attrs[b + 3] = k['shorts']
+        attrs[b + 4] = k['socks']
+        b += 5
+    extra_bytes = bytes.fromhex(kit.get('extra', '00000000'))
+    attrs[18:22] = extra_bytes
+
+
+def apply_player_attrs(attrs, players):
+    """Write player position and appearance into the attribute block.
+
+    Each player has an 8-byte record starting at offset 22.
+    Byte 0 = position, byte 1 = (extra << 4) | (hair << 2) | skin.
+    """
+    base = 22
+    for i, p in enumerate(players):
+        rec_off = base + i * 8 + 2  # skip 2-byte packed text position
+        attrs[rec_off] = p['position']
+        extra_nibble = int(p.get('extra', '0'), 16) & 0x0F
+        attrs[rec_off + 1] = (extra_nibble << 4) | ((p['hair'] & 0x03) << 2) | (p['skin'] & 0x03)
+
+
 def build_region(rom, block_offsets, teams_json):
     """Build a new region from attribute blocks and edited JSON.
 
@@ -144,6 +175,11 @@ def build_region(rom, block_offsets, teams_json):
         for str_idx, attr_off in enumerate(ATTR_OFFSETS):
             struct.pack_into('>H', attrs, attr_off, positions[str_idx])
 
+        # Write kit and player attributes from JSON
+        if 'kit' in team:
+            apply_kit_attrs(attrs, team['kit'])
+        apply_player_attrs(attrs, team['players'])
+
         block_size = ATTR_SIZE + len(text_bytes) + (len(text_bytes) % 2)
         struct.pack_into('>H', attrs, 0, block_size)
 
@@ -153,8 +189,10 @@ def build_region(rom, block_offsets, teams_json):
             new_region.append(0x00)
 
         orig = original_teams[i]
+        coach = team.get('coach', team.get('manager', ''))
+        player_names = [p['name'] for p in team['players']]
         if (team['team'] != orig['team'] or team['country'] != orig['country'] or
-                team['manager'] != orig['manager'] or team['players'] != orig['players']):
+                coach != orig['manager'] or player_names != orig['players']):
             changes += 1
 
     return bytes(new_region), changes, original_teams
@@ -207,19 +245,53 @@ def main():
             errors.append(f"{cat}: expected {rom_count} teams in JSON, got {len(json_teams)}")
             continue
         for i, team in enumerate(json_teams):
-            if len(team.get('players', [])) != 16:
-                errors.append(f"{cat} team {i+1} '{team['team']}': expected 16 players, "
-                              f"got {len(team.get('players', []))}")
-            for label in ('team', 'country', 'manager'):
+            tname = team.get('team', '?')
+            players = team.get('players', [])
+            if len(players) != 16:
+                errors.append(f"{cat} team {i+1} '{tname}': expected 16 players, "
+                              f"got {len(players)}")
+            coach_key = 'coach' if 'coach' in team else 'manager'
+            for label in ('team', 'country', coach_key):
                 bad = validate_string(team.get(label, ''), label)
                 if bad:
-                    errors.append(f"{cat} team {i+1} '{team['team']}' {label}: "
+                    errors.append(f"{cat} team {i+1} '{tname}' {label}: "
                                   f"invalid chars {bad!r} in '{team[label]}'")
-            for j, p in enumerate(team.get('players', [])):
-                bad = validate_string(p, f"player {j+1}")
+            # Validate kit attributes
+            kit = team.get('kit')
+            if kit:
+                for prefix in ('first', 'second'):
+                    k = kit.get(prefix, {})
+                    style = k.get('style', 0)
+                    if not (0 <= style <= 255):
+                        errors.append(f"{cat} team {i+1} '{tname}' {prefix} kit: "
+                                      f"style must be 0-255, got {style}")
+                    for field in ('shirt1', 'shirt2', 'shorts', 'socks'):
+                        val = k.get(field, 0)
+                        if not (0 <= val <= 15):
+                            errors.append(f"{cat} team {i+1} '{tname}' {prefix} kit: "
+                                          f"{field} must be 0-15, got {val}")
+            # Validate player attributes
+            for j, p in enumerate(players):
+                if not isinstance(p, dict):
+                    errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
+                                  f"expected dict, got {type(p).__name__}")
+                    continue
+                bad = validate_string(p.get('name', ''), f"player {j+1}")
                 if bad:
-                    errors.append(f"{cat} team {i+1} '{team['team']}' player {j+1}: "
-                                  f"invalid chars {bad!r} in '{p}'")
+                    errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
+                                  f"invalid chars {bad!r} in '{p['name']}'")
+                skin = p.get('skin', 0)
+                if not (0 <= skin <= 3):
+                    errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
+                                  f"skin must be 0-3, got {skin}")
+                hair = p.get('hair', 0)
+                if not (0 <= hair <= 3):
+                    errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
+                                  f"hair must be 0-3, got {hair}")
+                pos = p.get('position', 0)
+                if not (0 <= pos <= 255):
+                    errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
+                                  f"position must be 0-255, got {pos}")
 
     if errors:
         print("Validation errors:", file=sys.stderr)

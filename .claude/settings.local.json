@@ -24,7 +24,9 @@
       "Bash(.venv/bin/python3:*)",
       "Bash(.venv/bin/pip install:*)",
       "Bash(/home/ed/dev/ss-md-hack/.venv/bin/pip install capstone)",
-      "Bash(/home/ed/dev/ss-md-hack/.venv/bin/python3:*)"
+      "Bash(/home/ed/dev/ss-md-hack/.venv/bin/python3:*)",
+      "Bash(grep:*)",
+      "Bash(xargs:*)"
     ]
   }
 }

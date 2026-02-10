@@ -85,6 +85,57 @@ def pack_5bit_values(values):
     return bytes(result), total_bits
 
 
+def decode_player_attrs(rom, block_offset):
+    """Decode the 16 player attribute records from the attribute block.
+
+    Each player has an 8-byte record starting at block_offset + 22.
+    Bytes 0-1 are position and appearance; bytes 2-7 are unused.
+
+    Returns list of 16 dicts with position, skin, hair, extra.
+    """
+    players = []
+    base = block_offset + 22
+    for i in range(16):
+        rec_off = base + i * 8 + 2  # skip 2-byte packed text position
+        position = rom[rec_off]
+        appearance = rom[rec_off + 1]
+        skin = appearance & 0x03
+        hair = (appearance >> 2) & 0x03
+        extra = format((appearance >> 4) & 0x0F, 'x')
+        players.append({
+            'position': position,
+            'skin': skin,
+            'hair': hair,
+            'extra': extra,
+        })
+    return players
+
+
+def decode_kit_attrs(rom, block_offset):
+    """Decode kit attributes from bytes 8-21 of the attribute block.
+
+    Returns dict with first kit, second kit, and extra bytes.
+    """
+    b = block_offset + 8
+    return {
+        'first': {
+            'style': rom[b],
+            'shirt1': rom[b + 1],
+            'shirt2': rom[b + 2],
+            'shorts': rom[b + 3],
+            'socks': rom[b + 4],
+        },
+        'second': {
+            'style': rom[b + 5],
+            'shirt1': rom[b + 6],
+            'shirt2': rom[b + 7],
+            'shorts': rom[b + 8],
+            'socks': rom[b + 9],
+        },
+        'extra': rom[b + 10:b + 14].hex(),
+    }
+
+
 def decode_team_block(rom, offset):
     """Decode a full team block at the given ROM offset.
     Returns dict with team info and the bit position after all text."""
@@ -243,6 +294,8 @@ def decode_region(rom, region_start, region_end):
         text_off = block_off + 150
         info = decode_team_block(rom, text_off)
         info['block_offset'] = block_off
+        info['kit'] = decode_kit_attrs(rom, block_off)
+        info['player_attrs'] = decode_player_attrs(rom, block_off)
         teams.append(info)
     return teams
 
@@ -276,11 +329,22 @@ def main():
         for cat_name in ('national', 'club', 'custom'):
             output[cat_name] = []
             for t in all_teams[cat_name]:
+                players = []
+                for j, name in enumerate(t['players']):
+                    pa = t['player_attrs'][j]
+                    players.append({
+                        'name': name,
+                        'position': pa['position'],
+                        'skin': pa['skin'],
+                        'hair': pa['hair'],
+                        'extra': pa['extra'],
+                    })
                 output[cat_name].append({
                     'team': t['team'],
                     'country': t['country'],
-                    'manager': t['manager'],
-                    'players': t['players'],
+                    'coach': t['manager'],
+                    'kit': t['kit'],
+                    'players': players,
                 })
         print(json.dumps(output, indent=2))
     else:
