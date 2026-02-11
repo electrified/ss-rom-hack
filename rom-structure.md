@@ -354,13 +354,20 @@ Encodes the formation slot and shirt number in a single byte:
 
 **Formation slot values:**
 
-| Value | Meaning                                  |
-|-------|------------------------------------------|
-| 0     | Goalkeeper                               |
-| 1–4   | Defender (slot 1=leftmost … 4=rightmost) |
-| 5–8   | Midfielder (slot 5=leftmost … 8=rightmost) |
-| 9–10  | Forward (slot 9=left, 10=right)          |
-| 15 (F)| Substitute (not on pitch)                |
+| Value | Name             | Meaning                             |
+|-------|------------------|-------------------------------------|
+| 0     | goalkeeper       | Goalkeeper                          |
+| 1     | right_back       | Right back                          |
+| 2     | left_back        | Left back                           |
+| 3     | centre_back      | Centre back                         |
+| 4     | defender         | Defender (4th slot, formation-dependent) |
+| 5     | right_midfield   | Right midfield                      |
+| 6     | centre_midfield  | Centre midfield                     |
+| 7     | left_midfield    | Left midfield                       |
+| 8     | midfielder       | Midfielder (4th slot, formation-dependent) |
+| 9     | forward          | Forward                             |
+| 10    | second_forward   | Second forward                      |
+| 15 (F)| sub              | Substitute (not on pitch)           |
 
 **Shirt number** is the low nibble + 1, giving values 1–16.
 
@@ -374,7 +381,7 @@ Examples:
 
 ```
   Bits 0-1: head type (0-2, see table)
-  Bits 2-3: role (0=GK, 1=DEF, 2=MID, 3=FWD)
+  Bits 2-3: role (0=goalkeeper, 1=defender, 2=midfielder, 3=forward)
   Bit  4:   star player flag (0=normal, 1=star)
   Bits 5-7: unused (always 0)
 ```

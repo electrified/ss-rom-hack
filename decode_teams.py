@@ -49,13 +49,13 @@ HEAD_VALUES = {v: k for k, v in HEAD_NAMES.items()}
 TACTIC_NAMES = {0: "4-4-2", 1: "5-4-1", 2: "4-5-1", 3: "5-3-2", 4: "3-5-2", 5: "4-3-3", 6: "3-3-4", 7: "6-3-1"}
 TACTIC_VALUES = {v: k for k, v in TACTIC_NAMES.items()}
 
-ROLE_NAMES = {0: "GK", 1: "DEF", 2: "MID", 3: "FWD"}
+ROLE_NAMES = {0: "goalkeeper", 1: "defender", 2: "midfielder", 3: "forward"}
 ROLE_VALUES = {v: k for k, v in ROLE_NAMES.items()}
 
 POSITION_NAMES = {
-    0: "goalkeeper", 1: "right_back", 2: "left_back", 3: "defender", 4: "DEF4",
-    5: "MID1", 6: "MID2", 7: "MID3", 8: "MID4",
-    9: "FWD1", 10: "FWD2", 15: "SUB",
+    0: "goalkeeper", 1: "right_back", 2: "left_back", 3: "centre_back", 4: "defender",
+    5: "right_midfield", 6: "centre_midfield", 7: "left_midfield", 8: "midfielder",
+    9: "forward", 10: "second_forward", 15: "sub",
 }
 POSITION_VALUES = {v: k for k, v in POSITION_NAMES.items()}
 
@@ -364,14 +364,15 @@ def decode_region(rom, region_start, region_end):
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: decode_teams.py <rom_file> [--json]")
-        sys.exit(1)
+    import argparse
+    import json
+    parser = argparse.ArgumentParser(
+        description='Decode team data from a Sensible Soccer (Mega Drive) ROM')
+    parser.add_argument('rom', help='Input ROM file')
+    parser.add_argument('-o', '--output', help='Write output to file instead of stdout')
+    args = parser.parse_args()
 
-    rom_path = sys.argv[1]
-    json_output = '--json' in sys.argv
-
-    with open(rom_path, 'rb') as f:
+    with open(args.rom, 'rb') as f:
         rom = f.read()
 
     ptrs = find_pointer_table(rom)
@@ -386,54 +387,45 @@ def main():
     for cat_name, start, end in categories:
         all_teams[cat_name] = decode_region(rom, start, end)
 
-    if json_output:
-        import json
-        output = {}
-        for cat_name in ('national', 'club', 'custom'):
-            output[cat_name] = []
-            for t in all_teams[cat_name]:
-                players = []
-                for j, name in enumerate(t['players']):
-                    pa = t['player_attrs'][j]
-                    pd = {
-                        'name': name,
-                        'number': pa['number'],
-                        'position': pa['position'],
-                        'role': pa['role'],
-                        'head': pa['head'],
-                    }
-                    if pa.get('star'):
-                        pd['star'] = True
-                    players.append(pd)
-                ta = t['team_attrs']
-                output[cat_name].append({
-                    'team': t['team'],
-                    'country': t['country'],
-                    'coach': t['coach'],
-                    'tactic': ta['tactic'],
-                    'skill': ta['skill'],
-                    'flag': ta['flag'],
-                    'kit': t['kit'],
-                    'players': players,
-                })
-        print(json.dumps(output, indent=2))
+    total = sum(len(all_teams[c]) for c in all_teams)
+
+    output = {'$schema': './teams.schema.json'}
+    for cat_name in ('national', 'club', 'custom'):
+        output[cat_name] = []
+        for t in all_teams[cat_name]:
+            players = []
+            for j, name in enumerate(t['players']):
+                pa = t['player_attrs'][j]
+                pd = {
+                    'name': name,
+                    'number': pa['number'],
+                    'position': pa['position'],
+                    'role': pa['role'],
+                    'head': pa['head'],
+                }
+                if pa.get('star'):
+                    pd['star'] = True
+                players.append(pd)
+            ta = t['team_attrs']
+            output[cat_name].append({
+                'team': t['team'],
+                'country': t['country'],
+                'coach': t['coach'],
+                'tactic': ta['tactic'],
+                'skill': ta['skill'],
+                'flag': ta['flag'],
+                'kit': t['kit'],
+                'players': players,
+            })
+    text = json.dumps(output, indent=2)
+
+    if args.output:
+        with open(args.output, 'w') as f:
+            f.write(text)
+            f.write('\n')
+        print(f"Written {total} teams to {args.output}", file=sys.stderr)
     else:
-        for cat_name, start, end in categories:
-            teams = all_teams[cat_name]
-            print(f"\n{'#'*60}")
-            print(f"# {cat_name.upper()} TEAMS ({len(teams)})  "
-                  f"0x{start:06X}-0x{end:06X}")
-            print(f"{'#'*60}")
-            for i, t in enumerate(teams):
-                print(f"\n{'='*60}")
-                print(f"Team {i+1:2d}: {t['team']} ({t['country']}) "
-                      f"@ 0x{t['block_offset']:06X}")
-                print(f"Coach: {t['coach']}")
-                print(f"Players:")
-                for j, p in enumerate(t['players']):
-                    print(f"  {j+1:2d}. {p}")
-        total = sum(len(all_teams[c]) for c in all_teams)
-        print(f"\nTotal: {total} teams")
+        print(text)
 
 
 if __name__ == '__main__':

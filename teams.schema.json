@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sensible Soccer Team Data",
+  "description": "Team data for Sensible Soccer (Mega Drive) ROM editing",
+  "type": "object",
+  "required": ["national", "club", "custom"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "national": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/team" }
+    },
+    "club": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/team" }
+    },
+    "custom": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/team" }
+    }
+  },
+  "$defs": {
+    "team": {
+      "type": "object",
+      "required": ["team", "country", "coach", "players"],
+      "additionalProperties": false,
+      "properties": {
+        "team": {
+          "type": "string",
+          "description": "Team name (A-Z, space, dash, apostrophe, period only)",
+          "pattern": "^[A-Z .'-]+$"
+        },
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z .'-]+$"
+        },
+        "coach": {
+          "type": "string",
+          "pattern": "^[A-Z .'-]+$"
+        },
+        "tactic": {
+          "type": "string",
+          "enum": ["4-4-2", "5-4-1", "4-5-1", "5-3-2", "3-5-2", "4-3-3", "3-3-4", "6-3-1"],
+          "default": "4-4-2"
+        },
+        "skill": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7,
+          "default": 0
+        },
+        "flag": {
+          "type": "integer",
+          "enum": [0, 1],
+          "default": 0
+        },
+        "kit": { "$ref": "#/$defs/kit" },
+        "players": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/player" },
+          "minItems": 16,
+          "maxItems": 16
+        }
+      }
+    },
+    "kit": {
+      "type": "object",
+      "required": ["first", "second"],
+      "additionalProperties": false,
+      "properties": {
+        "first": { "$ref": "#/$defs/kitSet" },
+        "second": { "$ref": "#/$defs/kitSet" }
+      }
+    },
+    "kitSet": {
+      "type": "object",
+      "required": ["style", "shirt1", "shirt2", "shorts", "socks"],
+      "additionalProperties": false,
+      "properties": {
+        "style": {
+          "type": "string",
+          "enum": ["plain", "sleeves", "vertical", "horizontal"]
+        },
+        "shirt1": { "$ref": "#/$defs/colour" },
+        "shirt2": { "$ref": "#/$defs/colour" },
+        "shorts": { "$ref": "#/$defs/colour" },
+        "socks": { "$ref": "#/$defs/colour" }
+      }
+    },
+    "colour": {
+      "type": "string",
+      "enum": [
+        "grey", "white", "black", "brown", "dark_orange", "orange",
+        "light_grey", "dark_grey", "dark_grey_2",
+        "red", "blue", "dark_red", "light_blue", "green", "yellow"
+      ]
+    },
+    "player": {
+      "type": "object",
+      "required": ["name", "number", "position", "role", "head"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Z .'-]+$"
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "position": {
+          "type": "string",
+          "enum": [
+            "goalkeeper", "right_back", "left_back", "centre_back", "defender",
+            "right_midfield", "centre_midfield", "left_midfield", "midfielder",
+            "forward", "second_forward", "sub"
+          ]
+        },
+        "role": {
+          "type": "string",
+          "enum": ["goalkeeper", "defender", "midfielder", "forward"]
+        },
+        "head": {
+          "type": "string",
+          "enum": ["white_dark", "white_blonde", "black_dark"]
+        },
+        "star": {
+          "type": "boolean",
+          "description": "Star player flag (omit or set false for non-star players)"
+        }
+      }
+    }
+  }
+}

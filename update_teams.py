@@ -124,6 +124,16 @@ def compute_packed_positions(text_bytes):
     return positions
 
 
+def _check_enum(val, allowed, max_int, context):
+    """Validate val is a known string or int in 0..max_int. Returns error or None."""
+    if isinstance(val, str):
+        if val not in allowed:
+            return f"{context} must be one of {sorted(allowed)}, got '{val}'"
+    elif not (0 <= val <= max_int):
+        return f"{context} must be 0-{max_int}, got {val}"
+    return None
+
+
 def _resolve_colour(val):
     """Convert a colour string or int to its byte value."""
     if isinstance(val, str):
@@ -212,7 +222,7 @@ def apply_player_attrs(attrs, players):
 def build_region(rom, block_offsets, teams_json):
     """Build a new region from attribute blocks and edited JSON.
 
-    Returns (new_region_bytes, changes_count, original_teams).
+    Returns (new_region_bytes, changes_count).
     """
     # Extract attribute bytes for each team
     attr_blocks = []
@@ -255,17 +265,22 @@ def build_region(rom, block_offsets, teams_json):
                 team['coach'] != orig['coach'] or player_names != orig['players']):
             changes += 1
 
-    return bytes(new_region), changes, original_teams
+    return bytes(new_region), changes
 
 
 def main():
     parser = argparse.ArgumentParser(description='Update team names in a Sensible Soccer ROM')
     parser.add_argument('rom', help='Input ROM file')
     parser.add_argument('teams_json', help='Edited teams JSON file')
-    parser.add_argument('-o', '--output', required=True, help='Output ROM file (required, never overwrites input)')
+    parser.add_argument('-o', '--output', help='Output ROM file (required unless --validate)')
+    parser.add_argument('--validate', action='store_true',
+                        help='Validate JSON only, do not write ROM')
     args = parser.parse_args()
 
-    if args.output == args.rom:
+    if not args.validate and not args.output:
+        parser.error('-o/--output is required when not using --validate')
+
+    if args.output and args.output == args.rom:
         print("Error: output file must differ from input ROM", file=sys.stderr)
         sys.exit(1)
 
@@ -316,84 +331,52 @@ def main():
                     errors.append(f"{cat} team {i+1} '{tname}' {label}: "
                                   f"invalid chars {bad!r} in '{team[label]}'")
             # Validate team-level attributes
-            tactic = team.get('tactic', '4-4-2')
-            if isinstance(tactic, str):
-                if tactic not in TACTIC_VALUES:
-                    errors.append(f"{cat} team {i+1} '{tname}': "
-                                  f"tactic must be one of {sorted(TACTIC_VALUES.keys())}, got '{tactic}'")
-            elif not (0 <= tactic <= 7):
-                errors.append(f"{cat} team {i+1} '{tname}': tactic must be 0-7, got {tactic}")
+            ctx = f"{cat} team {i+1} '{tname}'"
+            err = _check_enum(team.get('tactic', '4-4-2'), TACTIC_VALUES, 7, f"{ctx}: tactic")
+            if err:
+                errors.append(err)
             skill = team.get('skill', 0)
             if not (0 <= skill <= 7):
-                errors.append(f"{cat} team {i+1} '{tname}': skill must be 0-7, got {skill}")
+                errors.append(f"{ctx}: skill must be 0-7, got {skill}")
             flag = team.get('flag', 0)
             if flag not in (0, 1):
-                errors.append(f"{cat} team {i+1} '{tname}': flag must be 0 or 1, got {flag}")
+                errors.append(f"{ctx}: flag must be 0 or 1, got {flag}")
             # Validate kit attributes
             kit = team.get('kit')
             if kit:
-                allowed_styles = set(STYLE_VALUES.keys())
-                allowed_colours = set(COLOUR_VALUES.keys())
                 for prefix in ('first', 'second'):
                     k = kit.get(prefix, {})
-                    style = k.get('style', 'plain')
-                    if isinstance(style, str):
-                        if style not in allowed_styles:
-                            errors.append(f"{cat} team {i+1} '{tname}' {prefix} kit: "
-                                          f"style must be one of {sorted(allowed_styles)}, got '{style}'")
-                    elif not (0 <= style <= 3):
-                        errors.append(f"{cat} team {i+1} '{tname}' {prefix} kit: "
-                                      f"style must be 0-3, got {style}")
+                    kctx = f"{ctx} {prefix} kit"
+                    err = _check_enum(k.get('style', 'plain'), STYLE_VALUES, 3, f"{kctx}: style")
+                    if err:
+                        errors.append(err)
                     for field in ('shirt1', 'shirt2', 'shorts', 'socks'):
-                        val = k.get(field, 'white')
-                        if isinstance(val, str):
-                            if val not in allowed_colours:
-                                errors.append(f"{cat} team {i+1} '{tname}' {prefix} kit: "
-                                              f"{field} must be one of {sorted(allowed_colours)}, got '{val}'")
-                        elif not (0 <= val <= 15):
-                            errors.append(f"{cat} team {i+1} '{tname}' {prefix} kit: "
-                                          f"{field} must be 0-15, got {val}")
+                        err = _check_enum(k.get(field, 'white'), COLOUR_VALUES, 15, f"{kctx}: {field}")
+                        if err:
+                            errors.append(err)
             # Validate player attributes
-            allowed_positions = set(POSITION_VALUES.keys())
-            allowed_roles = set(ROLE_VALUES.keys())
-            allowed_heads = set(HEAD_VALUES.keys())
             for j, p in enumerate(players):
                 if not isinstance(p, dict):
-                    errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
+                    errors.append(f"{ctx} player {j+1}: "
                                   f"expected dict, got {type(p).__name__}")
                     continue
                 bad = validate_string(p.get('name', ''), f"player {j+1}")
                 if bad:
-                    errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
+                    errors.append(f"{ctx} player {j+1}: "
                                   f"invalid chars {bad!r} in '{p['name']}'")
                 num = p.get('number', 1)
                 if not (1 <= num <= 16):
-                    errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
+                    errors.append(f"{ctx} player {j+1}: "
                                   f"number must be 1-16, got {num}")
-                pos = p.get('position', 'GK')
-                if isinstance(pos, str):
-                    if pos not in allowed_positions:
-                        errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
-                                      f"position must be one of {sorted(allowed_positions)}, got '{pos}'")
-                elif not (0 <= pos <= 15):
-                    errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
-                                  f"position must be 0-15, got {pos}")
-                role = p.get('role', 'GK')
-                if isinstance(role, str):
-                    if role not in allowed_roles:
-                        errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
-                                      f"role must be one of {sorted(allowed_roles)}, got '{role}'")
-                elif not (0 <= role <= 3):
-                    errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
-                                  f"role must be 0-3, got {role}")
-                head = p.get('head', 'white_dark')
-                if isinstance(head, str):
-                    if head not in allowed_heads:
-                        errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
-                                      f"head must be one of {sorted(allowed_heads)}, got '{head}'")
-                elif not (0 <= head <= 2):
-                    errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
-                                  f"head must be 0-2, got {head}")
+                pctx = f"{ctx} player {j+1}"
+                for field, allowed, max_int, default in (
+                    ('position', POSITION_VALUES, 15, 'goalkeeper'),
+                    ('role', ROLE_VALUES, 3, 'goalkeeper'),
+                    ('head', HEAD_VALUES, 2, 'white_dark'),
+                ):
+                    err = _check_enum(p.get(field, default), allowed, max_int, f"{pctx}: {field}")
+                    if err:
+                        errors.append(err)
 
     if errors:
         print("Validation errors:", file=sys.stderr)
@@ -401,11 +384,20 @@ def main():
             print(f"  {e}", file=sys.stderr)
         sys.exit(1)
 
+    if args.validate:
+        total_players = 0
+        for cat in CATEGORIES:
+            n = len(teams_by_cat[cat])
+            total_players += n * 16
+            print(f"{cat:8s}: {n} teams OK")
+        print(f"Total: {total_players} players validated")
+        sys.exit(0)
+
     # Build new region data for each category
     region_data = {}
     total_changes = {}
     for cat, start, end in region_info:
-        data, changes, _ = build_region(rom, all_block_offsets[cat], teams_by_cat[cat])
+        data, changes = build_region(rom, all_block_offsets[cat], teams_by_cat[cat])
         region_data[cat] = data
         total_changes[cat] = changes
 
@@ -472,13 +464,8 @@ def main():
 
     # Summary
     for cat, start, end in region_info:
-        old_size = end - start
-        new_size = len(region_data[cat])
-        delta = new_size - old_size
-        delta_str = f"+{delta}" if delta >= 0 else str(delta)
         rom_count = len(all_block_offsets[cat])
-        print(f"{cat:8s}: {total_changes[cat]:2d}/{rom_count} changed, "
-              f"{new_size:5d} bytes ({delta_str})")
+        print(f"{cat:8s}: {total_changes[cat]:2d}/{rom_count} changed")
 
     print(f"Total: {len(combined)} / {total_available} bytes used "
           f"({total_available - len(combined)} free)")
