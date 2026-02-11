@@ -32,12 +32,13 @@ from decode_teams import (
     COLOUR_VALUES, STYLE_VALUES,
     HEAD_VALUES,
     ROLE_VALUES, POSITION_VALUES,
+    TACTIC_VALUES,
 )
 
 ATTR_SIZE = 150
 
 # Offsets within the 150-byte attribute block where packed text positions
-# are stored (19 entries for: team, country, manager, 16 players)
+# are stored (19 entries for: team, country, coach, 16 players)
 ATTR_OFFSETS = [2, 4, 6, 22, 30, 38, 46, 54, 62, 70, 78, 86, 94, 102, 110, 118, 126, 134, 142]
 
 CATEGORIES = ('national', 'club', 'custom')
@@ -55,7 +56,7 @@ def validate_string(text, context):
 def encode_team_text(team):
     """Encode all 19 strings (team + country + coach + 16 players) into packed bytes."""
     all_values = []
-    names = [team['team'], team['country'], team.get('coach', team.get('manager', ''))]
+    names = [team['team'], team['country'], team['coach']]
     names += [p['name'] for p in team['players']]
     for s in names:
         all_values.extend(encode_5bit_string(s))
@@ -138,7 +139,7 @@ def _resolve_style(val):
 
 
 def apply_kit_attrs(attrs, kit):
-    """Write kit attributes into bytes 8-17 and extra into bytes 18-21."""
+    """Write kit attributes into bytes 8-17."""
     b = 8
     for prefix in ('first', 'second'):
         k = kit[prefix]
@@ -148,8 +149,25 @@ def apply_kit_attrs(attrs, kit):
         attrs[b + 3] = _resolve_colour(k['shorts'])
         attrs[b + 4] = _resolve_colour(k['socks'])
         b += 5
-    extra_bytes = bytes.fromhex(kit.get('extra', '00000000'))
-    attrs[18:22] = extra_bytes
+
+
+def apply_team_attrs(attrs, team):
+    """Write team-level attributes into bytes 18-21.
+
+    Byte 18: tactic (formation preset)
+    Byte 19: division (competitive tier)
+    Byte 20: 0x00 (unused)
+    Byte 21: (skill << 3) | flag
+    """
+    tactic = team.get('tactic', '4-4-2')
+    if isinstance(tactic, str):
+        tactic = TACTIC_VALUES[tactic]
+    attrs[18] = tactic
+    attrs[19] = team.get('division', 0)
+    attrs[20] = 0x00
+    skill = team.get('skill', 0)
+    flag = team.get('flag', 0)
+    attrs[21] = ((skill & 0x07) << 3) | (flag & 0x01)
 
 
 def _resolve_position(val):
@@ -178,18 +196,17 @@ def apply_player_attrs(attrs, players):
 
     Each player has an 8-byte record starting at offset 22.
     Byte 2 = (position << 4) | (number - 1).
-    Byte 3 = (bit4 << 4) | (role << 2) | head.
-    bit4 is derived from head: 1 if head==1 (blonde), 0 otherwise.
+    Byte 3 = (star << 4) | (role << 2) | head.
     """
     base = 22
     for i, p in enumerate(players):
         rec_off = base + i * 8 + 2  # skip 2-byte packed text position
         pos = _resolve_position(p['position'])
-        role = _resolve_role(p.get('role', p.get('type', 0)))
+        role = _resolve_role(p['role'])
         head = _resolve_head(p['head'])
-        extra = int(p.get('extra', '0'), 16)
+        star = 1 if p.get('star', False) else 0
         attrs[rec_off] = ((pos & 0x0F) << 4) | ((p['number'] - 1) & 0x0F)
-        attrs[rec_off + 1] = ((extra & 0x0F) << 4) | ((role & 0x03) << 2) | (head & 0x03)
+        attrs[rec_off + 1] = ((star & 0x01) << 4) | ((role & 0x03) << 2) | (head & 0x03)
 
 
 def build_region(rom, block_offsets, teams_json):
@@ -218,9 +235,10 @@ def build_region(rom, block_offsets, teams_json):
         for str_idx, attr_off in enumerate(ATTR_OFFSETS):
             struct.pack_into('>H', attrs, attr_off, positions[str_idx])
 
-        # Write kit and player attributes from JSON
+        # Write kit, team, and player attributes from JSON
         if 'kit' in team:
             apply_kit_attrs(attrs, team['kit'])
+        apply_team_attrs(attrs, team)
         apply_player_attrs(attrs, team['players'])
 
         block_size = ATTR_SIZE + len(text_bytes) + (len(text_bytes) % 2)
@@ -232,10 +250,9 @@ def build_region(rom, block_offsets, teams_json):
             new_region.append(0x00)
 
         orig = original_teams[i]
-        coach = team.get('coach', team.get('manager', ''))
         player_names = [p['name'] for p in team['players']]
         if (team['team'] != orig['team'] or team['country'] != orig['country'] or
-                coach != orig['manager'] or player_names != orig['players']):
+                team['coach'] != orig['coach'] or player_names != orig['players']):
             changes += 1
 
     return bytes(new_region), changes, original_teams
@@ -293,12 +310,28 @@ def main():
             if len(players) != 16:
                 errors.append(f"{cat} team {i+1} '{tname}': expected 16 players, "
                               f"got {len(players)}")
-            coach_key = 'coach' if 'coach' in team else 'manager'
-            for label in ('team', 'country', coach_key):
+            for label in ('team', 'country', 'coach'):
                 bad = validate_string(team.get(label, ''), label)
                 if bad:
                     errors.append(f"{cat} team {i+1} '{tname}' {label}: "
                                   f"invalid chars {bad!r} in '{team[label]}'")
+            # Validate team-level attributes
+            tactic = team.get('tactic', '4-4-2')
+            if isinstance(tactic, str):
+                if tactic not in TACTIC_VALUES:
+                    errors.append(f"{cat} team {i+1} '{tname}': "
+                                  f"tactic must be one of {sorted(TACTIC_VALUES.keys())}, got '{tactic}'")
+            elif not (0 <= tactic <= 5):
+                errors.append(f"{cat} team {i+1} '{tname}': tactic must be 0-5, got {tactic}")
+            division = team.get('division', 0)
+            if not (0 <= division <= 7):
+                errors.append(f"{cat} team {i+1} '{tname}': division must be 0-7, got {division}")
+            skill = team.get('skill', 0)
+            if not (0 <= skill <= 7):
+                errors.append(f"{cat} team {i+1} '{tname}': skill must be 0-7, got {skill}")
+            flag = team.get('flag', 0)
+            if flag not in (0, 1):
+                errors.append(f"{cat} team {i+1} '{tname}': flag must be 0 or 1, got {flag}")
             # Validate kit attributes
             kit = team.get('kit')
             if kit:
@@ -348,7 +381,7 @@ def main():
                 elif not (0 <= pos <= 15):
                     errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "
                                   f"position must be 0-15, got {pos}")
-                role = p.get('role', p.get('type', 'GK'))
+                role = p.get('role', 'GK')
                 if isinstance(role, str):
                     if role not in allowed_roles:
                         errors.append(f"{cat} team {i+1} '{tname}' player {j+1}: "

@@ -9,11 +9,11 @@ Character set (index 0 = null terminator):
   0: NUL, 1-26: A-Z, 27: space, 28: -, 29: ', 30: .
 
 Each team block contains:
-  1. Team name (5-bit packed, null-terminated)
-  2. Country name (5-bit packed, null-terminated)
-  3. Manager name (5-bit packed, null-terminated)
-  4. 16 player names (5-bit packed, null-terminated each)
-  5. ~150 bytes of attribute data (player stats, kit colors, etc.)
+  1. 150 bytes of attribute data (kit, team attrs, player records)
+  2. Team name (5-bit packed, null-terminated)
+  3. Country name (5-bit packed, null-terminated)
+  4. Coach name (5-bit packed, null-terminated)
+  5. 16 player names (5-bit packed, null-terminated each)
 
 International Edition:
   Decode routine: 0x019658, charset table: 0x0196A4
@@ -45,6 +45,9 @@ STYLE_VALUES = {v: k for k, v in STYLE_NAMES.items()}
 
 HEAD_NAMES = {0: "white_dark", 1: "white_blonde", 2: "black_dark"}
 HEAD_VALUES = {v: k for k, v in HEAD_NAMES.items()}
+
+TACTIC_NAMES = {0: "4-4-2", 1: "5-4-1", 2: "4-5-1", 3: "5-3-2", 4: "3-5-2", 5: "4-3-3"}
+TACTIC_VALUES = {v: k for k, v in TACTIC_NAMES.items()}
 
 ROLE_NAMES = {0: "GK", 1: "DEF", 2: "MID", 3: "FWD"}
 ROLE_VALUES = {v: k for k, v in ROLE_NAMES.items()}
@@ -134,15 +137,15 @@ def decode_player_attrs(rom, block_offset):
         pos_slot = (pos_byte >> 4) & 0x0F
         role_val = (app_byte >> 2) & 0x03
         head_val = app_byte & 0x03
-        extra_val = (app_byte >> 4) & 0x0F
+        star = bool((app_byte >> 4) & 0x01)
         p = {
             'number': (pos_byte & 0x0F) + 1,
             'position': POSITION_NAMES.get(pos_slot, pos_slot),
             'role': ROLE_NAMES.get(role_val, role_val),
             'head': HEAD_NAMES.get(head_val, head_val),
         }
-        if extra_val:
-            p['extra'] = format(extra_val, 'X')
+        if star:
+            p['star'] = True
         players.append(p)
     return players
 
@@ -172,7 +175,24 @@ def decode_kit_attrs(rom, block_offset):
             'shorts': _colour(rom[b + 8]),
             'socks': _colour(rom[b + 9]),
         },
-        'extra': rom[b + 10:b + 14].hex(),
+    }
+
+
+def decode_team_attrs(rom, block_offset):
+    """Decode team-level attributes from bytes 18-21 of the attribute block.
+
+    Byte 18: tactic (formation preset, 0-5)
+    Byte 19: division (competitive tier, 0-7)
+    Byte 20: unused (always 0)
+    Byte 21: bits 3-5 = skill tier (0=best, 7=weakest), bit 0 = flag
+    """
+    b = block_offset
+    tactic_val = rom[b + 18]
+    return {
+        'tactic': TACTIC_NAMES.get(tactic_val, str(tactic_val)),
+        'division': rom[b + 19],
+        'skill': (rom[b + 21] >> 3) & 0x07,
+        'flag': rom[b + 21] & 0x01,
     }
 
 
@@ -193,7 +213,7 @@ def decode_team_block(rom, offset):
         'offset': offset,
         'team': team_name,
         'country': country,
-        'manager': manager,
+        'coach': manager,
         'players': players,
         'text_bits': bit_pos,
         'text_end': text_byte_end,
@@ -335,6 +355,7 @@ def decode_region(rom, region_start, region_end):
         info = decode_team_block(rom, text_off)
         info['block_offset'] = block_off
         info['kit'] = decode_kit_attrs(rom, block_off)
+        info['team_attrs'] = decode_team_attrs(rom, block_off)
         info['player_attrs'] = decode_player_attrs(rom, block_off)
         teams.append(info)
     return teams
@@ -379,13 +400,18 @@ def main():
                         'role': pa['role'],
                         'head': pa['head'],
                     }
-                    if 'extra' in pa:
-                        pd['extra'] = pa['extra']
+                    if pa.get('star'):
+                        pd['star'] = True
                     players.append(pd)
+                ta = t['team_attrs']
                 output[cat_name].append({
                     'team': t['team'],
                     'country': t['country'],
-                    'coach': t['manager'],
+                    'coach': t['coach'],
+                    'tactic': ta['tactic'],
+                    'division': ta['division'],
+                    'skill': ta['skill'],
+                    'flag': ta['flag'],
                     'kit': t['kit'],
                     'players': players,
                 })
@@ -401,7 +427,7 @@ def main():
                 print(f"\n{'='*60}")
                 print(f"Team {i+1:2d}: {t['team']} ({t['country']}) "
                       f"@ 0x{t['block_offset']:06X}")
-                print(f"Manager: {t['manager']}")
+                print(f"Coach: {t['coach']}")
                 print(f"Players:")
                 for j, p in enumerate(t['players']):
                     print(f"  {j+1:2d}. {p}")

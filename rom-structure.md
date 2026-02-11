@@ -100,7 +100,7 @@ this to chain-walk through blocks within a region. Valid sizes range from
 
 ## 5-Bit Text Encoding
 
-Team/player/manager names are encoded as an MSB-first bitstream, 5 bits per
+Team/player/coach names are encoded as an MSB-first bitstream, 5 bits per
 character:
 
 ```
@@ -127,8 +127,8 @@ Index  Char        Index  Char
 Each team block contains 19 null-terminated strings packed end-to-end:
 
 1. Team name
-2. Country name (empty for national teams)
-3. Manager name
+2. Country name
+3. Coach name
 4. 16 player names
 
 The final string's null terminator is followed by zero-bit padding to
@@ -162,7 +162,7 @@ String   Attr offset   Description
 ------   -----------   -----------
   0          2         Team name
   1          4         Country
-  2          6         Manager
+  2          6         Coach
   3         22         Player 1
   4         30         Player 2
   5         38         Player 3
@@ -212,8 +212,9 @@ Offset  Length  Description
   0       2     Block size word (total block size in bytes)
   2       2     Packed position: team name (always 0x12C0)
   4       2     Packed position: country
-  6       2     Packed position: manager
-  8      14     Kit attributes (see below)
+  6       2     Packed position: coach
+  8      10     Kit attributes (2 x 5 bytes, see below)
+ 18       4     Team attributes (tactic, division, skill, see below)
  22     128     Player records (16 x 8 bytes, see below)
 ------  ------
  Total  150
@@ -226,56 +227,89 @@ Offset  Length  Description
 Bytes 0-1:   Block size word (total block size)
 Bytes 2-3:   Packed position for team name (0x12C0)
 Bytes 4-5:   Packed position for country
-Bytes 6-7:   Packed position for manager
+Bytes 6-7:   Packed position for coach
 ```
 
 
-### Kit Attributes (bytes 8–21)
+### Kit Attributes (bytes 8–17)
 
-Each team has two kits (first and second) plus 4 extra bytes:
+Each team has two kits (first and second), 5 bytes each:
 
 ```
 Offset  Field            Values
 ------  -----            ------
   8     First kit style   0-3 (see style table)
-  9     First shirt 1     0-15 (primary colour, see colour table)
- 10     First shirt 2     0-15 (secondary colour, same as shirt 1 for plain)
- 11     First shorts      0-15
- 12     First socks       0-15
+  9     First shirt 1     Colour index (primary colour)
+ 10     First shirt 2     Colour index (secondary colour, same as shirt 1 for plain)
+ 11     First shorts      Colour index
+ 12     First socks       Colour index
  13     Second kit style  0-3
- 14     Second shirt 1    0-15
- 15     Second shirt 2    0-15
- 16     Second shorts     0-15
- 17     Second socks      0-15
- 18-19  Unknown           Often paired (e.g. 03 03, 04 04), possibly GK kit
- 20     Unknown           Always 0x00
- 21     Unknown           Varies (formation/tactic code?)
+ 14     Second shirt 1    Colour index
+ 15     Second shirt 2    Colour index
+ 16     Second shorts     Colour index
+ 17     Second socks      Colour index
 ```
 
 **Kit style values:**
 
-| Value | Style             |
-|-------|-------------------|
-| 0     | Plain             |
-| 1     | Hoops / stripes   |
-| 2     | Vertical stripes  |
-| 3     | Halves            |
+| Value | Style      | Description                          |
+|-------|------------|--------------------------------------|
+| 0     | Plain      | Single colour shirt                  |
+| 1     | Sleeves    | Different colour sleeves             |
+| 2     | Vertical   | Vertical stripes (shirt1 + shirt2)   |
+| 3     | Horizontal | Horizontal stripes (shirt1 + shirt2) |
 
 **Colour palette indices:**
 
-| Value | Colour     | Value | Colour     |
-|-------|------------|-------|------------|
-| 0x00  | (varies)   | 0x08  | (varies)   |
-| 0x02  | White      | 0x0A  | Red        |
-| 0x03  | Black      | 0x0B  | Blue       |
-| 0x04  | (varies)   | 0x0C  | Dark red   |
-| 0x06  | Orange     | 0x0D  | Light blue |
-| 0x07  | (varies)   | 0x0E  | Green      |
-|       |            | 0x0F  | Yellow     |
+| Value | Colour      | Value | Colour      |
+|-------|-------------|-------|-------------|
+| 0x01  | Grey        | 0x09  | Dark grey 2 |
+| 0x02  | White       | 0x0A  | Red         |
+| 0x03  | Black       | 0x0B  | Blue        |
+| 0x04  | Brown       | 0x0C  | Dark red    |
+| 0x05  | Dark orange | 0x0D  | Light blue  |
+| 0x06  | Orange      | 0x0E  | Green       |
+| 0x07  | Light grey  | 0x0F  | Yellow      |
+| 0x08  | Dark grey   |       |             |
 
-Example (Lazio): `00 0D 0D 02 02  00 0F 0F 0F 0F  00 00 00 09`
+Example (Lazio): `00 0D 0D 02 02  00 0F 0F 0F 0F`
 → First kit: plain, light blue shirt, white shorts & socks.
 → Second kit: plain, yellow all over.
+
+
+### Team Attributes (bytes 18–21)
+
+Team-level gameplay attributes:
+
+```
+Offset  Field     Values
+------  -----     ------
+ 18     Tactic    0-5 (formation preset, see table)
+ 19     Division  0-7 (competitive tier)
+ 20     (unused)  Always 0x00
+ 21     Composite Bits 3-5: skill (0=best, 7=weakest)
+                  Bit 0: flag (meaning unknown; 0 for ~8 teams per ROM,
+                         mostly British/Irish national teams)
+                  Bits 1-2, 6-7: always 0
+```
+
+**Tactic values:**
+
+| Value | Formation |
+|-------|-----------|
+| 0     | 4-4-2     |
+| 1     | 5-4-1     |
+| 2     | 4-5-1     |
+| 3     | 5-3-2     |
+| 4     | 3-5-2     |
+| 5     | 4-3-3     |
+
+Custom teams always have tactic=0 (4-4-2 default). Division is independent
+of tactic — in the European ROM, 8 national teams share the same tactic but
+have different division values.
+
+**Skill** correlates with real-world team quality. Brazil, Germany etc. have
+skill=0; Malta, Luxembourg etc. have skill=7.
 
 
 ### Player Records (bytes 22–149)
@@ -321,31 +355,40 @@ Examples:
 #### Appearance byte (byte 3)
 
 ```
-  Bits 0-1: skin colour (0=light, 1=medium, 2=dark)
-  Bits 2-3: position type (0=GK, 1=DEF, 2=MID, 3=FWD)
-  Bit  4:   hair colour (0=dark, 1=light)
+  Bits 0-1: head type (0-2, see table)
+  Bits 2-3: role (0=GK, 1=DEF, 2=MID, 3=FWD)
+  Bit  4:   star player flag (0=normal, 1=star)
   Bits 5-7: unused (always 0)
 ```
 
-**Position type** determines the letter shown in the game's squad
-screen (G / D / M / F). For starting players this matches the
-formation slot; for substitutes (formation slot = F) it indicates
-what role the sub plays.
+**Role** determines the letter shown in the game's squad screen
+(G / D / M / F). For starting players this matches the formation
+slot; for substitutes (formation slot = F) it indicates what role
+the sub plays.
 
-**Skin and hair** control the player sprite appearance. The game only
-renders **3 visual combinations**:
+**Head type** controls the player sprite appearance. The game renders
+3 visual combinations:
 
-| Skin  | Hair  | Appearance              |
-|-------|-------|-------------------------|
-| 0 / 1 | 0    | Light skin, dark hair   |
-| 0 / 1 | 1    | Light skin, light hair  |
-| 2     | 0 / 1 | Dark skin, dark hair   |
+| Value | Name         | Appearance              |
+|-------|--------------|-------------------------|
+| 0     | white_dark   | Light skin, dark hair   |
+| 1     | white_blonde | Light skin, blonde hair |
+| 2     | black_dark   | Dark skin, dark hair    |
 
-Skin values 0 (light) and 1 (medium) look identical on screen.
-Dark-skinned players always appear with dark hair regardless of
-the hair bit.
+**Star player** flag is set for approximately 12% of players across
+all teams and head types. It is independent of the head type value.
 
 Example (Partizani Tirana, block size 0x0148 = 328 bytes):
 ```
-01 48 12 c0 14 05 14 8d 00 0c 0c 02 0c 00 02 02 02 02 04 04 00 21
+01 48 12 c0 14 05 14 8d 00 0c 0c 02 0c 00 02 02 02 02  04 04 00 21
+│     │     │     │     │                 │              │  │  │  └─ byte 21: skill=4 (bits 3-5=100), flag=1 (bit 0)
+│     │     │     │     │                 │              │  │  └──── byte 20: unused (0x00)
+│     │     │     │     │                 │              │  └─────── byte 19: division=4
+│     │     │     │     │                 │              └────────── byte 18: tactic=4 (3-5-2)
+│     │     │     │     │                 └───────────────────────── bytes 13-17: second kit
+│     │     │     │     └─────────────────────────────────────────── bytes 8-12: first kit
+│     │     │     └───────────────────────────────────────────────── bytes 6-7: coach position
+│     │     └─────────────────────────────────────────────────────── bytes 4-5: country position
+│     └───────────────────────────────────────────────────────────── bytes 2-3: team name (0x12C0)
+└─────────────────────────────────────────────────────────────────── bytes 0-1: block size (0x0148 = 328)
 ```
