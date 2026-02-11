@@ -154,8 +154,8 @@ def apply_kit_attrs(attrs, kit):
 def apply_team_attrs(attrs, team):
     """Write team-level attributes into bytes 18-21.
 
-    Byte 18: tactic (formation preset)
-    Byte 19: division (competitive tier)
+    Byte 18: tactic (written for consistency, not used by game engine)
+    Byte 19: tactic (gameplay-active formation, 0-7)
     Byte 20: 0x00 (unused)
     Byte 21: (skill << 3) | flag
     """
@@ -163,7 +163,7 @@ def apply_team_attrs(attrs, team):
     if isinstance(tactic, str):
         tactic = TACTIC_VALUES[tactic]
     attrs[18] = tactic
-    attrs[19] = team.get('division', 0)
+    attrs[19] = tactic  # both bytes kept in sync
     attrs[20] = 0x00
     skill = team.get('skill', 0)
     flag = team.get('flag', 0)
@@ -321,11 +321,8 @@ def main():
                 if tactic not in TACTIC_VALUES:
                     errors.append(f"{cat} team {i+1} '{tname}': "
                                   f"tactic must be one of {sorted(TACTIC_VALUES.keys())}, got '{tactic}'")
-            elif not (0 <= tactic <= 5):
-                errors.append(f"{cat} team {i+1} '{tname}': tactic must be 0-5, got {tactic}")
-            division = team.get('division', 0)
-            if not (0 <= division <= 7):
-                errors.append(f"{cat} team {i+1} '{tname}': division must be 0-7, got {division}")
+            elif not (0 <= tactic <= 7):
+                errors.append(f"{cat} team {i+1} '{tname}': tactic must be 0-7, got {tactic}")
             skill = team.get('skill', 0)
             if not (0 <= skill <= 7):
                 errors.append(f"{cat} team {i+1} '{tname}': skill must be 0-7, got {skill}")

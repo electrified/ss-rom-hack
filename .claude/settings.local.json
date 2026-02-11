@@ -27,7 +27,9 @@
       "Bash(/home/ed/dev/ss-md-hack/.venv/bin/python3:*)",
       "Bash(grep:*)",
       "Bash(xargs:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(pip install:*)",
+      "Bash(source:*)"
     ]
   }
 }

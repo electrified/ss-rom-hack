@@ -214,7 +214,7 @@ Offset  Length  Description
   4       2     Packed position: country
   6       2     Packed position: coach
   8      10     Kit attributes (2 x 5 bytes, see below)
- 18       4     Team attributes (tactic, division, skill, see below)
+ 18       4     Team attributes (tactic, skill, flag — see below)
  22     128     Player records (16 x 8 bytes, see below)
 ------  ------
  Total  150
@@ -284,16 +284,25 @@ Team-level gameplay attributes:
 ```
 Offset  Field     Values
 ------  -----     ------
- 18     Tactic    0-5 (formation preset, see table)
- 19     Division  0-7 (competitive tier)
+ 18     Tactic    0-7 (formation, see table — initial/default value)
+ 19     Tactic    0-7 (formation — gameplay-active value, see below)
  20     (unused)  Always 0x00
  21     Composite Bits 3-5: skill (0=best, 7=weakest)
-                  Bit 0: flag (meaning unknown; 0 for ~8 teams per ROM,
-                         mostly British/Irish national teams)
+                  Bit 0: flag (unused by game engine, see below)
                   Bits 1-2, 6-7: always 0
 ```
 
-**Tactic values:**
+**Bytes 18 and 19 — two tactic bytes:**
+
+Both bytes store a formation value. Byte 19 is the one the game engine
+actually reads at match time (code at `$01F968` copies it to runtime RAM).
+The in-game team editor (`$01C960`) also reads/writes byte 19. For all
+national and club teams in the original ROM, bytes 18 and 19 are identical.
+Custom teams have byte 18=0 but byte 19 varies (including two extra
+formations not available for national/club teams). The tools read from
+byte 19 and write both bytes to keep them in sync.
+
+**Tactic/formation values:**
 
 | Value | Formation |
 |-------|-----------|
@@ -303,13 +312,22 @@ Offset  Field     Values
 | 3     | 5-3-2     |
 | 4     | 3-5-2     |
 | 5     | 4-3-3     |
+| 6     | 3-3-4     |
+| 7     | 6-3-1     |
 
-Custom teams always have tactic=0 (4-4-2 default). Division is independent
-of tactic — in the European ROM, 8 national teams share the same tactic but
-have different division values.
+Values 6–7 are only used by custom teams in the original ROM. The formation
+lookup table at `$016034` contains 8 entries, each pointing to an 11-slot
+sub-table mapping formation slots to roles (GK/DEF/MID/FWD).
 
 **Skill** correlates with real-world team quality. Brazil, Germany etc. have
 skill=0; Malta, Luxembourg etc. have skill=7.
+
+**Flag (bit 0 of byte 21):** This bit is never read by the game engine.
+The match setup code at `$01F982` explicitly masks it away with
+`andi.w #$38` when extracting the skill value. In the ROM data, flag=0
+marks British/Irish teams, but no game logic acts on this. It may be
+vestigial metadata from development. See `division-research.md` for the
+full disassembly analysis.
 
 
 ### Player Records (bytes 22–149)
@@ -383,8 +401,8 @@ Example (Partizani Tirana, block size 0x0148 = 328 bytes):
 01 48 12 c0 14 05 14 8d 00 0c 0c 02 0c 00 02 02 02 02  04 04 00 21
 │     │     │     │     │                 │              │  │  │  └─ byte 21: skill=4 (bits 3-5=100), flag=1 (bit 0)
 │     │     │     │     │                 │              │  │  └──── byte 20: unused (0x00)
-│     │     │     │     │                 │              │  └─────── byte 19: division=4
-│     │     │     │     │                 │              └────────── byte 18: tactic=4 (3-5-2)
+│     │     │     │     │                 │              │  └─────── byte 19: tactic=4 (3-5-2, gameplay-active)
+│     │     │     │     │                 │              └────────── byte 18: tactic=4 (3-5-2, initial/default)
 │     │     │     │     │                 └───────────────────────── bytes 13-17: second kit
 │     │     │     │     └─────────────────────────────────────────── bytes 8-12: first kit
 │     │     │     └───────────────────────────────────────────────── bytes 6-7: coach position

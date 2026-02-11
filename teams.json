@@ -5,7 +5,6 @@
       "country": "",
       "coach": "BEJKUSH BIRCE",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -147,7 +146,6 @@
       "country": "",
       "coach": "ALFIO BASILE",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -289,7 +287,6 @@
       "country": "",
       "coach": "HERBERT PROHASKA",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -431,7 +428,6 @@
       "country": "",
       "coach": "PAUL VAN HIMST",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 1,
       "flag": 1,
       "kit": {
@@ -573,7 +569,6 @@
       "country": "",
       "coach": "XABIER AZKARGORTA",
       "tactic": "4-5-1",
-      "division": 2,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -715,7 +710,6 @@
       "country": "",
       "coach": "CARLOS ALBERTO",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -857,7 +851,6 @@
       "country": "",
       "coach": "DIMITAR PENEV",
       "tactic": "4-3-3",
-      "division": 5,
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -999,7 +992,6 @@
       "country": "",
       "coach": "LEONARD NSEKE",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -1141,7 +1133,6 @@
       "country": "",
       "coach": "F. MATURANA",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 1,
       "flag": 1,
       "kit": {
@@ -1283,7 +1274,6 @@
       "country": "",
       "coach": "DRAZEN JERKOVIC",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -1425,7 +1415,6 @@
       "country": "",
       "coach": "A. MICHAELIDES",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -1567,7 +1556,6 @@
       "country": "",
       "coach": "VACLAV JEZEK",
       "tactic": "3-5-2",
-      "division": 4,
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -1709,7 +1697,6 @@
       "country": "",
       "coach": "R. MOLLER-NIELSEN",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 1,
       "flag": 1,
       "kit": {
@@ -1851,7 +1838,6 @@
       "country": "",
       "coach": "TERRY VENABLES",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 0,
       "flag": 0,
       "kit": {
@@ -1993,7 +1979,6 @@
       "country": "",
       "coach": "UNO PIR",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -2135,7 +2120,6 @@
       "country": "",
       "coach": "PALL GUDLAUGSSON",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -2277,7 +2261,6 @@
       "country": "",
       "coach": "JUKKA VAKKILA",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -2419,7 +2402,6 @@
       "country": "",
       "coach": "GERARD HOULLIER",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -2560,7 +2542,6 @@
       "country": "",
       "coach": "BERTI VOGTS",
       "tactic": "3-5-2",
-      "division": 4,
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -2702,7 +2683,6 @@
       "country": "",
       "coach": "A. PANAGOULIAS",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -2844,7 +2824,6 @@
       "country": "",
       "coach": "JOHAN CRUYFF",
       "tactic": "3-5-2",
-      "division": 4,
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -2986,7 +2965,6 @@
       "country": "",
       "coach": "EMERICH JENEI",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -3128,7 +3106,6 @@
       "country": "",
       "coach": "ASGEIR ELIASSON",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -3270,7 +3247,6 @@
       "country": "",
       "coach": "SHLOMO SHARF",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -3412,7 +3388,6 @@
       "country": "",
       "coach": "ARRIGO SACCHI",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -3554,7 +3529,6 @@
       "country": "",
       "coach": "JANIS GILIS",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -3695,7 +3669,6 @@
       "country": "",
       "coach": "ALGIS LIUBINSKAS",
       "tactic": "3-5-2",
-      "division": 4,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -3837,7 +3810,6 @@
       "country": "",
       "coach": "PAUL PHILIPP",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -3979,7 +3951,6 @@
       "country": "",
       "coach": "PIPPO PSAILA",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -4121,7 +4092,6 @@
       "country": "",
       "coach": "MEJIA BARON",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -4263,7 +4233,6 @@
       "country": "",
       "coach": "ABDELLAH BLINDA",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -4405,7 +4374,6 @@
       "country": "",
       "coach": "C. WESTERHOF",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -4547,7 +4515,6 @@
       "country": "",
       "coach": "BILLY BINGHAM",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 5,
       "flag": 0,
       "kit": {
@@ -4689,7 +4656,6 @@
       "country": "",
       "coach": "EGIL OLSEN",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -4832,7 +4798,6 @@
       "country": "",
       "coach": "ANDRZEJ STREJLAU",
       "tactic": "3-5-2",
-      "division": 4,
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -4974,7 +4939,6 @@
       "country": "",
       "coach": "CARLOS QUEIROS",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -5116,7 +5080,6 @@
       "country": "",
       "coach": "JACK CHARLTON",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 1,
       "flag": 0,
       "kit": {
@@ -5258,7 +5221,6 @@
       "country": "",
       "coach": "ANGHEL IORDANESCU",
       "tactic": "4-5-1",
-      "division": 2,
       "skill": 1,
       "flag": 1,
       "kit": {
@@ -5400,7 +5362,6 @@
       "country": "",
       "coach": "PAVEL SADYRIN",
       "tactic": "4-3-3",
-      "division": 5,
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -5542,7 +5503,6 @@
       "country": "",
       "coach": "GIORGIO LEONI",
       "tactic": "4-5-1",
-      "division": 2,
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -5684,7 +5644,6 @@
       "country": "",
       "coach": "LEO BEENHAKKER",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -5826,7 +5785,6 @@
       "country": "",
       "coach": "ANDY ROXBURGH",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -5968,7 +5926,6 @@
       "country": "",
       "coach": "BOJAN PRASNIKAR",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -6110,7 +6067,6 @@
       "country": "",
       "coach": "HO KIM",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -6252,7 +6208,6 @@
       "country": "",
       "coach": "JAVIER CLEMENTE",
       "tactic": "5-4-1",
-      "division": 1,
       "skill": 1,
       "flag": 1,
       "kit": {
@@ -6394,7 +6349,6 @@
       "country": "",
       "coach": "TOMMY SVENSSON",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -6536,7 +6490,6 @@
       "country": "",
       "coach": "ROY HODGSON",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -6678,7 +6631,6 @@
       "country": "",
       "coach": "SEPP PIONTEK",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -6820,7 +6772,6 @@
       "country": "",
       "coach": "VIKTOR PROKOPENKO",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -6962,7 +6913,6 @@
       "country": "",
       "coach": "BORA MILUTINOVIC",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -7104,7 +7054,6 @@
       "country": "",
       "coach": "TERRY YORATH",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 4,
       "flag": 0,
       "kit": {
@@ -7248,7 +7197,6 @@
       "country": "ALBANIA",
       "coach": "SULEJMAN STAROVA",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -7390,7 +7338,6 @@
       "country": "AUSTRIA",
       "coach": "HERMANN STESSL",
       "tactic": "3-5-2",
-      "division": 4,
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -7532,7 +7479,6 @@
       "country": "BELGIUM",
       "coach": "JOHAN BOSKAMP",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -7674,7 +7620,6 @@
       "country": "BELGIUM",
       "coach": "ARIE HAAN",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 1,
       "flag": 1,
       "kit": {
@@ -7815,7 +7760,6 @@
       "country": "BELGIUM",
       "coach": "WALTER MEEUWS",
       "tactic": "4-3-3",
-      "division": 5,
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -7957,7 +7901,6 @@
       "country": "BULGARIA",
       "coach": "IVAN VUTSOV",
       "tactic": "4-3-3",
-      "division": 5,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -8099,7 +8042,6 @@
       "country": "BULGARIA",
       "coach": "MIKHAIL VERGEENKO",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -8241,7 +8183,6 @@
       "country": "CROATIA",
       "coach": "MIROSLAV BLAZEVIC",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -8383,7 +8324,6 @@
       "country": "CYPRUS",
       "coach": "IONTSO ARSOV",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -8525,7 +8465,6 @@
       "country": "CZECHOSLOVAKIA",
       "coach": "DUSAN UHRIN",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -8667,7 +8606,6 @@
       "country": "CZECHOSLOVAKIA",
       "coach": "DUSAN GALLIS",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -8809,7 +8747,6 @@
       "country": "DENMARK",
       "coach": "BENNY JOHANSEN",
       "tactic": "3-5-2",
-      "division": 4,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -8951,7 +8888,6 @@
       "country": "ENGLAND",
       "coach": "MIKE WALKER",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 3,
       "flag": 0,
       "kit": {
@@ -9093,7 +9029,6 @@
       "country": "ENGLAND",
       "coach": "ALEX FERGUSON",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 1,
       "flag": 0,
       "kit": {
@@ -9235,7 +9170,6 @@
       "country": "ENGLAND",
       "coach": "GEORGE GRAHAM",
       "tactic": "4-3-3",
-      "division": 5,
       "skill": 2,
       "flag": 0,
       "kit": {
@@ -9377,7 +9311,6 @@
       "country": "ENGLAND",
       "coach": "RON ATKINSON",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 3,
       "flag": 0,
       "kit": {
@@ -9517,7 +9450,6 @@
       "country": "ESTONIA",
       "coach": "VALERI BONDARENKO",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -9659,7 +9591,6 @@
       "country": "FAEROE ISLES",
       "coach": "JAN KACZMNSKI",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -9801,7 +9732,6 @@
       "country": "FINLAND",
       "coach": "JARI P. KEURULAINEN",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -9943,7 +9873,6 @@
       "country": "FRANCE",
       "coach": "RAYMOND GOETHALS",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -10085,7 +10014,6 @@
       "country": "FRANCE",
       "coach": "ARSENE WENGER",
       "tactic": "4-5-1",
-      "division": 2,
       "skill": 1,
       "flag": 1,
       "kit": {
@@ -10227,7 +10155,6 @@
       "country": "FRANCE",
       "coach": "ARTUR JORGE",
       "tactic": "4-5-1",
-      "division": 2,
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -10369,7 +10296,6 @@
       "country": "GERMANY",
       "coach": "ERICH RIBBECK",
       "tactic": "3-5-2",
-      "division": 4,
       "skill": 1,
       "flag": 1,
       "kit": {
@@ -10511,7 +10437,6 @@
       "country": "GERMANY",
       "coach": "OTTMAR HITZFELD",
       "tactic": "3-5-2",
-      "division": 4,
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -10653,7 +10578,6 @@
       "country": "GERMANY",
       "coach": "OTTO REHHAGEL",
       "tactic": "3-5-2",
-      "division": 4,
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -10795,7 +10719,6 @@
       "country": "GREECE",
       "coach": "IVICA OSIM",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -10937,7 +10860,6 @@
       "country": "HOLLAND",
       "coach": "LOUIS VAN GAAL",
       "tactic": "3-5-2",
-      "division": 4,
       "skill": 1,
       "flag": 1,
       "kit": {
@@ -11079,7 +11001,6 @@
       "country": "HOLLAND",
       "coach": "WIM VAN HANEGEM",
       "tactic": "4-3-3",
-      "division": 5,
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -11221,7 +11142,6 @@
       "country": "HOLLAND",
       "coach": "HANS WESTERHOF",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -11363,7 +11283,6 @@
       "country": "HUNGARY",
       "coach": "TIBOR NYILASI",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -11505,7 +11424,6 @@
       "country": "ICELAND",
       "coach": "INGE B. ALBERTSSON",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -11647,7 +11565,6 @@
       "country": "ISRAEL",
       "coach": "AVRAM GRANT",
       "tactic": "4-5-1",
-      "division": 2,
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -11789,7 +11706,6 @@
       "country": "ITALY",
       "coach": "OSVALDO BAGNOLI",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -11931,7 +11847,6 @@
       "country": "ITALY",
       "coach": "FABIO CAPELLO",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -12073,7 +11988,6 @@
       "country": "ITALY",
       "coach": "NEVIO SCALA",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 1,
       "flag": 1,
       "kit": {
@@ -12214,7 +12128,6 @@
       "country": "ITALY",
       "coach": "GIOVANNI TRAPATTONI",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -12356,7 +12269,6 @@
       "country": "ITALY",
       "coach": "DINO ZOFF",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 1,
       "flag": 1,
       "kit": {
@@ -12498,7 +12410,6 @@
       "country": "LATVIA",
       "coach": "ALEXANDER STARKOV",
       "tactic": "4-5-1",
-      "division": 2,
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -12640,7 +12551,6 @@
       "country": "LITHUANIA",
       "coach": "V. JANCIAUSKAS",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -12782,7 +12692,6 @@
       "country": "LUXEMBOURG",
       "coach": "HEINZ MAAS",
       "tactic": "4-3-3",
-      "division": 5,
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -12924,7 +12833,6 @@
       "country": "MALTA",
       "coach": "MARK MILLER",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -13066,7 +12974,6 @@
       "country": "NORTHERN IRELAND",
       "coach": "TREVOR ANDERSON",
       "tactic": "3-5-2",
-      "division": 4,
       "skill": 7,
       "flag": 0,
       "kit": {
@@ -13208,7 +13115,6 @@
       "country": "NORWAY",
       "coach": "NILS ARNE EGGEN",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -13350,7 +13256,6 @@
       "country": "POLAND",
       "coach": "K. ETMANOWICZ",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -13492,7 +13397,6 @@
       "country": "PORTUGAL",
       "coach": "TONI",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -13635,7 +13539,6 @@
       "country": "PORTUGAL",
       "coach": "CARLOS A. SILVA",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -13777,7 +13680,6 @@
       "country": "PORTUGAL",
       "coach": "BOBBY ROBSON",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -13919,7 +13821,6 @@
       "country": "REPUBLIC OF IRELAND",
       "coach": "PAT BYRNE",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 7,
       "flag": 0,
       "kit": {
@@ -14061,7 +13962,6 @@
       "country": "ROMANIA",
       "coach": "ANGHEL IORDANESCU",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -14203,7 +14103,6 @@
       "country": "ROMANIA",
       "coach": "A. MOLDOVAN",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -14345,7 +14244,6 @@
       "country": "RUSSIA",
       "coach": "VALERY GAZAEV",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -14487,7 +14385,6 @@
       "country": "RUSSIA",
       "coach": "OLEG ROMANTSEV",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -14629,7 +14526,6 @@
       "country": "SCOTLAND",
       "coach": "LIAM BRADY",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 4,
       "flag": 0,
       "kit": {
@@ -14771,7 +14667,6 @@
       "country": "SCOTLAND",
       "coach": "WALTER SMITH",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 1,
       "flag": 0,
       "kit": {
@@ -14913,7 +14808,6 @@
       "country": "SCOTLAND",
       "coach": "WILLIE MILLER",
       "tactic": "4-3-3",
-      "division": 5,
       "skill": 3,
       "flag": 0,
       "kit": {
@@ -15055,7 +14949,6 @@
       "country": "SLOVENIA",
       "coach": "BOJAN PRASNIKAR",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -15197,7 +15090,6 @@
       "country": "SPAIN",
       "coach": "JOHAN CRUYFF",
       "tactic": "3-5-2",
-      "division": 4,
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -15339,7 +15231,6 @@
       "country": "SPAIN",
       "coach": "ARSENIO IGLESIAS",
       "tactic": "5-3-2",
-      "division": 3,
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -15481,7 +15372,6 @@
       "country": "SPAIN",
       "coach": "BENITO FLORO",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -15623,7 +15513,6 @@
       "country": "SWEDEN",
       "coach": "SOREN CRATZ",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -15765,7 +15654,6 @@
       "country": "SWITZERLAND",
       "coach": "LLJA PETKOVIC",
       "tactic": "4-3-3",
-      "division": 5,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -15907,7 +15795,6 @@
       "country": "TURKEY",
       "coach": "K.-H. FELDKAMP",
       "tactic": "3-5-2",
-      "division": 4,
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -16049,7 +15936,6 @@
       "country": "UKRAINE",
       "coach": "MIKHAIL FORNENKO",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -16191,7 +16077,6 @@
       "country": "WALES",
       "coach": "EDDIE MAY",
       "tactic": "5-4-1",
-      "division": 1,
       "skill": 7,
       "flag": 0,
       "kit": {
@@ -16334,8 +16219,7 @@
       "team": "SENSIBLE XI",
       "country": "",
       "coach": "SUITLAND",
-      "tactic": "4-4-2",
-      "division": 4,
+      "tactic": "3-5-2",
       "skill": 0,
       "flag": 0,
       "kit": {
@@ -16473,8 +16357,7 @@
       "team": "RENEGADE",
       "country": "EU",
       "coach": "THE PRINCESS",
-      "tactic": "4-4-2",
-      "division": 5,
+      "tactic": "4-3-3",
       "skill": 0,
       "flag": 0,
       "kit": {
@@ -16613,7 +16496,6 @@
       "country": "EU",
       "coach": "ALF",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 0,
       "flag": 0,
       "kit": {
@@ -16751,8 +16633,7 @@
       "team": "DISK ERRORS",
       "country": "",
       "coach": "TRACKDISK.DEVICE",
-      "tactic": "4-4-2",
-      "division": 2,
+      "tactic": "4-5-1",
       "skill": 0,
       "flag": 0,
       "kit": {
@@ -16890,8 +16771,7 @@
       "team": "ENCHANTED XI",
       "country": "EU",
       "coach": "ARCHMAGE",
-      "tactic": "4-4-2",
-      "division": 6,
+      "tactic": "3-3-4",
       "skill": 0,
       "flag": 0,
       "kit": {
@@ -17029,8 +16909,7 @@
       "team": "WEST GERMANY",
       "country": "EU",
       "coach": "HELMUT",
-      "tactic": "4-4-2",
-      "division": 3,
+      "tactic": "5-3-2",
       "skill": 0,
       "flag": 1,
       "kit": {
@@ -17168,8 +17047,7 @@
       "team": "EUROPEAN CITIES",
       "country": "",
       "coach": "BRUSSELS",
-      "tactic": "4-4-2",
-      "division": 7,
+      "tactic": "6-3-1",
       "skill": 0,
       "flag": 0,
       "kit": {
@@ -17307,8 +17185,7 @@
       "team": "ELEMENTS",
       "country": "EU",
       "coach": "MERLIN",
-      "tactic": "4-4-2",
-      "division": 4,
+      "tactic": "3-5-2",
       "skill": 0,
       "flag": 0,
       "kit": {
@@ -17446,8 +17323,7 @@
       "team": "GRASSHOPPER XI",
       "country": "EU",
       "coach": "KEITH",
-      "tactic": "4-4-2",
-      "division": 4,
+      "tactic": "3-5-2",
       "skill": 1,
       "flag": 0,
       "kit": {
@@ -17585,8 +17461,7 @@
       "team": "CHRISTMAS CITY",
       "country": "",
       "coach": "FATHER CHRISTMAS",
-      "tactic": "4-4-2",
-      "division": 3,
+      "tactic": "5-3-2",
       "skill": 1,
       "flag": 0,
       "kit": {
@@ -17725,7 +17600,6 @@
       "country": "EU",
       "coach": "THE OWNERS",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 1,
       "flag": 0,
       "kit": {
@@ -17863,8 +17737,7 @@
       "team": "ZODIAC CITY",
       "country": "EU",
       "coach": "STAR GAZER",
-      "tactic": "4-4-2",
-      "division": 5,
+      "tactic": "4-3-3",
       "skill": 1,
       "flag": 0,
       "kit": {
@@ -18003,7 +17876,6 @@
       "country": "EU",
       "coach": "BUFFET BOY",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 1,
       "flag": 0,
       "kit": {
@@ -18142,7 +18014,6 @@
       "country": "",
       "coach": "WISE OLD OWL",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 1,
       "flag": 0,
       "kit": {
@@ -18281,7 +18152,6 @@
       "country": "EU",
       "coach": "MIKE",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 1,
       "flag": 0,
       "kit": {
@@ -18420,7 +18290,6 @@
       "country": "EU",
       "coach": "STOO",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 1,
       "flag": 0,
       "kit": {
@@ -18558,8 +18427,7 @@
       "team": "PIZZA TOPPINGS",
       "country": "EU",
       "coach": "LUIGI'S PIZZA SHACK",
-      "tactic": "4-4-2",
-      "division": 3,
+      "tactic": "5-3-2",
       "skill": 2,
       "flag": 0,
       "kit": {
@@ -18698,7 +18566,6 @@
       "country": "EU",
       "coach": "MR WONG",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 2,
       "flag": 0,
       "kit": {
@@ -18836,8 +18703,7 @@
       "team": "ZOO ANIMALS",
       "country": "",
       "coach": "THE ZOOKEEPER",
-      "tactic": "4-4-2",
-      "division": 3,
+      "tactic": "5-3-2",
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -18976,7 +18842,6 @@
       "country": "EU",
       "coach": "ONE HUNDRED",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 2,
       "flag": 0,
       "kit": {
@@ -19115,7 +18980,6 @@
       "country": "",
       "coach": "PORKY QUACKS",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 2,
       "flag": 0,
       "kit": {
@@ -19253,8 +19117,7 @@
       "team": "RUBBISH",
       "country": "EU",
       "coach": "HOGWASH HARRY",
-      "tactic": "4-4-2",
-      "division": 2,
+      "tactic": "4-5-1",
       "skill": 2,
       "flag": 0,
       "kit": {
@@ -19392,8 +19255,7 @@
       "team": "G. F. C.",
       "country": "EU",
       "coach": "G",
-      "tactic": "4-4-2",
-      "division": 1,
+      "tactic": "5-4-1",
       "skill": 2,
       "flag": 0,
       "kit": {
@@ -19531,8 +19393,7 @@
       "team": "CRIMES UNITED",
       "country": "EU",
       "coach": "MR COPPER",
-      "tactic": "4-4-2",
-      "division": 5,
+      "tactic": "4-3-3",
       "skill": 2,
       "flag": 1,
       "kit": {
@@ -19671,7 +19532,6 @@
       "country": "",
       "coach": "FARMER GILES",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 3,
       "flag": 0,
       "kit": {
@@ -19809,8 +19669,7 @@
       "team": "COLOUR ALBION",
       "country": "",
       "coach": "PALETTE PREFS",
-      "tactic": "4-4-2",
-      "division": 6,
+      "tactic": "3-3-4",
       "skill": 3,
       "flag": 0,
       "kit": {
@@ -19949,7 +19808,6 @@
       "country": "EU",
       "coach": "BUN BUGGY MAN",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -20088,7 +19946,6 @@
       "country": "EU",
       "coach": "MRS MOP",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 3,
       "flag": 0,
       "kit": {
@@ -20227,7 +20084,6 @@
       "country": "EU",
       "coach": "BARKY BONES",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 3,
       "flag": 0,
       "kit": {
@@ -20365,8 +20221,7 @@
       "team": "FAREWELL UNITED",
       "country": "",
       "coach": "AIRLINE STEWARDESS",
-      "tactic": "4-4-2",
-      "division": 7,
+      "tactic": "6-3-1",
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -20504,8 +20359,7 @@
       "team": "DULL THINGS",
       "country": "EU",
       "coach": "PLAIN JANE",
-      "tactic": "4-4-2",
-      "division": 4,
+      "tactic": "3-5-2",
       "skill": 3,
       "flag": 1,
       "kit": {
@@ -20643,8 +20497,7 @@
       "team": "R. U. A. CODER",
       "country": "EU",
       "coach": "MISTER TWISTER",
-      "tactic": "4-4-2",
-      "division": 6,
+      "tactic": "3-3-4",
       "skill": 3,
       "flag": 0,
       "kit": {
@@ -20782,8 +20635,7 @@
       "team": "IN A PENCIL CASE",
       "country": "EU",
       "coach": "A SCHOOLBOY",
-      "tactic": "4-4-2",
-      "division": 1,
+      "tactic": "5-4-1",
       "skill": 4,
       "flag": 0,
       "kit": {
@@ -20921,8 +20773,7 @@
       "team": "TOOLBOX FC",
       "country": "EU",
       "coach": "TOM THE WORKMAN",
-      "tactic": "4-4-2",
-      "division": 5,
+      "tactic": "4-3-3",
       "skill": 4,
       "flag": 0,
       "kit": {
@@ -21060,8 +20911,7 @@
       "team": "THE JONESES",
       "country": "",
       "coach": "QUENTIN JONES",
-      "tactic": "4-4-2",
-      "division": 5,
+      "tactic": "4-3-3",
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -21199,8 +21049,7 @@
       "team": "BINGO FOREST",
       "country": "",
       "coach": "FULL HOUSE",
-      "tactic": "4-4-2",
-      "division": 6,
+      "tactic": "3-3-4",
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -21338,8 +21187,7 @@
       "team": "FRUIT TOWN",
       "country": "EU",
       "coach": "GRAPEFRUIT",
-      "tactic": "4-4-2",
-      "division": 3,
+      "tactic": "5-3-2",
       "skill": 4,
       "flag": 0,
       "kit": {
@@ -21478,7 +21326,6 @@
       "country": "EU",
       "coach": "MR NASTY",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -21616,8 +21463,7 @@
       "team": "GREAT WARS",
       "country": "EU",
       "coach": "HUMAN STUPIDITY",
-      "tactic": "4-4-2",
-      "division": 1,
+      "tactic": "5-4-1",
       "skill": 4,
       "flag": 0,
       "kit": {
@@ -21755,8 +21601,7 @@
       "team": "AUSTRALIA",
       "country": "",
       "coach": "CHUNDA WAGON",
-      "tactic": "4-4-2",
-      "division": 7,
+      "tactic": "6-3-1",
       "skill": 4,
       "flag": 1,
       "kit": {
@@ -21894,8 +21739,7 @@
       "team": "FISH ATHLETIC",
       "country": "",
       "coach": "KING FISHER",
-      "tactic": "4-4-2",
-      "division": 1,
+      "tactic": "5-4-1",
       "skill": 5,
       "flag": 0,
       "kit": {
@@ -22034,7 +21878,6 @@
       "country": "EU",
       "coach": "WELL I NEVER",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 5,
       "flag": 0,
       "kit": {
@@ -22173,7 +22016,6 @@
       "country": "",
       "coach": "SHERLOCK SPLUTTER",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -22311,8 +22153,7 @@
       "team": "WORLD CURRENCY",
       "country": "EU",
       "coach": "BANK",
-      "tactic": "4-4-2",
-      "division": 4,
+      "tactic": "3-5-2",
       "skill": 5,
       "flag": 0,
       "kit": {
@@ -22450,8 +22291,7 @@
       "team": "ORGANS",
       "country": "",
       "coach": "THE ORGAN GRINDER",
-      "tactic": "4-4-2",
-      "division": 3,
+      "tactic": "5-3-2",
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -22590,7 +22430,6 @@
       "country": "",
       "coach": "THE COUNCIL",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 5,
       "flag": 0,
       "kit": {
@@ -22728,8 +22567,7 @@
       "team": "BAD WORDS UTD",
       "country": "EU",
       "coach": "CARPET SWEEPER",
-      "tactic": "4-4-2",
-      "division": 3,
+      "tactic": "5-3-2",
       "skill": 5,
       "flag": 1,
       "kit": {
@@ -22868,7 +22706,6 @@
       "country": "EU",
       "coach": "MINOTAUR",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 5,
       "flag": 0,
       "kit": {
@@ -23006,8 +22843,7 @@
       "team": "DANCE CRAZE",
       "country": "EU",
       "coach": "NIGEL LAYTON",
-      "tactic": "4-4-2",
-      "division": 6,
+      "tactic": "3-3-4",
       "skill": 6,
       "flag": 0,
       "kit": {
@@ -23146,7 +22982,6 @@
       "country": "",
       "coach": "TOM WATSON",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 6,
       "flag": 0,
       "kit": {
@@ -23284,8 +23119,7 @@
       "team": "A IS FOR ATLAS",
       "country": "EU",
       "coach": "ADABELLE ACRYLIC",
-      "tactic": "4-4-2",
-      "division": 2,
+      "tactic": "4-5-1",
       "skill": 6,
       "flag": 0,
       "kit": {
@@ -23423,8 +23257,7 @@
       "team": "VEGETABLES",
       "country": "EU",
       "coach": "EGG PLANT",
-      "tactic": "4-4-2",
-      "division": 1,
+      "tactic": "5-4-1",
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -23562,8 +23395,7 @@
       "team": "CRISP FLAVOURS",
       "country": "EU",
       "coach": "QUENTIN",
-      "tactic": "4-4-2",
-      "division": 1,
+      "tactic": "5-4-1",
       "skill": 6,
       "flag": 1,
       "kit": {
@@ -23701,8 +23533,7 @@
       "team": "SENSIBLE GAMES",
       "country": "",
       "coach": "SENSIBLE SOCCER II",
-      "tactic": "4-4-2",
-      "division": 1,
+      "tactic": "5-4-1",
       "skill": 6,
       "flag": 0,
       "kit": {
@@ -23840,8 +23671,7 @@
       "team": "YAWN CITY",
       "country": "EU",
       "coach": "RON",
-      "tactic": "4-4-2",
-      "division": 4,
+      "tactic": "3-5-2",
       "skill": 6,
       "flag": 0,
       "kit": {
@@ -23979,8 +23809,7 @@
       "team": "OLD DEAR'S MENU",
       "country": "EU",
       "coach": "THAT NICE MAN",
-      "tactic": "4-4-2",
-      "division": 6,
+      "tactic": "3-3-4",
       "skill": 6,
       "flag": 0,
       "kit": {
@@ -24118,8 +23947,7 @@
       "team": "THE SWEETS",
       "country": "EU",
       "coach": "OLD GOAT FROM NANS",
-      "tactic": "4-4-2",
-      "division": 5,
+      "tactic": "4-3-3",
       "skill": 7,
       "flag": 0,
       "kit": {
@@ -24257,8 +24085,7 @@
       "team": "BAD SPELLINGS",
       "country": "",
       "coach": "EGNLISH DICSHUNARY",
-      "tactic": "4-4-2",
-      "division": 6,
+      "tactic": "3-3-4",
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -24396,8 +24223,7 @@
       "team": "DELICATESSANIAN",
       "country": "",
       "coach": "MRS RUBBER GLOVES",
-      "tactic": "4-4-2",
-      "division": 5,
+      "tactic": "4-3-3",
       "skill": 7,
       "flag": 0,
       "kit": {
@@ -24536,7 +24362,6 @@
       "country": "EU",
       "coach": "PERCY",
       "tactic": "4-4-2",
-      "division": 0,
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -24674,8 +24499,7 @@
       "team": "SPICERACK",
       "country": "EU",
       "coach": "MINCED GARLIC",
-      "tactic": "4-4-2",
-      "division": 3,
+      "tactic": "5-3-2",
       "skill": 7,
       "flag": 0,
       "kit": {
@@ -24813,8 +24637,7 @@
       "team": "NICKNAMES TOWN",
       "country": "EU",
       "coach": "BALDY",
-      "tactic": "4-4-2",
-      "division": 6,
+      "tactic": "3-3-4",
       "skill": 7,
       "flag": 1,
       "kit": {
@@ -24952,8 +24775,7 @@
       "team": "CLOTHES CITY",
       "country": "EU",
       "coach": "ERNIE WARDROBE",
-      "tactic": "4-4-2",
-      "division": 7,
+      "tactic": "6-3-1",
       "skill": 7,
       "flag": 0,
       "kit": {
@@ -25091,8 +24913,7 @@
       "team": "THE BIG BAND",
       "country": "EU",
       "coach": "MR CONDUCTOR",
-      "tactic": "4-4-2",
-      "division": 4,
+      "tactic": "3-5-2",
       "skill": 7,
       "flag": 1,
       "kit": {

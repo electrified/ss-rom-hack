@@ -46,7 +46,7 @@ STYLE_VALUES = {v: k for k, v in STYLE_NAMES.items()}
 HEAD_NAMES = {0: "white_dark", 1: "white_blonde", 2: "black_dark"}
 HEAD_VALUES = {v: k for k, v in HEAD_NAMES.items()}
 
-TACTIC_NAMES = {0: "4-4-2", 1: "5-4-1", 2: "4-5-1", 3: "5-3-2", 4: "3-5-2", 5: "4-3-3"}
+TACTIC_NAMES = {0: "4-4-2", 1: "5-4-1", 2: "4-5-1", 3: "5-3-2", 4: "3-5-2", 5: "4-3-3", 6: "3-3-4", 7: "6-3-1"}
 TACTIC_VALUES = {v: k for k, v in TACTIC_NAMES.items()}
 
 ROLE_NAMES = {0: "GK", 1: "DEF", 2: "MID", 3: "FWD"}
@@ -181,16 +181,18 @@ def decode_kit_attrs(rom, block_offset):
 def decode_team_attrs(rom, block_offset):
     """Decode team-level attributes from bytes 18-21 of the attribute block.
 
-    Byte 18: tactic (formation preset, 0-5)
-    Byte 19: division (competitive tier, 0-7)
+    Byte 18: tactic (initial/default formation, 0-5)
+    Byte 19: tactic (gameplay-active formation, 0-7) — this is the one the
+             game engine actually uses. For national/club teams it equals
+             byte 18; custom teams have byte 18=0 but byte 19 varies.
     Byte 20: unused (always 0)
-    Byte 21: bits 3-5 = skill tier (0=best, 7=weakest), bit 0 = flag
+    Byte 21: bits 3-5 = skill tier (0=best, 7=weakest),
+             bit 0 = flag (unused by game engine)
     """
     b = block_offset
-    tactic_val = rom[b + 18]
+    tactic_val = rom[b + 19]  # gameplay-active formation byte
     return {
         'tactic': TACTIC_NAMES.get(tactic_val, str(tactic_val)),
-        'division': rom[b + 19],
         'skill': (rom[b + 21] >> 3) & 0x07,
         'flag': rom[b + 21] & 0x01,
     }
@@ -409,7 +411,6 @@ def main():
                     'country': t['country'],
                     'coach': t['coach'],
                     'tactic': ta['tactic'],
-                    'division': ta['division'],
                     'skill': ta['skill'],
                     'flag': ta['flag'],
                     'kit': t['kit'],
