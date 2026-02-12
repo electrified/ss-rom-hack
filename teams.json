@@ -70,7 +70,7 @@
         {
           "name": "RUDI VATA",
           "number": 5,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -84,14 +84,14 @@
         {
           "name": "INDRIT FORTUZI",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "ARBEN MILORI",
           "number": 6,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -219,7 +219,7 @@
         {
           "name": "LEO RODRIGUEZ",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -240,7 +240,7 @@
         {
           "name": "FERNANDO REDONDO",
           "number": 5,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -255,7 +255,7 @@
         {
           "name": "DIEGO MARADONA",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -359,14 +359,14 @@
         {
           "name": "PETER ARTNER",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "W. FEIERSINGER",
           "number": 6,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -388,7 +388,7 @@
         {
           "name": "ANDREAS HERZOG",
           "number": 10,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -501,7 +501,7 @@
         {
           "name": "LORENZO STAELENS",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -515,7 +515,7 @@
         {
           "name": "FRANKY VAN DER ELST",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -529,7 +529,7 @@
         {
           "name": "ENZO SCIFO",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -642,7 +642,7 @@
         {
           "name": "JOSE MILTON MELGAR",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -656,7 +656,7 @@
         {
           "name": "CARLOS BORJA",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -685,7 +685,7 @@
         {
           "name": "MARCO ETCHEVERRY",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -790,7 +790,7 @@
         {
           "name": "MAURO SILVA",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -804,7 +804,7 @@
         {
           "name": "DUNGA",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -818,7 +818,7 @@
         {
           "name": "RAI",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -923,7 +923,7 @@
         {
           "name": "YORDAN LECHKOV",
           "number": 11,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -938,7 +938,7 @@
         {
           "name": "ZLATKO YANKOV",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -974,7 +974,7 @@
         {
           "name": "HRISTO STOICHKOV",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_dark",
           "star": true
@@ -1065,7 +1065,7 @@
         {
           "name": "EMILE MBOUH",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -1079,14 +1079,14 @@
         {
           "name": "JACOB EWANE",
           "number": 10,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "GUY NOEL TAPOKO",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -1205,7 +1205,7 @@
         {
           "name": "FREDDY RINCON",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark",
           "star": true
@@ -1220,7 +1220,7 @@
         {
           "name": "LEONEL ALVAREZ",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -1234,7 +1234,7 @@
         {
           "name": "CARLOS VALDERRAMA",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -1368,7 +1368,7 @@
         {
           "name": "ROBERT PROSINECKI",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -1376,14 +1376,14 @@
         {
           "name": "GORAN VUCEVIC",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "ZVONIMIR BOBAN",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -1488,14 +1488,14 @@
         {
           "name": "Y. YIANGOUDAKIS",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "MARIOS CHARALAMBOUS",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -1523,7 +1523,7 @@
         {
           "name": "NIKOS PAPAVASSILIOU",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -1621,7 +1621,7 @@
         {
           "name": "PAVEL HAPAL",
           "number": 2,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -1656,7 +1656,7 @@
         {
           "name": "LJUBOMIR MORAVCIK",
           "number": 11,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -1664,7 +1664,7 @@
         {
           "name": "LUBOS KUBIK",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -1756,7 +1756,7 @@
         {
           "name": "MARC RIEPER",
           "number": 3,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -1777,7 +1777,7 @@
         {
           "name": "KIM VILFORT",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -1791,7 +1791,7 @@
         {
           "name": "JOHN JENSEN",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -1910,7 +1910,7 @@
         {
           "name": "PAUL INCE",
           "number": 4,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark",
           "star": true
@@ -1925,14 +1925,14 @@
         {
           "name": "CARLTON PALMER",
           "number": 11,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "DAVID PLATT",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -2052,7 +2052,7 @@
         {
           "name": "INDRO OLUMETS",
           "number": 10,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -2060,7 +2060,7 @@
         {
           "name": "RISTO KALLASTE",
           "number": 2,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -2074,7 +2074,7 @@
         {
           "name": "TARMO LINNUMAE",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -2201,7 +2201,7 @@
         {
           "name": "TORKIL NIELSEN",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -2209,7 +2209,7 @@
         {
           "name": "JAN DAM",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -2230,7 +2230,7 @@
         {
           "name": "TOTI JONSSON",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -2334,7 +2334,7 @@
         {
           "name": "JARI RINNE",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -2355,14 +2355,14 @@
         {
           "name": "PETRI JARVINEN",
           "number": 10,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "JARI LITMANEN",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -2454,7 +2454,7 @@
         {
           "name": "ALAIN ROCHE",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -2496,14 +2496,14 @@
         {
           "name": "DIDIER DESCHAMPS",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "PAUL LE GUEN",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -2608,7 +2608,7 @@
         {
           "name": "STEFAN EFFENBERG",
           "number": 2,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -2636,7 +2636,7 @@
         {
           "name": "THOMAS HASSLER",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -2650,7 +2650,7 @@
         {
           "name": "ANDREAS MOLLER",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -2756,7 +2756,7 @@
         {
           "name": "TASSOS MITROPOULOS",
           "number": 10,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -2777,7 +2777,7 @@
         {
           "name": "P. TSALOUHIDIS",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -2785,7 +2785,7 @@
         {
           "name": "NIKOS NIOBLIAS",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -2890,7 +2890,7 @@
         {
           "name": "MARC OVERMARS",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -2904,7 +2904,7 @@
         {
           "name": "JAN WOUTERS",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -2926,7 +2926,7 @@
         {
           "name": "WIM JONK",
           "number": 3,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -3023,7 +3023,7 @@
         {
           "name": "EMIL LORINCZ",
           "number": 5,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -3044,7 +3044,7 @@
         {
           "name": "PETER LIPCSEI",
           "number": 9,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -3066,7 +3066,7 @@
         {
           "name": "LAJOS DETARI",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -3193,7 +3193,7 @@
         {
           "name": "ARNAR GRETARSSON",
           "number": 9,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -3207,14 +3207,14 @@
         {
           "name": "ANDRI MARTEINSSON",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "SIGURDUR GRETARSSON",
           "number": 11,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -3321,14 +3321,14 @@
         {
           "name": "TAL BANIN",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "AVI NIMNI",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -3342,7 +3342,7 @@
         {
           "name": "NIR KUNBER",
           "number": 4,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -3469,7 +3469,7 @@
         {
           "name": "STEFANO ERANIO",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -3483,14 +3483,14 @@
         {
           "name": "DEMETRIO ALBERTINI",
           "number": 4,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "DINO BAGGIO",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -3616,14 +3616,14 @@
         {
           "name": "JURIJS POPKOVS",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "GINTS GILIS",
           "number": 3,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -3644,7 +3644,7 @@
         {
           "name": "ROLANDS BULDERS",
           "number": 4,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "forward",
           "head": "white_dark",
           "star": true
@@ -3749,7 +3749,7 @@
         {
           "name": "RAIMUNDAS VAINORA",
           "number": 4,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -3763,7 +3763,7 @@
         {
           "name": "S. DANISEVICIUS",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -3777,7 +3777,7 @@
         {
           "name": "ARMINAS NARBEKOVAS",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -3897,7 +3897,7 @@
         {
           "name": "GUY HELLERS",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -3905,14 +3905,14 @@
         {
           "name": "CARLO WEIS",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "JOEL GROFF",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -4037,14 +4037,14 @@
         {
           "name": "RAYMOND VELLA",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "NICKY SALIBA",
           "number": 3,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -4059,7 +4059,7 @@
         {
           "name": "MARTIN GREGORY",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -4165,7 +4165,7 @@
         {
           "name": "ALBERTO GARCIA ASPE",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -4179,7 +4179,7 @@
         {
           "name": "IGNACIO AMBRIZ",
           "number": 4,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -4187,7 +4187,7 @@
         {
           "name": "CARLOS TURRUBIATES",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -4306,7 +4306,7 @@
         {
           "name": "ABDELHAMID BOUYBOUD",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -4321,7 +4321,7 @@
         {
           "name": "NACER ABDELLAH",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -4335,7 +4335,7 @@
         {
           "name": "M. EL HADDAOUI",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -4447,7 +4447,7 @@
         {
           "name": "GEORGE FINIDI",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark",
           "star": true
@@ -4462,14 +4462,14 @@
         {
           "name": "EMANUEL AMUNIKE",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "THOMSON OLIHA",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -4574,7 +4574,7 @@
         {
           "name": "MAL DONAGHY",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -4595,7 +4595,7 @@
         {
           "name": "ROBBIE DENNISON",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -4609,7 +4609,7 @@
         {
           "name": "KINGSLEY BLACK",
           "number": 11,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -4744,14 +4744,14 @@
         {
           "name": "ERIK MYKLAND",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "KJETIL REKDAL",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -4766,7 +4766,7 @@
         {
           "name": "JAHN-IVAR JAKOBSEN",
           "number": 2,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -4863,7 +4863,7 @@
         {
           "name": "ROBERT WARZYCHA",
           "number": 2,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -4877,14 +4877,14 @@
         {
           "name": "JANUSZ GORA",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "RYSZARD TARASIEWICZ",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -5012,21 +5012,21 @@
         {
           "name": "OCEANO",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "PEIXE",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "FIGO",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -5153,7 +5153,7 @@
         {
           "name": "RAY HOUGHTON",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -5167,7 +5167,7 @@
         {
           "name": "ROY KEANE",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -5175,7 +5175,7 @@
         {
           "name": "ANDY TOWNSEND",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -5301,7 +5301,7 @@
         {
           "name": "IOAN OVIDIU SABAU",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -5315,14 +5315,14 @@
         {
           "name": "IONUT LUPESCU",
           "number": 5,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "ILIE DUMITRESCU",
           "number": 11,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -5435,7 +5435,7 @@
         {
           "name": "ANDREY KANCHELSKIS",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -5457,7 +5457,7 @@
         {
           "name": "IGOR DOBROVOLSKY",
           "number": 10,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -5486,7 +5486,7 @@
         {
           "name": "IGOR KOLYVANOV",
           "number": 11,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_dark"
         },
@@ -5576,7 +5576,7 @@
         {
           "name": "MASSIMO BONINI",
           "number": 10,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -5584,7 +5584,7 @@
         {
           "name": "LORIS ZANOTTI",
           "number": 4,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -5598,7 +5598,7 @@
         {
           "name": "PIER A. MANZAROLI",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -5718,7 +5718,7 @@
         {
           "name": "FUAD AMIN",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -5732,7 +5732,7 @@
         {
           "name": "MANSOUR AL MUAINEA",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -5746,7 +5746,7 @@
         {
           "name": "KHALID AL MUWALLID",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -5864,7 +5864,7 @@
         {
           "name": "STUART MCCALL",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -5886,7 +5886,7 @@
         {
           "name": "PAUL MCSTAY",
           "number": 4,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -5894,7 +5894,7 @@
         {
           "name": "BRIAN MCCLAIR",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -5998,7 +5998,7 @@
         {
           "name": "SRECKO KATANEC",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -6020,7 +6020,7 @@
         {
           "name": "DZONI NOVAK",
           "number": 10,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -6035,7 +6035,7 @@
         {
           "name": "ALES CEH",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -6140,7 +6140,7 @@
         {
           "name": "NOH JUNG-YOON",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -6154,14 +6154,14 @@
         {
           "name": "HA SEOKJU",
           "number": 4,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "GU SANG-BUM",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -6268,7 +6268,7 @@
         {
           "name": "RAFAEL ALCORTA",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -6289,7 +6289,7 @@
         {
           "name": "JON A. GOICOECHEA",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -6311,7 +6311,7 @@
         {
           "name": "JOSE MARIA BAKERO",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -6421,7 +6421,7 @@
         {
           "name": "KLAS INGESSON",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -6435,14 +6435,14 @@
         {
           "name": "STEFAN SCHWARZ",
           "number": 6,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "JONAS THERN",
           "number": 9,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -6570,7 +6570,7 @@
         {
           "name": "CHRISTOPHE OHREL",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -6584,7 +6584,7 @@
         {
           "name": "GEORGES BREGY",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -6598,7 +6598,7 @@
         {
           "name": "CIRIACO SFORZA",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -6705,21 +6705,21 @@
         {
           "name": "RIZA CALIMBAY",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "TUGAY KERIMOGLU",
           "number": 10,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "OGUZ CETIN",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -6866,7 +6866,7 @@
         {
           "name": "A. MIKHAILICHENKO",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -6874,14 +6874,14 @@
         {
           "name": "GENNADY LITOVCHENKO",
           "number": 4,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "PAVEL SHKAPENKO",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -6972,7 +6972,7 @@
         {
           "name": "ALEXI LALAS",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -6993,7 +6993,7 @@
         {
           "name": "COBI JONES",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -7008,7 +7008,7 @@
         {
           "name": "TAB RAMOS",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -7106,7 +7106,7 @@
         {
           "name": "ERIC YOUNG",
           "number": 5,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "black_dark"
         },
@@ -7162,7 +7162,7 @@
         {
           "name": "MARK HUGHES",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -7170,7 +7170,7 @@
         {
           "name": "RYAN GIGGS",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "forward",
           "head": "white_dark"
         },
@@ -7277,7 +7277,7 @@
         {
           "name": "ILIR XHENGO",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -7291,14 +7291,14 @@
         {
           "name": "ALFONS MUCA",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "ARTAN BANO",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -7411,7 +7411,7 @@
         {
           "name": "CHRISTIAN PROSENIK",
           "number": 9,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -7432,7 +7432,7 @@
         {
           "name": "THOMAS FLOGEL",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -7440,7 +7440,7 @@
         {
           "name": "PETER STOGER",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -7558,7 +7558,7 @@
         {
           "name": "DANNY BOFFIN",
           "number": 11,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -7579,14 +7579,14 @@
         {
           "name": "JOHAN WALEM",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "MARC DEGRYSE",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -7693,7 +7693,7 @@
         {
           "name": "GUY HELLERS",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -7707,7 +7707,7 @@
         {
           "name": "THIERRY PISTER",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -7721,7 +7721,7 @@
         {
           "name": "FRANS VAN RODY",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -7833,7 +7833,7 @@
         {
           "name": "RONNY VAN RETHY",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -7854,7 +7854,7 @@
         {
           "name": "DRAGAN JAKOVLJEVIC",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -7868,7 +7868,7 @@
         {
           "name": "H.-P. LEHNHOFF",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_dark",
           "star": true
@@ -7981,7 +7981,7 @@
         {
           "name": "DANIEL BORIMIROV",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -7995,7 +7995,7 @@
         {
           "name": "NASKO SIRAKOV",
           "number": 10,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -8010,7 +8010,7 @@
         {
           "name": "PLAMEN GETOV",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_blonde",
           "star": true
@@ -8115,7 +8115,7 @@
         {
           "name": "VALENTIN BELKEVICH",
           "number": 4,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -8144,7 +8144,7 @@
         {
           "name": "SERGEI GERASIMETS",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -8152,7 +8152,7 @@
         {
           "name": "RADISLAV ORLOVSKY",
           "number": 9,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -8255,7 +8255,7 @@
         {
           "name": "JOSIP GASPAR",
           "number": 5,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -8270,14 +8270,14 @@
         {
           "name": "ZELJKO SOIC",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "VJEKOSLAV SKRINJAR",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -8389,7 +8389,7 @@
         {
           "name": "COSTAS PETSAS",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -8403,7 +8403,7 @@
         {
           "name": "GEORGE SAVVIDIS",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -8426,7 +8426,7 @@
         {
           "name": "COSTAS MALEKKOS",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -8538,7 +8538,7 @@
         {
           "name": "LUMIR MISTR",
           "number": 3,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -8553,14 +8553,14 @@
         {
           "name": "MICHAL BILEK",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "MARTIN FRYDEK",
           "number": 11,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -8685,7 +8685,7 @@
         {
           "name": "ONDREJ KRISTOFIK",
           "number": 4,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -8707,7 +8707,7 @@
         {
           "name": "LADISLAV PECKO",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -8715,7 +8715,7 @@
         {
           "name": "PETER DUBOVSKY",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -8813,7 +8813,7 @@
         {
           "name": "LARS HOJER NIELSEN",
           "number": 5,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -8834,14 +8834,14 @@
         {
           "name": "MICHAEL GIOLBLAS",
           "number": 9,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "JORGEN JUUL JENSEN",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -8933,7 +8933,7 @@
         {
           "name": "IAN BUTTERWORTH",
           "number": 5,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -8975,7 +8975,7 @@
         {
           "name": "IAN CROOK",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -8996,7 +8996,7 @@
         {
           "name": "RUEL FOX",
           "number": 10,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark",
           "star": true
@@ -9101,7 +9101,7 @@
         {
           "name": "RYAN GIGGS",
           "number": 11,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -9116,7 +9116,7 @@
         {
           "name": "PAUL INCE",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -9137,7 +9137,7 @@
         {
           "name": "BRIAN MCCLAIR",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -9250,7 +9250,7 @@
         {
           "name": "PAUL DAVIS",
           "number": 4,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -9264,7 +9264,7 @@
         {
           "name": "JOHN JENSEN",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -9278,7 +9278,7 @@
         {
           "name": "PAUL MERSON",
           "number": 11,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_blonde",
           "star": true
@@ -9384,7 +9384,7 @@
         {
           "name": "RAY HOUGHTON",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -9398,7 +9398,7 @@
         {
           "name": "KEVIN RICHARDSON",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -9412,7 +9412,7 @@
         {
           "name": "GARY PARKER",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -9523,7 +9523,7 @@
         {
           "name": "SERGEI BRAGIN",
           "number": 3,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -9538,14 +9538,14 @@
         {
           "name": "YURI VOLKOV",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "ANDREI BELOKHVOSTOV",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -9657,7 +9657,7 @@
         {
           "name": "JAKUP ELI OLSEN",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -9671,7 +9671,7 @@
         {
           "name": "OSSUR HANSEN",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -9686,7 +9686,7 @@
         {
           "name": "JOGVAN MARTIN OLSEN",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -9811,7 +9811,7 @@
         {
           "name": "PETRI TIAINEN",
           "number": 4,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -9826,7 +9826,7 @@
         {
           "name": "RAMI RANTANEN",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -9840,7 +9840,7 @@
         {
           "name": "PEKKA ONTTONEN",
           "number": 6,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -9939,7 +9939,7 @@
         {
           "name": "J.-J. EYDELIE",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -9953,7 +9953,7 @@
         {
           "name": "FRANCK SAUZEE",
           "number": 5,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -9975,7 +9975,7 @@
         {
           "name": "DIDIER DESCHAMPS",
           "number": 11,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -10086,7 +10086,7 @@
         {
           "name": "JEROME GNAKO",
           "number": 9,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -10101,14 +10101,14 @@
         {
           "name": "CLAUDE PUEL",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "RUI BARROS",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -10228,7 +10228,7 @@
         {
           "name": "LAURENT FOURNIER",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -10250,14 +10250,14 @@
         {
           "name": "PAUL LE GUEN",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "VINCENT GUERIN",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -10362,7 +10362,7 @@
         {
           "name": "JORGINHO",
           "number": 2,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -10398,7 +10398,7 @@
         {
           "name": "LOTHAR MATTHAUS",
           "number": 10,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -10406,7 +10406,7 @@
         {
           "name": "MEHMET SCHOLL",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -10503,7 +10503,7 @@
         {
           "name": "STEFAN REUTER",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -10524,7 +10524,7 @@
         {
           "name": "MICHAEL ZORC",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -10538,7 +10538,7 @@
         {
           "name": "MICHAEL RUMMENIGGE",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -10644,7 +10644,7 @@
         {
           "name": "THOMAS WOLTER",
           "number": 2,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -10672,14 +10672,14 @@
         {
           "name": "DIETER EILTS",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "ANDREAS HERZOG",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -10791,7 +10791,7 @@
         {
           "name": "MARINAS OUZOUNIDIS",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -10812,14 +10812,14 @@
         {
           "name": "YORGAS KAPOURANIS",
           "number": 4,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "KOSTAS FRANTZESKOS",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -10925,7 +10925,7 @@
         {
           "name": "MARC OVERMARS",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -10947,7 +10947,7 @@
         {
           "name": "JOHN VAN DEN BROM",
           "number": 4,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -10955,7 +10955,7 @@
         {
           "name": "MICHEL KREEK",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -11081,7 +11081,7 @@
         {
           "name": "HENK FRASER",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -11096,7 +11096,7 @@
         {
           "name": "PETER BOSZ",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -11110,7 +11110,7 @@
         {
           "name": "GASTON TAUMENT",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "black_dark",
           "star": true
@@ -11215,7 +11215,7 @@
         {
           "name": "JUUL ELLERMAN",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -11229,7 +11229,7 @@
         {
           "name": "ERWIN KOEMAN",
           "number": 4,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -11243,7 +11243,7 @@
         {
           "name": "GERALD VANENBURG",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -11356,7 +11356,7 @@
         {
           "name": "ZSOLT PALING",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -11377,7 +11377,7 @@
         {
           "name": "PETER LIPCSEI",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -11385,7 +11385,7 @@
         {
           "name": "IMRE FODOR",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -11504,14 +11504,14 @@
         {
           "name": "G. EINARSSON",
           "number": 11,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "SALIH PORCA",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -11526,7 +11526,7 @@
         {
           "name": "ARNALDUR LOFTSSON",
           "number": 4,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -11639,7 +11639,7 @@
         {
           "name": "NIR KLINGER",
           "number": 9,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -11653,14 +11653,14 @@
         {
           "name": "AVI NIMNI",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "ITZAK ZOHAR",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -11779,7 +11779,7 @@
         {
           "name": "ANTONIO MANICONE",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -11800,7 +11800,7 @@
         {
           "name": "WIM JONK",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -11814,7 +11814,7 @@
         {
           "name": "DENNIS BERGKAMP",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -11920,7 +11920,7 @@
         {
           "name": "ROBERTO DONADONI",
           "number": 10,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -11935,7 +11935,7 @@
         {
           "name": "DEMETRIO ALBERTINI",
           "number": 4,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -11949,7 +11949,7 @@
         {
           "name": "FRANK RIJKAARD",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -12061,14 +12061,14 @@
         {
           "name": "GEORGES GRUN",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
         {
           "name": "DANIELE ZORATTO",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -12096,7 +12096,7 @@
         {
           "name": "MARCO OSIO",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -12201,7 +12201,7 @@
         {
           "name": "DINO BAGGIO",
           "number": 4,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -12222,14 +12222,14 @@
         {
           "name": "ANTONIO CONTE",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "ANDREAS MOLLER",
           "number": 11,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -12341,7 +12341,7 @@
         {
           "name": "DIEGO FUSER",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -12355,7 +12355,7 @@
         {
           "name": "ROBERTO BACCI",
           "number": 4,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -12383,7 +12383,7 @@
         {
           "name": "PAUL GASCOIGNE",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -12483,7 +12483,7 @@
         {
           "name": "ALEXEI SEMYONOV",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -12498,14 +12498,14 @@
         {
           "name": "ALEXANDER STRADIN",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "ALEXANDER DIBRIVNY",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -12624,7 +12624,7 @@
         {
           "name": "V. BALTUSNIKAS",
           "number": 4,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -12639,14 +12639,14 @@
         {
           "name": "ANDREIUS TERESKINAS",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "AIDAS PRIEKSAITIS",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -12773,7 +12773,7 @@
         {
           "name": "CHRISTIAN JOACHIM",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -12787,7 +12787,7 @@
         {
           "name": "DAVID BORTBICONI",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -12808,7 +12808,7 @@
         {
           "name": "DENIS MOGENOT",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_dark"
         },
@@ -12915,7 +12915,7 @@
         {
           "name": "ALBERT BUSUTTIL",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -12929,14 +12929,14 @@
         {
           "name": "JESMOND DELIA",
           "number": 4,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "DENNIS CAUCHI",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -13040,7 +13040,7 @@
         {
           "name": "LEE DOHERTY",
           "number": 4,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -13061,14 +13061,14 @@
         {
           "name": "PHILIP KNELL",
           "number": 10,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "NOEL BAILIE",
           "number": 11,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -13187,7 +13187,7 @@
         {
           "name": "KENT BERGERSEN",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -13216,14 +13216,14 @@
         {
           "name": "BENT SKAMMELSRUD",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "KARL PETTER LOKEN",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -13328,7 +13328,7 @@
         {
           "name": "JACEK BAK",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -13342,7 +13342,7 @@
         {
           "name": "LESZEK PISZ",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -13350,7 +13350,7 @@
         {
           "name": "JACEK KACPRZAK",
           "number": 11,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -13470,7 +13470,7 @@
         {
           "name": "VITOR PANEIRA",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -13492,7 +13492,7 @@
         {
           "name": "PAULO SOUSA",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -13506,7 +13506,7 @@
         {
           "name": "JOAO PINTO",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -13620,7 +13620,7 @@
         {
           "name": "RUI FILIPE",
           "number": 11,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -13641,14 +13641,14 @@
         {
           "name": "JAIME MAGALHAES",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "ION TIMOFTE",
           "number": 6,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -13752,14 +13752,14 @@
         {
           "name": "BARNY",
           "number": 4,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
         {
           "name": "SERGEI SCHERBAKOV",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -13781,7 +13781,7 @@
         {
           "name": "FIGO",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -13901,7 +13901,7 @@
         {
           "name": "GARY HOWLETT",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -13915,14 +13915,14 @@
         {
           "name": "GREG COSTELLO",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "GARY HAYLOCK",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -14041,7 +14041,7 @@
         {
           "name": "CONSTANTIN GILCA",
           "number": 5,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -14063,14 +14063,14 @@
         {
           "name": "NICA B. PANDURU",
           "number": 10,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "ILIE STAN",
           "number": 11,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -14175,7 +14175,7 @@
         {
           "name": "ZOLTAN KADAR",
           "number": 10,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -14190,7 +14190,7 @@
         {
           "name": "DANIEL TIMOFTE",
           "number": 5,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -14211,7 +14211,7 @@
         {
           "name": "GABOR GERSTENMAJER",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -14316,7 +14316,7 @@
         {
           "name": "YURY KALITVINTSEV",
           "number": 5,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -14337,14 +14337,14 @@
         {
           "name": "SERGEI DERKACH",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "OMARI TETRADZE",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -14458,7 +14458,7 @@
         {
           "name": "VALERY KARPIN",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -14472,14 +14472,14 @@
         {
           "name": "ANDREY PYATNITSKY",
           "number": 9,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "IGOR LEDYAKHOV",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -14605,7 +14605,7 @@
         {
           "name": "STUART SLATER",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -14620,7 +14620,7 @@
         {
           "name": "BRIAN O'NEIL",
           "number": 4,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -14634,7 +14634,7 @@
         {
           "name": "PAUL MCSTAY",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -14733,14 +14733,14 @@
         {
           "name": "JOHN BROWN",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_blonde"
         },
         {
           "name": "TREVOR STEVEN",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -14762,7 +14762,7 @@
         {
           "name": "IAN FERGUSON",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -14889,7 +14889,7 @@
         {
           "name": "BRIAN GRANT",
           "number": 4,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -14903,7 +14903,7 @@
         {
           "name": "JIM BETT",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -14924,7 +14924,7 @@
         {
           "name": "EOIN JESS",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_dark",
           "star": true
@@ -15015,7 +15015,7 @@
         {
           "name": "DAMIR VRABAC",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -15036,7 +15036,7 @@
         {
           "name": "ANDREJ ZELKO",
           "number": 10,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -15050,7 +15050,7 @@
         {
           "name": "IGOR BENEDEJCIC",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -15156,7 +15156,7 @@
         {
           "name": "JON A. GOIKOETXEA",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -15192,14 +15192,14 @@
         {
           "name": "GUILLERMO AMOR",
           "number": 10,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "JOSE MARIA BAKERO",
           "number": 6,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -15310,14 +15310,14 @@
         {
           "name": "ALBERTO ALBISTEGUI",
           "number": 2,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
         {
           "name": "ADOLFO ALDANA",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -15339,7 +15339,7 @@
         {
           "name": "MAURO SILVA",
           "number": 6,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark",
           "star": true
@@ -15444,7 +15444,7 @@
         {
           "name": "MICHEL",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -15465,7 +15465,7 @@
         {
           "name": "FERNANDO HIERRO",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark",
           "star": true
@@ -15473,7 +15473,7 @@
         {
           "name": "ROBERT PROSINECKI",
           "number": 10,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde",
           "star": true
@@ -15586,7 +15586,7 @@
         {
           "name": "JONNY RODLUND",
           "number": 10,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -15601,7 +15601,7 @@
         {
           "name": "PER BLOHM",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -15615,7 +15615,7 @@
         {
           "name": "YEVGENI KUZNETSOV",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -15728,7 +15728,7 @@
         {
           "name": "JEAN-MICHEL AEBY",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -15742,7 +15742,7 @@
         {
           "name": "RENATO",
           "number": 10,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -15756,7 +15756,7 @@
         {
           "name": "JOSE SINVAL",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_dark"
         },
@@ -15868,7 +15868,7 @@
         {
           "name": "OKAN BURUK",
           "number": 10,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -15890,14 +15890,14 @@
         {
           "name": "UGUR TUTUNEKER",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "MUHAMMET ALTINTAS",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -16017,7 +16017,7 @@
         {
           "name": "IGOR PANKRATYEV",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -16031,14 +16031,14 @@
         {
           "name": "SERGEI KOVALETS",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "SERGEI ZAETS",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -16143,7 +16143,7 @@
         {
           "name": "JASON PERRY",
           "number": 5,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -16157,7 +16157,7 @@
         {
           "name": "BARRY RICHARDSON",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -16171,7 +16171,7 @@
         {
           "name": "PAUL RAMSEY",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -16292,14 +16292,14 @@
         {
           "name": "UBIK",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "MIKE HAMMOND",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -16313,7 +16313,7 @@
         {
           "name": "JOPS",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -16430,14 +16430,14 @@
         {
           "name": "ERIC MATTHEWS",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "GRAEME BOXALL",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -16479,7 +16479,7 @@
         {
           "name": "STEVE STAM",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_dark"
         },
@@ -16568,14 +16568,14 @@
         {
           "name": "BOBBY",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "ALAN",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -16589,7 +16589,7 @@
         {
           "name": "BOBBY",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -16706,7 +16706,7 @@
         {
           "name": "INVALID OBJECT LOCK",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -16720,14 +16720,14 @@
         {
           "name": "OBJECT IN USE",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "DIRECTORY NOT FOUND",
           "number": 9,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -16851,14 +16851,14 @@
         {
           "name": "NYMPH",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "FAERIE",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -16900,7 +16900,7 @@
         {
           "name": "BROWNIE",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "forward",
           "head": "black_dark"
         }
@@ -16961,7 +16961,7 @@
         {
           "name": "FRANZ",
           "number": 4,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -16996,14 +16996,14 @@
         {
           "name": "HELMUT",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "UWE",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -17106,7 +17106,7 @@
         {
           "name": "WARSAW",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_blonde"
         },
@@ -17120,7 +17120,7 @@
         {
           "name": "BERLIN",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -17134,7 +17134,7 @@
         {
           "name": "AMSTERDAM",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -17258,21 +17258,21 @@
         {
           "name": "IRON",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "BORON",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "SILICON",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -17396,21 +17396,21 @@
         {
           "name": "IAN",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "DEREK",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "JACK",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -17513,7 +17513,7 @@
         {
           "name": "VIXEN",
           "number": 4,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_blonde"
         },
@@ -17541,7 +17541,7 @@
         {
           "name": "DONDER",
           "number": 11,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -17555,7 +17555,7 @@
         {
           "name": "FROSTY",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -17672,21 +17672,21 @@
         {
           "name": "PICKLED ONION",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "PICKLED EGG",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "QUARTER OF CHICKEN",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -17810,14 +17810,14 @@
         {
           "name": "VIRGO",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "LIBRA",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -17866,7 +17866,7 @@
         {
           "name": "PISCES",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_blonde"
         }
@@ -17948,21 +17948,21 @@
         {
           "name": "CRISP",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "TWIGLET",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "COCKTAIL SAUSAGE",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -18086,21 +18086,21 @@
         {
           "name": "ROBIN",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "CHAFFINCH",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "SPARROW",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -18224,7 +18224,7 @@
         {
           "name": "JEREMY",
           "number": 6,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -18238,14 +18238,14 @@
         {
           "name": "RUEL",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "JOPS",
           "number": 9,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -18362,21 +18362,21 @@
         {
           "name": "BRAND NEW TRAINERS",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "BLAKEYS",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "NYLON SHEETS",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -18493,21 +18493,21 @@
         {
           "name": "PINEAPPLE",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
         {
           "name": "CHICKEN",
           "number": 6,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "CHEESE",
           "number": 7,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -18638,21 +18638,21 @@
         {
           "name": "BEEF CURRY",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "WANDERING DRAGON",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "PANCAKE ROLL",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -18769,21 +18769,21 @@
         {
           "name": "GIANT TORTOISE",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
         {
           "name": "ELEPHANT",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "ZEBRA",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -18914,21 +18914,21 @@
         {
           "name": "SIX",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "SEVEN",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "EIGHT",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -19052,21 +19052,21 @@
         {
           "name": "QUEENIE QUALIFIER",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "PARRY PIGSWILL",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "QUILLON QUARK",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -19190,21 +19190,21 @@
         {
           "name": "CROWD SOUNDS",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "OLD MAID",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "TANK TOP",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -19321,14 +19321,14 @@
         {
           "name": "GERTRUDE GUTBUCKET",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_blonde"
         },
         {
           "name": "GENEVIEVE GASFIELD",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -19342,7 +19342,7 @@
         {
           "name": "GARLAND GAZUMPS",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -19466,14 +19466,14 @@
         {
           "name": "MANSLAUGHTER",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "MURDER",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -19522,7 +19522,7 @@
         {
           "name": "JOYRIDING",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_blonde"
         }
@@ -19604,21 +19604,21 @@
         {
           "name": "BAAEY SHEEP",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "CLUCKY CHICKEN",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "GOBBLY TURKEY",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -19749,14 +19749,14 @@
         {
           "name": "WHITEWASH",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "BLACK WIDOW",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -19791,7 +19791,7 @@
         {
           "name": "FOOL'S GOLD",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "forward",
           "head": "white_blonde"
         },
@@ -19880,21 +19880,21 @@
         {
           "name": "CORNED BEEF",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "MUSTARD",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "PEANUT BUTTER",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -20018,21 +20018,21 @@
         {
           "name": "MICROWAVE",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "ROLLING PIN",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "KETTLE",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -20163,14 +20163,14 @@
         {
           "name": "BEAGLE",
           "number": 6,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "ALSATION",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -20184,7 +20184,7 @@
         {
           "name": "BOXER",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -20273,7 +20273,7 @@
         {
           "name": "LATERS DUDE",
           "number": 4,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -20294,7 +20294,7 @@
         {
           "name": "AU REVOIR",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -20308,7 +20308,7 @@
         {
           "name": "TOODLEPIP",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -20432,21 +20432,21 @@
         {
           "name": "PENCIL",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "RECEIPT",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "STICK",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -20577,7 +20577,7 @@
         {
           "name": "LONG HAIR",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -20598,7 +20598,7 @@
         {
           "name": "SMALL ",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -20619,7 +20619,7 @@
         {
           "name": "NO DRESS SENSE",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "forward",
           "head": "black_dark"
         },
@@ -20701,14 +20701,14 @@
         {
           "name": "NOTES",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "black_dark"
         },
         {
           "name": "PENCIL",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -20722,7 +20722,7 @@
         {
           "name": "PENCIL SHARPENER",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -20846,14 +20846,14 @@
         {
           "name": "JIGSAW",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "PINCERS",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -20895,7 +20895,7 @@
         {
           "name": "OXYACETYLENE TORCH",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_dark"
         },
@@ -20984,14 +20984,14 @@
         {
           "name": "HUGH JONES",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "IRVING JONES",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -21033,7 +21033,7 @@
         {
           "name": "OLIVER JONES",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_blonde"
         },
@@ -21129,14 +21129,14 @@
         {
           "name": "GO TO HEAVEN",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "ONE FAT LADY",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -21171,7 +21171,7 @@
         {
           "name": "ALL THE TWO'S",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "forward",
           "head": "white_blonde"
         },
@@ -21253,14 +21253,14 @@
         {
           "name": "MELON",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_blonde"
         },
         {
           "name": "BLACKCURRENT",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -21274,7 +21274,7 @@
         {
           "name": "KIWI",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -21398,21 +21398,21 @@
         {
           "name": "STAINLEY KNIFE",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "CHEESE WIRE",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "EXPRESS TRAIN",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -21529,14 +21529,14 @@
         {
           "name": "VIETNAM",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_blonde"
         },
         {
           "name": "TROJAN WAR",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -21550,7 +21550,7 @@
         {
           "name": "YUGOSLAVIA",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -21653,7 +21653,7 @@
         {
           "name": "KANGAROO",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "defender",
           "head": "black_dark"
         },
@@ -21667,14 +21667,14 @@
         {
           "name": "OUTBACK",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_blonde"
         },
         {
           "name": "BLACK WIDOW SPIDER",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -21805,14 +21805,14 @@
         {
           "name": "CARP",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
         {
           "name": "CHUBB",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -21826,7 +21826,7 @@
         {
           "name": "EEL",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -21950,21 +21950,21 @@
         {
           "name": "WOWZER",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "SMART",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "BRILL",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -22088,21 +22088,21 @@
         {
           "name": "STOCKWELL STIFF",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "STODDARD STEGOMYIA",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "SALINA SHIPYARD",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -22226,21 +22226,21 @@
         {
           "name": "POUND STERLING",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "PESETA",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "SHEKEL",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -22357,14 +22357,14 @@
         {
           "name": "MOUTH",
           "number": 9,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_blonde"
         },
         {
           "name": "BRAIN",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -22378,7 +22378,7 @@
         {
           "name": "STOMACH",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -22502,21 +22502,21 @@
         {
           "name": "DORSET",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "BERKSHIRE",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "HERTFORDSHIRE",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -22633,14 +22633,14 @@
         {
           "name": "PURSE",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
         {
           "name": "FLAN",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -22654,7 +22654,7 @@
         {
           "name": "PLEB",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -22778,21 +22778,21 @@
         {
           "name": "APHRODITE",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "ZEUS",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "MERCURY",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -22909,7 +22909,7 @@
         {
           "name": "TAP",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
@@ -22930,7 +22930,7 @@
         {
           "name": "BODY-POPPING",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -22965,7 +22965,7 @@
         {
           "name": "RAVE",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "forward",
           "head": "white_blonde"
         },
@@ -23054,21 +23054,21 @@
         {
           "name": "ANDY",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "GRAHAM",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "NIGEL",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -23192,21 +23192,21 @@
         {
           "name": "AUDREY ARGONAUT",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "AMMON ANGEKKOK",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "ANATOLE APHID",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -23323,14 +23323,14 @@
         {
           "name": "MARROW",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_dark"
         },
         {
           "name": "CUCUMBER",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -23344,7 +23344,7 @@
         {
           "name": "BROAD BEAN",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -23461,14 +23461,14 @@
         {
           "name": "WORCESTER SAUCE",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "black_dark"
         },
         {
           "name": "HAM 'N' MUSTARD",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -23482,7 +23482,7 @@
         {
           "name": "PRAWN COCKTAIL",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -23599,14 +23599,14 @@
         {
           "name": "S.O.U.C.K.",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "black_dark"
         },
         {
           "name": "SENSI SOCCER V I . I",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -23620,7 +23620,7 @@
         {
           "name": "I-D TONNIS",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -23744,21 +23744,21 @@
         {
           "name": "DEPRESSING",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "DRIPPY",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "MISERABLE",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -23889,14 +23889,14 @@
         {
           "name": "NICE MASHED POTATO",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
         {
           "name": "NICE GLASS OF MILK",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -23931,7 +23931,7 @@
         {
           "name": "NICE RICE PUDDING",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "forward",
           "head": "white_dark"
         },
@@ -24027,7 +24027,7 @@
         {
           "name": "PINEAPPLE CUBE",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -24041,7 +24041,7 @@
         {
           "name": "FIZZY BOTTLE",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -24062,7 +24062,7 @@
         {
           "name": "CHERRY BON-BON",
           "number": 11,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_dark"
         },
@@ -24158,14 +24158,14 @@
         {
           "name": "OBERJEEN",
           "number": 6,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "GOVERMENT",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -24214,7 +24214,7 @@
         {
           "name": "INTELIJENT",
           "number": 8,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "forward",
           "head": "black_dark"
         }
@@ -24310,7 +24310,7 @@
         {
           "name": "COLESLAW",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -24324,7 +24324,7 @@
         {
           "name": "VEGETABLE SAMOSA",
           "number": 8,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -24352,7 +24352,7 @@
         {
           "name": "ENGLISH CHEDDAR",
           "number": 7,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "forward",
           "head": "white_blonde"
         }
@@ -24434,21 +24434,21 @@
         {
           "name": "RHODODENDRON",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "PANSY",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "COWSLIP",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -24565,14 +24565,14 @@
         {
           "name": "CORIANDER",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_blonde"
         },
         {
           "name": "TURMERIC",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
@@ -24586,7 +24586,7 @@
         {
           "name": "DILL WEED",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -24717,14 +24717,14 @@
         {
           "name": "BEAKY",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
         {
           "name": "SPAMHEAD",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -24766,7 +24766,7 @@
         {
           "name": "LOFTY",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "forward",
           "head": "white_dark"
         }
@@ -24841,14 +24841,14 @@
         {
           "name": "SHELLSUIT",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "defender",
           "head": "white_blonde"
         },
         {
           "name": "SOCKS",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "white_dark"
         },
@@ -24862,7 +24862,7 @@
         {
           "name": "STRING VEST",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
@@ -24986,21 +24986,21 @@
         {
           "name": "VIOLA",
           "number": 6,
-          "position": "right_midfield",
+          "position": "right_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "DOUBLE BASS",
           "number": 7,
-          "position": "centre_midfield",
+          "position": "centre_midfielder",
           "role": "midfielder",
           "head": "black_dark"
         },
         {
           "name": "SAXOPHONE",
           "number": 8,
-          "position": "left_midfield",
+          "position": "left_midfielder",
           "role": "midfielder",
           "head": "white_blonde"
         },
