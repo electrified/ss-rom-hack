@@ -31,7 +31,7 @@ from decode_teams import (
     chain_walk_region,
     COLOUR_VALUES, STYLE_VALUES,
     HEAD_VALUES,
-    ROLE_VALUES, POSITION_VALUES,
+    ROLE_VALUES, POSITION_NAMES, POSITION_VALUES,
     TACTIC_VALUES,
 )
 
@@ -313,6 +313,7 @@ def main():
 
     # Validate team counts and content
     errors = []
+    warnings = []
     for cat, start, end in region_info:
         rom_count = len(all_block_offsets[cat])
         json_teams = teams_by_cat[cat]
@@ -377,12 +378,39 @@ def main():
                     err = _check_enum(p.get(field, default), allowed, max_int, f"{pctx}: {field}")
                     if err:
                         errors.append(err)
+            # Validate formation slot configuration
+            starter_slots = []
+            sub_count = 0
+            for p in players:
+                if not isinstance(p, dict):
+                    continue
+                pos = p.get('position', 'goalkeeper')
+                if isinstance(pos, str):
+                    pos = POSITION_VALUES.get(pos, -1)
+                if pos == 15:
+                    sub_count += 1
+                else:
+                    starter_slots.append(pos)
+            if sorted(starter_slots) != list(range(11)):
+                missing = set(range(11)) - set(starter_slots)
+                duped = set(s for s in starter_slots if starter_slots.count(s) > 1)
+                missing_names = [POSITION_NAMES.get(s, str(s)) for s in sorted(missing)]
+                duped_names = [POSITION_NAMES.get(s, str(s)) for s in sorted(duped)]
+                warnings.append(f"{ctx}: formation slots invalid — "
+                                f"missing {missing_names}, duplicated {duped_names}")
+            if sub_count != 5:
+                warnings.append(f"{ctx}: expected 5 subs, got {sub_count}")
 
     if errors:
         print("Validation errors:", file=sys.stderr)
         for e in errors:
             print(f"  {e}", file=sys.stderr)
         sys.exit(1)
+
+    if warnings:
+        print("Warnings:", file=sys.stderr)
+        for w in warnings:
+            print(f"  {w}", file=sys.stderr)
 
     if args.validate:
         total_players = 0

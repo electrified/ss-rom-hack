@@ -103,26 +103,24 @@ this to chain-walk through blocks within a region. Valid sizes range from
 Team/player/coach names are encoded as an MSB-first bitstream, 5 bits per
 character:
 
-```
-Index  Char        Index  Char
------  ----        -----  ----
- 0     NUL (end)    16    P
- 1     A            17    Q
- 2     B            18    R
- 3     C            19    S
- 4     D            20    T
- 5     E            21    U
- 6     F            22    V
- 7     G            23    W
- 8     H            24    X
- 9     I            25    Y
-10     J            26    Z
-11     K            27    (space)
-12     L            28    -
-13     M            29    '
-14     N            30    .
-15     O
-```
+| Index | Char | Index | Char |
+|-------|------|-------|------|
+| 0 | NUL (end) | 16 | P |
+| 1 | A | 17 | Q |
+| 2 | B | 18 | R |
+| 3 | C | 19 | S |
+| 4 | D | 20 | T |
+| 5 | E | 21 | U |
+| 6 | F | 22 | V |
+| 7 | G | 23 | W |
+| 8 | H | 24 | X |
+| 9 | I | 25 | Y |
+| 10 | J | 26 | Z |
+| 11 | K | 27 | (space) |
+| 12 | L | 28 | - |
+| 13 | M | 29 | ' |
+| 14 | N | 30 | . |
+| 15 | O | | |
 
 Each team block contains 19 null-terminated strings packed end-to-end:
 
@@ -157,29 +155,27 @@ Each position is a 16-bit big-endian word: `(byte_offset << 5) | bit_offset`
 The game uses a lookup table at ROM `0x019630` (International Edition) with
 19 entries specifying which attribute byte offsets hold the packed positions:
 
-```
-String   Attr offset   Description
-------   -----------   -----------
-  0          2         Team name
-  1          4         Country
-  2          6         Coach
-  3         22         Player 1
-  4         30         Player 2
-  5         38         Player 3
-  6         46         Player 4
-  7         54         Player 5
-  8         62         Player 6
-  9         70         Player 7
- 10         78         Player 8
- 11         86         Player 9
- 12         94         Player 10
- 13        102         Player 11
- 14        110         Player 12
- 15        118         Player 13
- 16        126         Player 14
- 17        134         Player 15
- 18        142         Player 16
-```
+| String | Attr offset | Description |
+|--------|-------------|-------------|
+| 0 | 2 | Team name |
+| 1 | 4 | Country |
+| 2 | 6 | Coach |
+| 3 | 22 | Player 1 |
+| 4 | 30 | Player 2 |
+| 5 | 38 | Player 3 |
+| 6 | 46 | Player 4 |
+| 7 | 54 | Player 5 |
+| 8 | 62 | Player 6 |
+| 9 | 70 | Player 7 |
+| 10 | 78 | Player 8 |
+| 11 | 86 | Player 9 |
+| 12 | 94 | Player 10 |
+| 13 | 102 | Player 11 |
+| 14 | 110 | Player 12 |
+| 15 | 118 | Player 13 |
+| 16 | 126 | Player 14 |
+| 17 | 134 | Player 15 |
+| 18 | 142 | Player 16 |
 
 Note: these offsets overlap with the player record area (bytes 22–149).
 Bytes 22–23 of the attribute block serve double duty: in ROM they hold
@@ -206,49 +202,44 @@ position back to the attribute copy in RAM.
 
 ## Attribute Data Layout (150 bytes)
 
-```
-Offset  Length  Description
-------  ------  -----------
-  0       2     Block size word (total block size in bytes)
-  2       2     Packed position: team name (always 0x12C0)
-  4       2     Packed position: country
-  6       2     Packed position: coach
-  8      10     Kit attributes (2 x 5 bytes, see below)
- 18       4     Team attributes (tactic, skill, flag — see below)
- 22     128     Player records (16 x 8 bytes, see below)
-------  ------
- Total  150
-```
+| Offset | Length | Description |
+|--------|--------|-------------|
+| 0 | 2 | Block size word (total block size in bytes) |
+| 2 | 2 | Packed position: team name (always 0x12C0) |
+| 4 | 2 | Packed position: country |
+| 6 | 2 | Packed position: coach |
+| 8 | 10 | Kit attributes (2 x 5 bytes, see below) |
+| 18 | 4 | Team attributes (tactic, skill, flag — see below) |
+| 22 | 128 | Player records (16 x 8 bytes, see below) |
+| Total | 150 | |
 
 
 ### Team Header (bytes 0–7)
 
-```
-Bytes 0-1:   Block size word (total block size)
-Bytes 2-3:   Packed position for team name (0x12C0)
-Bytes 4-5:   Packed position for country
-Bytes 6-7:   Packed position for coach
-```
+| Bytes | Field | Description |
+|-------|-------|-------------|
+| 0-1 | Block size word | Total block size |
+| 2-3 | Packed position | Team name (always 0x12C0) |
+| 4-5 | Packed position | Country |
+| 6-7 | Packed position | Coach |
 
 
 ### Kit Attributes (bytes 8–17)
 
 Each team has two kits (first and second), 5 bytes each:
 
-```
-Offset  Field            Values
-------  -----            ------
-  8     First kit style   0-3 (see style table)
-  9     First shirt 1     Colour index (primary colour)
- 10     First shirt 2     Colour index (secondary colour, same as shirt 1 for plain)
- 11     First shorts      Colour index
- 12     First socks       Colour index
- 13     Second kit style  0-3
- 14     Second shirt 1    Colour index
- 15     Second shirt 2    Colour index
- 16     Second shorts     Colour index
- 17     Second socks      Colour index
-```
+| Offset | Field | Values |
+|--------|-------|--------|
+| 8 | First kit style | 0-3 (see style table) |
+| 9 | First shirt 1 | Colour index (primary colour) |
+| 10 | First shirt 2 | Colour index (secondary colour, same as shirt 1 for plain) |
+| 11 | First shorts | Colour index |
+| 12 | First socks | Colour index |
+| 13 | Second kit style | 0-3 |
+| 14 | Second shirt 1 | Colour index |
+| 15 | Second shirt 2 | Colour index |
+| 16 | Second shorts | Colour index |
+| 17 | Second socks | Colour index |
 
 **Kit style values:**
 
@@ -261,16 +252,16 @@ Offset  Field            Values
 
 **Colour palette indices:**
 
-| Value | Colour      | Value | Colour      |
-|-------|-------------|-------|-------------|
-| 0x01  | Grey        | 0x09  | Dark grey 2 |
-| 0x02  | White       | 0x0A  | Red         |
-| 0x03  | Black       | 0x0B  | Blue        |
-| 0x04  | Brown       | 0x0C  | Dark red    |
-| 0x05  | Dark orange | 0x0D  | Light blue  |
-| 0x06  | Orange      | 0x0E  | Green       |
-| 0x07  | Light grey  | 0x0F  | Yellow      |
-| 0x08  | Dark grey   |       |             |
+| Value | Colour | Value | Colour |
+|-------|--------|-------|--------|
+| 0x01 | Grey | 0x09 | Dark grey 2 |
+| 0x02 | White | 0x0A | Red |
+| 0x03 | Black | 0x0B | Blue |
+| 0x04 | Brown | 0x0C | Dark red |
+| 0x05 | Dark orange | 0x0D | Light blue |
+| 0x06 | Orange | 0x0E | Green |
+| 0x07 | Light grey | 0x0F | Yellow |
+| 0x08 | Dark grey | | |
 
 Example (Lazio): `00 0D 0D 02 02  00 0F 0F 0F 0F`
 → First kit: plain, light blue shirt, white shorts & socks.
@@ -281,16 +272,12 @@ Example (Lazio): `00 0D 0D 02 02  00 0F 0F 0F 0F`
 
 Team-level gameplay attributes:
 
-```
-Offset  Field     Values
-------  -----     ------
- 18     Tactic    0-7 (formation, see table — initial/default value)
- 19     Tactic    0-7 (formation — gameplay-active value, see below)
- 20     (unused)  Always 0x00
- 21     Composite Bits 3-5: skill (0=best, 7=weakest)
-                  Bit 0: flag (unused by game engine, see below)
-                  Bits 1-2, 6-7: always 0
-```
+| Offset | Field | Values |
+|--------|-------|--------|
+| 18 | Tactic | 0-7 (formation, see table — initial/default value) |
+| 19 | Tactic | 0-7 (formation — gameplay-active value, see below) |
+| 20 | (unused) | Always 0x00 |
+| 21 | Composite | Bits 3-5: skill (0=best, 7=weakest)<br>Bit 0: flag (unused by game engine, see below)<br>Bits 1-2, 6-7: always 0 |
 
 **Bytes 18 and 19 — two tactic bytes:**
 
@@ -334,23 +321,21 @@ full disassembly analysis.
 
 16 players × 8 bytes each = 128 bytes.
 
-```
-Byte  Meaning
-----  -------
- 0-1  Packed text position (rewritten at load time — do not use for player data)
-  2   Position byte
-  3   Appearance byte
- 4-7  Unused (always 0x00)
-```
+| Byte | Meaning |
+|------|---------|
+| 0-1 | Packed text position (rewritten at load time — do not use for player data) |
+| 2 | Position byte |
+| 3 | Appearance byte |
+| 4-7 | Unused (always 0x00) |
 
 #### Position byte (byte 2)
 
 Encodes the formation slot and shirt number in a single byte:
 
-```
-  High nibble (bits 7-4): formation slot
-  Low nibble  (bits 3-0): shirt number minus 1
-```
+| Bits | Field | Description |
+|------|-------|-------------|
+| 7-4 (high nibble) | Formation slot | See formation slot values below |
+| 3-0 (low nibble) | Shirt number | Minus 1 (add 1 to get actual number) |
 
 **Formation slot values:**
 
@@ -379,12 +364,12 @@ Examples:
 
 #### Appearance byte (byte 3)
 
-```
-  Bits 0-1: head type (0-2, see table)
-  Bits 2-3: role (0=goalkeeper, 1=defender, 2=midfielder, 3=forward)
-  Bit  4:   star player flag (0=normal, 1=star)
-  Bits 5-7: unused (always 0)
-```
+| Bits | Field | Description |
+|------|-------|-------------|
+| 0-1 | Head type | 0-2 (see table below) |
+| 2-3 | Role | 0=goalkeeper, 1=defender, 2=midfielder, 3=forward |
+| 4 | Star player flag | 0=normal, 1=star |
+| 5-7 | Unused | Always 0 |
 
 **Role** determines the letter shown in the game's squad screen
 (G / D / M / F). For starting players this matches the formation

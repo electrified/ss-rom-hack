@@ -54,7 +54,7 @@ ROLE_VALUES = {v: k for k, v in ROLE_NAMES.items()}
 
 POSITION_NAMES = {
     0: "goalkeeper", 1: "right_back", 2: "left_back", 3: "centre_back", 4: "defender",
-    5: "right_midfield", 6: "centre_midfield", 7: "left_midfield", 8: "midfielder",
+    5: "right_midfielder", 6: "centre_midfielder", 7: "left_midfielder", 8: "midfielder",
     9: "forward", 10: "second_forward", 15: "sub",
 }
 POSITION_VALUES = {v: k for k, v in POSITION_NAMES.items()}
