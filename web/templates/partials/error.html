@@ -1,0 +1,12 @@
+<div class="error-message">
+    <h3>Error</h3>
+    <p>{{ message }}</p>
+    <button 
+        hx-get="/" 
+        hx-target="#main-content"
+        hx-swap="innerHTML"
+        class="btn btn-secondary"
+    >
+        Start Over
+    </button>
+</div>

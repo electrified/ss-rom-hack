@@ -1,0 +1,283 @@
+/* Sensible Soccer ROM Editor - Styles */
+
+:root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --success-color: #16a34a;
+    --error-color: #dc2626;
+    --warning-color: #ca8a04;
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --text-color: #1f2937;
+    --text-muted: #6b7280;
+    --border-color: #e5e7eb;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+header p {
+    color: var(--text-muted);
+}
+
+main {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Forms */
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.file-input-wrapper {
+    position: relative;
+}
+
+.file-input-wrapper input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.file-label {
+    display: block;
+    padding: 2rem;
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    text-align: center;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.file-label:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+    background-color: var(--border-color);
+    color: var(--text-color);
+}
+
+.btn-secondary:hover {
+    background-color: #d1d5db;
+}
+
+.btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+/* Sections */
+.upload-section,
+.success-section,
+.validation-section {
+    margin-bottom: 2rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+h3 {
+    font-size: 1.2rem;
+    margin: 1.5rem 0 0.75rem;
+}
+
+/* Info table */
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.info-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-table td:first-child {
+    font-weight: 500;
+    width: 40%;
+    color: var(--text-muted);
+}
+
+/* Validation results */
+.success-banner,
+.error-banner {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+}
+
+.success-banner {
+    background-color: #dcfce7;
+    border: 1px solid var(--success-color);
+    color: var(--success-color);
+}
+
+.error-banner {
+    background-color: #fee2e2;
+    border: 1px solid var(--error-color);
+    color: var(--error-color);
+}
+
+.error-list,
+.warning-list {
+    list-style: none;
+    padding: 0;
+}
+
+.error-item {
+    padding: 0.75rem;
+    background-color: #fee2e2;
+    border-left: 4px solid var(--error-color);
+    margin-bottom: 0.5rem;
+    border-radius: 0 4px 4px 0;
+}
+
+.warning-item {
+    padding: 0.75rem;
+    background-color: #fef3c7;
+    border-left: 4px solid var(--warning-color);
+    margin-bottom: 0.5rem;
+    border-radius: 0 4px 4px 0;
+}
+
+/* Actions */
+.actions {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.secondary-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Info section */
+.info-section {
+    background-color: #f3f4f6;
+    padding: 1.5rem;
+    border-radius: 6px;
+    margin-top: 2rem;
+}
+
+.info-section ol {
+    margin-left: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.info-section li {
+    margin-bottom: 0.5rem;
+}
+
+/* Error message */
+.error-message {
+    text-align: center;
+    padding: 2rem;
+}
+
+.error-message h3 {
+    color: var(--error-color);
+    margin-bottom: 1rem;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* HTMX loading indicator */
+.htmx-request .btn {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.htmx-request .btn::after {
+    content: "...";
+    margin-left: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    main {
+        padding: 1.5rem;
+    }
+    
+    .secondary-actions {
+        flex-direction: column;
+    }
+}

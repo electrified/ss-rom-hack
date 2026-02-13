@@ -1,0 +1,80 @@
+<div class="validation-section">
+    <h2>Validation Results</h2>
+    
+    {% if is_valid %}
+    <div class="success-banner">
+        <p>Validation passed! Your JSON is valid.</p>
+    </div>
+    {% else %}
+    <div class="error-banner">
+        <p>Validation failed. Please fix the errors below.</p>
+    </div>
+    {% endif %}
+    
+    {% if errors %}
+    <div class="errors-section">
+        <h3>Errors (Must Fix)</h3>
+        <ul class="error-list">
+            {% for error in errors %}
+            <li class="error-item">{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    
+    {% if warnings %}
+    <div class="warnings-section">
+        <h3>Warnings (Optional)</h3>
+        <ul class="warning-list">
+            {% for warning in warnings %}
+            <li class="warning-item">{{ warning }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    
+    <div class="actions">
+        {% if is_valid %}
+        <h3>Step 4: Generate Patched ROM</h3>
+        <form 
+            hx-post="/api/generate-rom" 
+            hx-encoding="multipart/form-data"
+            class="generate-form"
+        >
+            <input type="hidden" name="session_id" value="{{ session_id }}">
+            <input type="hidden" name="teams_json" value="{{ teams_json }}">
+            
+            <button type="submit" class="btn btn-primary btn-large">
+                Download Patched ROM
+            </button>
+        </form>
+        {% endif %}
+        
+        <div class="secondary-actions">
+            <button 
+                hx-get="/" 
+                hx-target="body"
+                hx-swap="innerHTML"
+                class="btn btn-secondary"
+            >
+                Start Over
+            </button>
+            
+            <button 
+                hx-post="/api/validate"
+                hx-encoding="multipart/form-data"
+                hx-target="#main-content"
+                hx-swap="innerHTML"
+                class="btn btn-secondary"
+                onclick="document.getElementById('revalidate-json').value = document.getElementById('teams-json-text').value"
+            >
+                Re-validate with Different JSON
+            </button>
+            
+            <form style="display: none;" id="revalidate-form">
+                <input type="hidden" name="session_id" value="{{ session_id }}">
+                <textarea name="teams_json" id="revalidate-json">{{ teams_json }}</textarea>
+            </form>
+        </div>
+    </div>
+</div>

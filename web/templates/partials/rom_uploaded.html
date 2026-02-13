@@ -1,0 +1,103 @@
+<div class="success-section">
+    <h2>ROM Uploaded Successfully!</h2>
+    
+    <div class="rom-info">
+        <h3>ROM Information</h3>
+        <table class="info-table">
+            <tr>
+                <td>Filename:</td>
+                <td>{{ rom_info.filename }}</td>
+            </tr>
+            <tr>
+                <td>Size:</td>
+                <td>{{ rom_info.size }} bytes</td>
+            </tr>
+            <tr>
+                <td>Edition:</td>
+                <td>{{ rom_info.edition }}</td>
+            </tr>
+            <tr>
+                <td>Total Teams:</td>
+                <td>{{ rom_info.team_counts.total }}</td>
+            </tr>
+            <tr>
+                <td>National Teams:</td>
+                <td>{{ rom_info.team_counts.national }}</td>
+            </tr>
+            <tr>
+                <td>Club Teams:</td>
+                <td>{{ rom_info.team_counts.club }}</td>
+            </tr>
+            <tr>
+                <td>Custom Teams:</td>
+                <td>{{ rom_info.team_counts.custom }}</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="actions">
+        <h3>Step 2: Download Teams JSON</h3>
+        <p>Download the decoded teams data, edit it, then upload your modified version.</p>
+        
+        <a 
+            href="data:text/json;charset=utf-8,{{ teams_json | urlencode }}" 
+            download="teams.json"
+            class="btn btn-primary"
+        >
+            Download teams.json
+        </a>
+    </div>
+    
+    <div class="upload-section">
+        <h3>Step 3: Upload Modified JSON</h3>
+        <p>Select your modified teams.json file for validation</p>
+        
+        <form 
+            hx-post="/api/validate" 
+            hx-encoding="multipart/form-data"
+            hx-target="#main-content"
+            hx-swap="innerHTML"
+            class="upload-form"
+        >
+            <input type="hidden" name="session_id" value="{{ session_id }}">
+            
+            <div class="file-input-wrapper">
+                <input 
+                    type="file" 
+                    name="teams_json_file" 
+                    accept=".json"
+                    required
+                    id="json-file-input"
+                    onchange="document.getElementById('teams-json-text').value = this.files[0].text()"
+                >
+                <label for="json-file-input" class="file-label">
+                    Choose teams.json file...
+                </label>
+            </div>
+            
+            <textarea 
+                name="teams_json" 
+                id="teams-json-text" 
+                style="display: none;"
+                required
+            >{{ teams_json }}</textarea>
+            
+            <button type="submit" class="btn btn-primary">
+                Validate JSON
+            </button>
+        </form>
+        
+        <script>
+            document.getElementById('json-file-input').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('teams-json-text').value = e.target.result;
+                    };
+                    reader.readAsText(file);
+                }
+            });
+        </script>
+    </div>
+</div>

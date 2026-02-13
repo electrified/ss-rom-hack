@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="main-content">
+    <div class="upload-section">
+        <h2>Step 1: Upload ROM</h2>
+        <p>Select your Sensible Soccer Mega Drive ROM file (.md)</p>
+        
+        <form 
+            hx-post="/api/upload-rom" 
+            hx-encoding="multipart/form-data"
+            hx-target="#main-content"
+            hx-swap="innerHTML"
+            class="upload-form"
+        >
+            <div class="file-input-wrapper">
+                <input 
+                    type="file" 
+                    name="rom_file" 
+                    accept=".md"
+                    required
+                    id="rom-file-input"
+                >
+                <label for="rom-file-input" class="file-label">
+                    Choose ROM file...
+                </label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                Upload ROM
+            </button>
+        </form>
+    </div>
+    
+    <div class="info-section">
+        <h3>How it works</h3>
+        <ol>
+            <li>Upload your original Sensible Soccer ROM</li>
+            <li>Download the decoded teams as JSON</li>
+            <li>Edit the JSON file with your changes</li>
+            <li>Upload your modified JSON for validation</li>
+            <li>Download the patched ROM</li>
+        </ol>
+    </div>
+</div>
+{% endblock %}
