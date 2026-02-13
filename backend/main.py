@@ -136,14 +136,9 @@ async def validate(request: ValidateRequest):
         errors, warnings = validate_teams(session.rom_bytes, request.teams_json)
 
         # Convert to ValidationIssue format
-        error_issues = [
-            ValidationIssue(path=e.get("path", ""), message=e.get("message", str(e)))
-            for e in errors
-        ]
-        warning_issues = [
-            ValidationIssue(path=w.get("path", ""), message=w.get("message", str(w)))
-            for w in warnings
-        ]
+        # validate_teams returns errors/warnings as strings, not dicts
+        error_issues = [ValidationIssue(path="", message=str(e)) for e in errors]
+        warning_issues = [ValidationIssue(path="", message=str(w)) for w in warnings]
 
         return ValidateResponse(
             valid=len(errors) == 0, errors=error_issues, warnings=warning_issues
