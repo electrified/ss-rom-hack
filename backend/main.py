@@ -13,8 +13,13 @@ from pydantic import BaseModel
 from typing import List, Dict, Any
 import json
 import io
+import hashlib
 
 from session_store import session_store
+
+# Known ROM MD5 checksums
+ROM_MD5_ORIGINAL = "f6fcf5843786bd44f8df6b648661a437"
+ROM_MD5_INTERNATIONAL = "403ceb23b4cf27d3d9c8965409960bb4"
 from sslib import decode_rom, validate_teams, update_rom
 
 
@@ -101,8 +106,14 @@ async def upload_rom(rom_file: UploadFile = File(...)):
             "custom": len(teams_data.get("custom", [])),
         }
 
-        # Detect edition from pointer table location
-        edition = "international" if len(rom_bytes) > 0x1F0000 else "original"
+        # Detect edition from MD5 checksum
+        rom_md5 = hashlib.md5(rom_bytes).hexdigest()
+        if rom_md5 == ROM_MD5_ORIGINAL:
+            edition = "original"
+        elif rom_md5 == ROM_MD5_INTERNATIONAL:
+            edition = "international"
+        else:
+            edition = "unknown"
 
         # Create session
         session_id = session_store.create_session(rom_bytes)

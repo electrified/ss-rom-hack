@@ -17,6 +17,7 @@ function App() {
   // Validation results
   const [validationResults, setValidationResults] = useState(null);
   const [modifiedTeamsJson, setModifiedTeamsJson] = useState(null);
+  const [jsonFileName, setJsonFileName] = useState(null);
   const [isValid, setIsValid] = useState(false);
 
   const handleUploadSuccess = (result) => {
@@ -30,9 +31,10 @@ function App() {
     setIsValid(false);
   };
 
-  const handleValidationComplete = (results, json) => {
+  const handleValidationComplete = (results, json, fileName) => {
     setValidationResults(results);
     setModifiedTeamsJson(json);
+    setJsonFileName(fileName);
     setIsValid(results && results.valid);
     if (results) {
       setCurrentStep('download');
@@ -42,6 +44,7 @@ function App() {
   const handleReset = () => {
     setValidationResults(null);
     setModifiedTeamsJson(null);
+    setJsonFileName(null);
     setIsValid(false);
     setCurrentStep('summary');
   };
@@ -53,6 +56,7 @@ function App() {
     setTeamsJson(null);
     setValidationResults(null);
     setModifiedTeamsJson(null);
+    setJsonFileName(null);
     setIsValid(false);
   };
 
@@ -117,8 +121,9 @@ function App() {
         <DownloadButton 
           sessionId={sessionId}
           teamsJson={modifiedTeamsJson || teamsJson}
+          jsonFileName={jsonFileName}
           disabled={!isValid}
-          onSuccess={handleStartOver}
+          onSuccess={handleReset}
         />
       )}
 

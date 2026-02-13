@@ -54,8 +54,8 @@ function JsonUpload({ sessionId, onValidationComplete, disabled }) {
       // Validate against the ROM
       const result = await validateTeams(sessionId, teamsJson);
       
-      // Pass result and the JSON back to parent
-      onValidationComplete(result, teamsJson);
+      // Pass result, JSON, and filename back to parent
+      onValidationComplete(result, teamsJson, file.name);
     } catch (err) {
       if (err instanceof SyntaxError) {
         setError('Invalid JSON file. Please check your file syntax.');

@@ -1,10 +1,26 @@
 import React, { useState } from 'react';
 import { generateRom } from '../api';
 
-function DownloadButton({ sessionId, teamsJson, disabled, onSuccess }) {
+function DownloadButton({ sessionId, teamsJson, jsonFileName, disabled, onSuccess }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [downloadedFileName, setDownloadedFileName] = useState(null);
+
+  const generateFileName = () => {
+    const now = new Date();
+    const timestamp = now.toISOString()
+      .replace(/[:.]/g, '-')
+      .slice(0, 19);
+    
+    if (jsonFileName) {
+      // Remove .json extension and add timestamp
+      const baseName = jsonFileName.replace(/\.json$/i, '');
+      return `${baseName}_${timestamp}.md`;
+    }
+    
+    return `modified_rom_${timestamp}.md`;
+  };
 
   const handleDownload = async () => {
     if (disabled || !sessionId || !teamsJson) {
@@ -14,9 +30,12 @@ function DownloadButton({ sessionId, teamsJson, disabled, onSuccess }) {
     setIsGenerating(true);
     setError(null);
     setSuccess(false);
+    setDownloadedFileName(null);
 
     try {
-      await generateRom(sessionId, teamsJson, 'modified_rom.md');
+      const fileName = generateFileName();
+      await generateRom(sessionId, teamsJson, fileName);
+      setDownloadedFileName(fileName);
       setSuccess(true);
       if (onSuccess) {
         onSuccess();
@@ -63,9 +82,11 @@ function DownloadButton({ sessionId, teamsJson, disabled, onSuccess }) {
         </div>
       )}
 
-      {success && (
+      {success && downloadedFileName && (
         <div className="success-message">
-          <strong>Success!</strong> Your modified ROM has been downloaded as <code>modified_rom.md</code>
+          <strong>Success!</strong> Your modified ROM has been downloaded as <code>{downloadedFileName}</code>
+          <br />
+          <small>You can now upload another JSON file to make additional changes.</small>
         </div>
       )}
 
@@ -74,7 +95,7 @@ function DownloadButton({ sessionId, teamsJson, disabled, onSuccess }) {
         <ul style={{ marginTop: '0.5rem', marginLeft: '1.5rem' }}>
           <li>Use an emulator to test your modified ROM</li>
           <li>If you encounter issues, check the validation warnings above</li>
-          <li>You can upload the same ROM again to make additional changes</li>
+          <li>Upload another JSON file to make additional changes without re-uploading the ROM</li>
         </ul>
       </div>
     </div>
