@@ -1,20 +1,31 @@
-import React from 'react';
+import { useState } from 'react';
 
-export default function DownloadButton({ sessionId, teamsJson, onGenerate, disabled, loading }) {
-  const handleClick = () => {
-    onGenerate();
+export default function DownloadButton({ sessionId, teamsJson, onDownload }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleClick = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await onDownload();
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="step">
-      <h2>5. Download Modified ROM</h2>
+    <div className="download-section">
       <button 
-        onClick={handleClick} 
-        disabled={disabled || loading}
-        className="download-btn"
+        className="btn-primary" 
+        onClick={handleClick}
+        disabled={loading}
       >
         {loading ? 'Generating ROM...' : 'Download Modified ROM'}
       </button>
+      {error && <p className="error">{error}</p>}
     </div>
   );
 }

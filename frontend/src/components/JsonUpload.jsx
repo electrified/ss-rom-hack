@@ -1,60 +1,60 @@
-import React, { useState } from 'react';
+import { useState, useRef } from 'react';
 
-export default function JsonUpload({ sessionId, teamsJson, onValidate, loading, error }) {
-  const [localError, setLocalError] = useState(null);
+export default function JsonUpload({ sessionId, onValidate }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const fileInputRef = useRef(null);
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files?.[0];
+  const handleFile = async (file) => {
     if (!file) return;
-    
+    if (!file.name.endsWith('.json')) {
+      setError('Please upload a .json file');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
     try {
       const text = await file.text();
-      const json = JSON.parse(text);
-      setLocalError(null);
-      onValidate(json);
-    } catch (err) {
-      setLocalError(err.message);
+      const teamsJson = JSON.parse(text);
+      await onValidate(teamsJson);
+    } catch (e) {
+      if (e instanceof SyntaxError) {
+        setError('Invalid JSON file');
+      } else {
+        setError(e.message);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDrop = async (e) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files?.[0];
-    if (!file || !file.name.endsWith('.json')) return;
-    
-    try {
-      const text = await file.text();
-      const json = JSON.parse(text);
-      setLocalError(null);
-      onValidate(json);
-    } catch (err) {
-      setLocalError(err.message);
-    }
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
+  const handleChange = (e) => {
+    handleFile(e.target.files[0]);
   };
 
   return (
-    <div className="step">
-      <h2>3. Upload Modified JSON</h2>
-      <div
-        className="dropzone"
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-      >
-        <p>Drag & drop your modified .json file here</p>
-        <p>or</p>
+    <div className="upload-section">
+      <h2>Upload Modified JSON</h2>
+      <p>Upload your edited teams.json file to validate and generate a new ROM.</p>
+      <div className="file-input-wrapper">
+        <button 
+          className="btn-secondary" 
+          onClick={() => fileInputRef.current?.click()}
+          disabled={loading}
+        >
+          {loading ? 'Processing...' : 'Select JSON File'}
+        </button>
         <input
+          ref={fileInputRef}
           type="file"
           accept=".json"
-          onChange={handleFileChange}
-          disabled={loading}
+          onChange={handleChange}
+          style={{ display: 'none' }}
         />
       </div>
-      {loading && <p className="loading">Validating JSON...</p>}
-      {(error || localError) && <p className="error">{error || localError}</p>}
+      {error && <p className="error">{error}</p>}
     </div>
   );
 }
