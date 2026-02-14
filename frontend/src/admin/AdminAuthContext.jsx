@@ -1,16 +1,13 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const AdminAuthContext = createContext(null);
 
 export function AdminAuthProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return !!localStorage.getItem('adminCredentials');
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState(null);
 
-  const login = useCallback(async (username, password) => {
+  const login = async (username, password) => {
     try {
-      // Test credentials by making a request to admin stats
       const credentials = btoa(`${username}:${password}`);
       const response = await fetch('/api/admin/stats', {
         headers: {
@@ -28,7 +25,6 @@ export function AdminAuthProvider({ children }) {
         return false;
       }
 
-      // Store credentials
       localStorage.setItem('adminCredentials', credentials);
       setIsAuthenticated(true);
       setError(null);
@@ -37,23 +33,16 @@ export function AdminAuthProvider({ children }) {
       setError('Network error');
       return false;
     }
-  }, []);
+  };
 
-  const logout = useCallback(() => {
+  const logout = () => {
     localStorage.removeItem('adminCredentials');
     setIsAuthenticated(false);
     setError(null);
-  }, []);
-
-  const value = {
-    isAuthenticated,
-    login,
-    logout,
-    error,
   };
 
   return (
-    <AdminAuthContext.Provider value={value}>
+    <AdminAuthContext.Provider value={{ isAuthenticated, login, logout, error }}>
       {children}
     </AdminAuthContext.Provider>
   );

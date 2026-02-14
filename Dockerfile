@@ -21,9 +21,6 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 # Copy the rest of the application
 COPY . .
 
-# Create data directory for ROMs
-RUN mkdir -p /data/roms
-
 # Set environment variables
 ENV PYTHONPATH=/app
 ENV STORAGE_PATH=/data/roms

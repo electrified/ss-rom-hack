@@ -77,12 +77,8 @@ spec:
                 secretKeyRef:
                   name: {{ include "ss-md-hack.fullname" . }}-redis
                   key: url
-            - name: STORAGE_PATH
-              value: /data/roms
             - name: REDIS_SESSION_TTL
               value: "{{ .Values.config.sessionTtl }}"
-            - name: ROM_RETENTION_DAYS
-              value: "{{ .Values.config.romRetentionDays }}"
             - name: LOG_LEVEL
               value: {{ .Values.config.logLevel }}
             - name: METRICS_ENABLED
@@ -94,6 +90,8 @@ spec:
                 secretKeyRef:
                   name: {{ include "ss-md-hack.fullname" . }}-admin
                   key: password-hash
+            - name: FRONTEND_PATH
+              value: /app/frontend/dist
             - name: HOSTNAME
               valueFrom:
                 fieldRef:
@@ -126,23 +124,14 @@ spec:
             failureThreshold: 30
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-          volumeMounts:
-            - name: roms-storage
-              mountPath: /data/roms
 {{- with .Values.extraVolumeMounts }}
+          volumeMounts:
 {{ toYaml . | indent 12 }}
 {{- end }}
 {{- with .Values.sidecars }}
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
-        - name: roms-storage
-{{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ include "ss-md-hack.fullname" . }}-roms
-{{- else }}
-          emptyDir: {}
-{{- end }}
 {{- with .Values.extraVolumes }}
 {{ toYaml . | indent 8 }}
 {{- end }}

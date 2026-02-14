@@ -6,6 +6,7 @@ import hashlib
 import json
 import io
 import time
+import logging
 from datetime import datetime, timedelta
 from pathlib import Path
 from contextlib import asynccontextmanager
@@ -28,22 +29,21 @@ from backend.models.database import (
     init_database,
     close_database,
     Rom,
-    Session as SessionModel,
-    Upload,
     Validation,
 )
 import backend.models.database as database_module
 from backend.models.redis import init_redis, close_redis
 import backend.models.redis as redis_module
-from backend.storage.local import init_storage
-import backend.storage.local as storage_module
-from backend.middleware.logging import RequestLoggingMiddleware
 from backend.admin.router import router as admin_router, init_admin_auth
-from backend.metrics.prometheus import router as metrics_router
 from backend.health import router as health_router, set_startup_complete
+from backend.logging_config import setup_logging
+from prometheus_fastapi_instrumentator import Instrumentator
 
 # Load environment variables
 load_dotenv()
+
+# Setup logging
+logger = setup_logging(os.getenv("LOG_LEVEL", "INFO"))
 
 # Known ROM MD5 checksums
 ROM_MD5_ORIGINAL = "f6fcf5843786bd44f8df6b648661a437"
@@ -69,11 +69,6 @@ async def lifespan(app: FastAPI):
     await init_redis(redis_url, redis_ttl)
     print("✓ Redis connected")
 
-    # Initialize storage
-    storage_path = os.getenv("STORAGE_PATH", "/data/roms")
-    init_storage(storage_path)
-    print(f"✓ Storage initialized at {storage_path}")
-
     # Initialize admin auth
     admin_user = os.getenv("ADMIN_USERNAME", "admin")
     admin_pass = os.getenv("ADMIN_PASSWORD_HASH", "")
@@ -83,6 +78,10 @@ async def lifespan(app: FastAPI):
 
     # Mark startup complete for health checks
     set_startup_complete()
+
+    # Expose Prometheus metrics endpoint
+    instrumentator.expose(app)
+
     print("✓ Startup complete")
 
     yield
@@ -105,13 +104,34 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Request logging middleware
-app.add_middleware(RequestLoggingMiddleware)
-
 # Include routers
-app.include_router(admin_router)
-app.include_router(metrics_router)
+app.include_router(admin_router, prefix="/api")
 app.include_router(health_router)
+
+# Setup Prometheus instrumentation
+instrumentator = Instrumentator()
+instrumentator.instrument(app)
+
+# Serve frontend static files (after API routes)
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+
+frontend_path = os.getenv("FRONTEND_PATH", "/app/frontend/dist")
+if os.path.exists(frontend_path):
+    app.mount("/static", StaticFiles(directory=frontend_path), name="static")
+
+    @app.get("/{full_path:path}")
+    async def serve_frontend(full_path: str):
+        # Don't interfere with API routes
+        if full_path.startswith("api/") or full_path.startswith("health"):
+            from fastapi import HTTPException
+
+            raise HTTPException(status_code=404, detail="Not found")
+        index_path = os.path.join(frontend_path, "index.html")
+        if os.path.exists(index_path):
+            return FileResponse(index_path)
+        return FileResponse(os.path.join(frontend_path, "index.html"))
 
 
 class RomInfo(BaseModel):
@@ -168,11 +188,16 @@ async def upload_rom(rom_file: UploadFile = File(...)):
     """
     start_time = time.time()
 
+    logger.info(f"Processing ROM upload: {rom_file.filename}")
+
     # Read ROM bytes
     rom_bytes = await rom_file.read()
 
+    logger.info(f"ROM file size: {len(rom_bytes)} bytes")
+
     # Validate ROM size (should be around 512KB)
     if len(rom_bytes) < 100000:
+        logger.warning(f"ROM file too small: {len(rom_bytes)} bytes")
         raise HTTPException(status_code=400, detail="ROM file too small")
 
     try:
@@ -197,12 +222,7 @@ async def upload_rom(rom_file: UploadFile = File(...)):
         else:
             edition = "unknown"
 
-        # Save ROM to shared storage
-        storage_path = str(
-            await storage_module.rom_storage.save_rom(rom_md5, rom_bytes)
-        )
-
-        # Create or update ROM record in database
+        # Create or update ROM record in database (metadata only, no file storage)
         async with database_module.async_session_maker() as db_session:
             existing_rom = await db_session.get(Rom, rom_md5)
             if existing_rom:
@@ -215,29 +235,17 @@ async def upload_rom(rom_file: UploadFile = File(...)):
                     team_count_national=teams_count["national"],
                     team_count_club=teams_count["club"],
                     team_count_custom=teams_count["custom"],
-                    storage_path=storage_path,
                 )
                 db_session.add(new_rom)
             await db_session.commit()
 
-        # Create session in Redis
+        # Create session in Redis (store ROM bytes in session)
         import uuid
 
         session_id = str(uuid.uuid4())
         await redis_module.redis_store.create_session(
-            session_id, rom_md5, storage_path, teams_data
+            session_id, rom_md5, teams_data, rom_bytes
         )
-
-        # Create session audit record
-        async with database_module.async_session_maker() as db_session:
-            session_record = SessionModel(
-                id=session_id,
-                rom_md5=rom_md5,
-                expires_at=datetime.utcnow() + timedelta(seconds=1800),
-                container_hostname=os.getenv("HOSTNAME", "unknown"),
-            )
-            db_session.add(session_record)
-            await db_session.commit()
 
         return UploadResponse(
             session_id=session_id,
@@ -268,10 +276,10 @@ async def validate(request: ValidateRequest):
     # Extend session TTL
     await redis_module.redis_store.extend_session(request.session_id)
 
-    # Load ROM from storage
-    rom_bytes = await storage_module.rom_storage.load_rom(session_data["rom_md5"])
+    # Get ROM bytes from session
+    rom_bytes = session_data.get("rom_bytes")
     if not rom_bytes:
-        raise HTTPException(status_code=404, detail="ROM file not found in storage")
+        raise HTTPException(status_code=404, detail="ROM data not found in session")
 
     try:
         # Validate teams
@@ -285,8 +293,18 @@ async def validate(request: ValidateRequest):
         duration_ms = int((time.time() - start_time) * 1000)
 
         # Store validation result in database
-        # Note: We don't have upload_id here since this might be pre-upload validation
-        # Validation results are stored when JSON is actually uploaded via admin tracking
+        async with database_module.async_session_maker() as db_session:
+            validation = Validation(
+                session_id=request.session_id,
+                filename="validation",
+                json_content=request.teams_json,
+                is_valid=is_valid,
+                errors=[{"path": "", "message": str(e)} for e in errors],
+                warnings=[{"path": "", "message": str(w)} for w in warnings],
+                duration_ms=duration_ms,
+            )
+            db_session.add(validation)
+            await db_session.commit()
 
         return ValidateResponse(
             valid=is_valid, errors=error_issues, warnings=warning_issues
@@ -308,10 +326,10 @@ async def generate_rom(request: GenerateRomRequest):
     if not session_data:
         raise HTTPException(status_code=404, detail="Session not found or expired")
 
-    # Load ROM from storage
-    rom_bytes = await storage_module.rom_storage.load_rom(session_data["rom_md5"])
+    # Get ROM bytes from session
+    rom_bytes = session_data.get("rom_bytes")
     if not rom_bytes:
-        raise HTTPException(status_code=404, detail="ROM file not found in storage")
+        raise HTTPException(status_code=404, detail="ROM data not found in session")
 
     try:
         # Validate first
@@ -338,54 +356,6 @@ async def generate_rom(request: GenerateRomRequest):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to generate ROM: {str(e)}")
-
-
-@app.post("/api/upload-json")
-async def upload_json(
-    session_id: str,
-    filename: str,
-    teams_json: Dict[str, Any],
-):
-    """
-    Store uploaded JSON for admin tracking.
-    This is called by the frontend after successful validation.
-    """
-    # Get session from Redis
-    session_data = await redis_module.redis_store.get_session(session_id)
-    if not session_data:
-        raise HTTPException(status_code=404, detail="Session not found or expired")
-
-    # Validate the JSON
-    rom_bytes = await storage_module.rom_storage.load_rom(session_data["rom_md5"])
-    errors, warnings = validate_teams(rom_bytes, teams_json)
-
-    is_valid = len(errors) == 0
-
-    # Store in database
-    async with database_module.async_session_maker() as db_session:
-        upload = Upload(
-            session_id=session_id,
-            filename=filename,
-            json_content=teams_json,
-        )
-        db_session.add(upload)
-        await db_session.flush()  # Get upload.id
-
-        validation = Validation(
-            upload_id=upload.id,
-            is_valid=is_valid,
-            errors=[{"path": "", "message": str(e)} for e in errors],
-            warnings=[{"path": "", "message": str(w)} for w in warnings],
-        )
-        db_session.add(validation)
-        await db_session.commit()
-
-        return {
-            "upload_id": upload.id,
-            "is_valid": is_valid,
-            "errors_count": len(errors),
-            "warnings_count": len(warnings),
-        }
 
 
 if __name__ == "__main__":

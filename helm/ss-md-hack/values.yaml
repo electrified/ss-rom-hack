@@ -89,9 +89,6 @@ config:
   # Session TTL in seconds (default 30 minutes)
   sessionTtl: 1800
   
-  # ROM retention period in days
-  romRetentionDays: 30
-  
   # Enable Prometheus metrics
   metricsEnabled: true
 
@@ -99,17 +96,8 @@ config:
 # Generate with: python -c "import bcrypt; print(bcrypt.hashpw(b'yourpassword', bcrypt.gensalt()).decode())"
 admin:
   username: "admin"
-  # CHANGE THIS IN PRODUCTION
-  passwordHash: "$2b$12$LRqQQr4r4mQP9vQYdFLovemX9jL8P4F5E6Z5Q7Z8Z9Z0Z1Z2Z3Z4Z"
-
-# Persistent storage for ROM files
-persistence:
-  enabled: true
-  storageClass: "standard-rwx"
-  accessModes:
-    - ReadWriteMany
-  size: 50Gi
-  annotations: {}
+  # Default password: admin (change in production!)
+  passwordHash: "$2b$12$iwWt2p4KDfwpx75Zm/NrXelxv1eK.b7HWHIdIz1OobDPrG4XIlRbm"
 
 # PostgreSQL configuration
 postgresql:
@@ -151,23 +139,6 @@ redis:
       requests:
         cpu: 100m
         memory: 256Mi
-
-# Cleanup CronJob configuration
-cleanup:
-  enabled: true
-  # Cron schedule (default: daily at 2 AM)
-  schedule: "0 2 * * *"
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 256Mi
-  # Additional pod labels
-  podLabels: {}
-  # Additional pod annotations
-  podAnnotations: {}
 
 # Prometheus ServiceMonitor
 serviceMonitor:

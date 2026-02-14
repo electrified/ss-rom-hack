@@ -11,6 +11,16 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminPage, setAdminPage] = useState('dashboard');
   
+  // Main app state - ALWAYS defined (no early return before hooks)
+  const [currentStep, setCurrentStep] = useState('upload');
+  const [sessionId, setSessionId] = useState(null);
+  const [romInfo, setRomInfo] = useState(null);
+  const [teamsJson, setTeamsJson] = useState(null);
+  const [validationResults, setValidationResults] = useState(null);
+  const [modifiedTeamsJson, setModifiedTeamsJson] = useState(null);
+  const [jsonFileName, setJsonFileName] = useState(null);
+  const [isValid, setIsValid] = useState(false);
+
   useEffect(() => {
     const checkRoute = () => {
       const hash = window.location.hash;
@@ -32,25 +42,12 @@ function App() {
     return () => window.removeEventListener('hashchange', checkRoute);
   }, []);
 
-  // Admin view
+  // Admin view - after all hooks are called
   if (isAdmin) {
     return <AdminApp page={adminPage} />;
   }
 
   // Main app view
-  // Step tracking: 'upload', 'summary', 'validate', 'download'
-  const [currentStep, setCurrentStep] = useState('upload');
-  
-  // Session data
-  const [sessionId, setSessionId] = useState(null);
-  const [romInfo, setRomInfo] = useState(null);
-  const [teamsJson, setTeamsJson] = useState(null);
-  
-  // Validation results
-  const [validationResults, setValidationResults] = useState(null);
-  const [modifiedTeamsJson, setModifiedTeamsJson] = useState(null);
-  const [jsonFileName, setJsonFileName] = useState(null);
-  const [isValid, setIsValid] = useState(false);
 
   const handleUploadSuccess = (result) => {
     setSessionId(result.session_id);

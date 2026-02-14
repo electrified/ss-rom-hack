@@ -9,14 +9,10 @@ from sqlalchemy import (
     Integer,
     DateTime,
     Boolean,
-    Text,
-    JSON,
-    ForeignKey,
-    Index,
     func,
 )
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 
 Base = declarative_base()
@@ -33,108 +29,25 @@ class Rom(Base):
     team_count_national = Column(Integer, default=0)
     team_count_club = Column(Integer, default=0)
     team_count_custom = Column(Integer, default=0)
-    storage_path = Column(String(500), nullable=False)
     first_seen_at = Column(DateTime(timezone=True), default=func.now())
     last_seen_at = Column(DateTime(timezone=True), default=func.now())
     deleted_at = Column(DateTime(timezone=True), nullable=True)
 
-    # Relationships
-    sessions = relationship("Session", back_populates="rom")
-
-
-class Session(Base):
-    """Session audit record - actual session state is in Redis."""
-
-    __tablename__ = "sessions"
-
-    id = Column(String(36), primary_key=True)
-    rom_md5 = Column(String(32), ForeignKey("roms.md5_hash"), nullable=False)
-    created_at = Column(DateTime(timezone=True), default=func.now())
-    expires_at = Column(DateTime(timezone=True), nullable=False)
-    container_hostname = Column(String(100))
-
-    # Relationships
-    rom = relationship("Rom", back_populates="sessions")
-    uploads = relationship(
-        "Upload", back_populates="session", cascade="all, delete-orphan"
-    )
-    requests = relationship(
-        "Request", back_populates="session", cascade="all, delete-orphan"
-    )
-
-
-class Upload(Base):
-    """JSON file uploads with full content."""
-
-    __tablename__ = "uploads"
-
-    id = Column(Integer, primary_key=True)
-    session_id = Column(String(36), ForeignKey("sessions.id"), nullable=False)
-    filename = Column(String(255))
-    json_content = Column(JSONB, nullable=False)
-    uploaded_at = Column(DateTime(timezone=True), default=func.now())
-
-    # Relationships
-    session = relationship("Session", back_populates="uploads")
-    validations = relationship(
-        "Validation", back_populates="upload", cascade="all, delete-orphan"
-    )
-
 
 class Validation(Base):
-    """Validation results for each upload."""
+    """Validation results for each JSON upload."""
 
     __tablename__ = "validations"
 
     id = Column(Integer, primary_key=True)
-    upload_id = Column(Integer, ForeignKey("uploads.id"), nullable=False)
+    session_id = Column(String(36), nullable=False, index=True)
+    filename = Column(String(255))
+    json_content = Column(JSONB, nullable=False)
     is_valid = Column(Boolean, nullable=False)
     errors = Column(JSONB, default=list)
     warnings = Column(JSONB, default=list)
     validated_at = Column(DateTime(timezone=True), default=func.now())
     duration_ms = Column(Integer)
-
-    # Relationships
-    upload = relationship("Upload", back_populates="validations")
-
-
-class Request(Base):
-    """HTTP request audit log."""
-
-    __tablename__ = "requests"
-
-    id = Column(Integer, primary_key=True)
-    session_id = Column(String(36), ForeignKey("sessions.id"), nullable=True)
-    endpoint = Column(String(255), nullable=False)
-    method = Column(String(10), nullable=False)
-    request_payload = Column(JSONB)
-    response_status = Column(Integer)
-    error_message = Column(Text)
-    duration_ms = Column(Integer)
-    container_hostname = Column(String(100))
-    timestamp = Column(DateTime(timezone=True), default=func.now())
-
-    # Relationships
-    session = relationship("Session", back_populates="requests")
-
-    # Indexes
-    __table_args__ = (
-        Index("idx_requests_session", "session_id"),
-        Index("idx_requests_timestamp", "timestamp"),
-        Index("idx_requests_status", "response_status"),
-    )
-
-
-class CleanupLog(Base):
-    """Log of ROM file cleanup operations."""
-
-    __tablename__ = "cleanup_log"
-
-    id = Column(Integer, primary_key=True)
-    rom_md5 = Column(String(32))
-    file_path = Column(String(500))
-    deleted_at = Column(DateTime(timezone=True), default=func.now())
-    reason = Column(String(50))
 
 
 # Database engine and session factory (initialized in config)

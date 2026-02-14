@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   # PostgreSQL Database
   postgres:
@@ -40,18 +38,8 @@ services:
     container_name: ssmdhack-app
     ports:
       - "8000:8000"
-    environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/ssmdhack
-      - REDIS_URL=redis://redis:6379/0
-      - REDIS_SESSION_TTL=1800
-      - STORAGE_PATH=/data/roms
-      - ROM_RETENTION_DAYS=30
-      - ADMIN_USERNAME=admin
-      - ADMIN_PASSWORD_HASH=$2b$12$LRqQQr4r4mQP9vQYdFLovemX9jL8P4F5E6Z5Q7Z8Z9Z0Z1Z2Z3Z4Z
-      - LOG_LEVEL=INFO
-      - METRICS_ENABLED=true
-    volumes:
-      - roms_data:/data/roms
+    env_file:
+      - .env
     depends_on:
       postgres:
         condition: service_healthy
@@ -64,34 +52,8 @@ services:
              alembic upgrade head &&
              python -m uvicorn main:app --host 0.0.0.0 --port 8000"
 
-  # Cleanup CronJob (optional - runs as a separate service)
-  cleanup:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: ssmdhack-cleanup
-    environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/ssmdhack
-      - STORAGE_PATH=/data/roms
-      - ROM_RETENTION_DAYS=30
-    volumes:
-      - roms_data:/data/roms
-    depends_on:
-      - postgres
-    networks:
-      - ssmdhack-network
-    command: >
-      sh -c "while true; do
-               echo 'Running cleanup...';
-               python /app/backend/cleanup.py || true;
-               sleep 86400;
-             done"
-    # Note: In production, use Kubernetes CronJob instead
-
 volumes:
   postgres_data:
-    driver: local
-  roms_data:
     driver: local
 
 networks:

@@ -35,10 +35,6 @@ DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/ssmdhack
 REDIS_URL=redis://localhost:6379/0
 REDIS_SESSION_TTL=1800
 
-# Storage
-STORAGE_PATH=./data/roms
-ROM_RETENTION_DAYS=30
-
 # Admin
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD_HASH=\$2b\$12\$LRqQQr4r4mQP9vQYdFLovemX9jL8P4F5E6Z5Q7Z8Z9Z0Z1Z2Z3Z4Z

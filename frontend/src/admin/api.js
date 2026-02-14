@@ -122,11 +122,11 @@ export async function listRequests(params = {}) {
 }
 
 /**
- * List ROMs
+ * List uploads
  */
-export async function listRoms(page = 1, limit = 50) {
+export async function listUploads(page = 1, limit = 50) {
   const response = await fetch(
-    `${API_BASE}/admin/roms?page=${page}&limit=${limit}`,
+    `${API_BASE}/admin/uploads?page=${page}&limit=${limit}`,
     { headers: getAuthHeaders() }
   );
   
@@ -135,30 +135,7 @@ export async function listRoms(page = 1, limit = 50) {
   }
   
   if (!response.ok) {
-    throw new Error('Failed to fetch ROMs');
-  }
-  
-  return response.json();
-}
-
-/**
- * Delete ROM
- */
-export async function deleteRom(md5Hash) {
-  const response = await fetch(
-    `${API_BASE}/admin/roms/${md5Hash}`,
-    {
-      method: 'DELETE',
-      headers: getAuthHeaders(),
-    }
-  );
-  
-  if (response.status === 401) {
-    throw new Error('Unauthorized');
-  }
-  
-  if (!response.ok) {
-    throw new Error('Failed to delete ROM');
+    throw new Error('Failed to fetch uploads');
   }
   
   return response.json();

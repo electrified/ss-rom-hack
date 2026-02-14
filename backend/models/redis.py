@@ -28,13 +28,17 @@ class RedisSessionStore:
             await self.client.close()
 
     async def create_session(
-        self, session_id: str, rom_md5: str, rom_path: str, teams_data: Dict[str, Any]
+        self,
+        session_id: str,
+        rom_md5: str,
+        teams_data: Dict[str, Any],
+        rom_bytes: bytes,
     ) -> str:
         """Create a new session in Redis."""
         session_data = {
             "rom_md5": rom_md5,
-            "rom_path": rom_path,
             "teams_data": teams_data,
+            "rom_bytes": rom_bytes,
         }
 
         await self.client.setex(
