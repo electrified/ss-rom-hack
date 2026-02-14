@@ -1,11 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import RomUpload from './components/RomUpload';
 import TeamsSummary from './components/TeamsSummary';
 import JsonUpload from './components/JsonUpload';
 import ValidationResults from './components/ValidationResults';
 import DownloadButton from './components/DownloadButton';
+import AdminApp from './admin/AdminApp';
 
 function App() {
+  // Check if we're on admin route
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminPage, setAdminPage] = useState('dashboard');
+  
+  useEffect(() => {
+    const checkRoute = () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#/admin')) {
+        setIsAdmin(true);
+        const parts = hash.split('/');
+        if (parts.length >= 3) {
+          setAdminPage(parts[2]);
+        } else {
+          setAdminPage('dashboard');
+        }
+      } else {
+        setIsAdmin(false);
+      }
+    };
+    
+    checkRoute();
+    window.addEventListener('hashchange', checkRoute);
+    return () => window.removeEventListener('hashchange', checkRoute);
+  }, []);
+
+  // Admin view
+  if (isAdmin) {
+    return <AdminApp page={adminPage} />;
+  }
+
+  // Main app view
   // Step tracking: 'upload', 'summary', 'validate', 'download'
   const [currentStep, setCurrentStep] = useState('upload');
   
@@ -65,6 +97,15 @@ function App() {
       <header>
         <h1>Sensible Soccer ROM Editor</h1>
         <p>Upload, edit, and generate modified ROM files</p>
+        <a href="#/admin" style={{ 
+          position: 'absolute', 
+          top: '1rem', 
+          right: '1rem',
+          fontSize: '0.8rem',
+          opacity: 0.5
+        }}>
+          Admin
+        </a>
       </header>
 
       {/* Progress Steps */}

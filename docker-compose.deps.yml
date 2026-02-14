@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: ssmdhack-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ssmdhack
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ssmdhack-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: ssmdhack-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly no --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - ssmdhack-network
+
+  # Shared ROM Storage Volume
+  # This creates the volume for ROM files that would be mounted by the app
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  ssmdhack-network:
+    driver: bridge

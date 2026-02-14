@@ -1,0 +1,238 @@
+# Default values for ss-md-hack.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 3
+
+image:
+  repository: ss-md-hack
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8000"
+  prometheus.io/path: "/metrics"
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hosts:
+    - host: ssmdhack.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: ssmdhack-tls
+  #    hosts:
+  #      - ssmdhack.local
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 250m
+    memory: 512Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Application configuration
+config:
+  # Log level: DEBUG, INFO, WARNING, ERROR
+  logLevel: "INFO"
+  
+  # Session TTL in seconds (default 30 minutes)
+  sessionTtl: 1800
+  
+  # ROM retention period in days
+  romRetentionDays: 30
+  
+  # Enable Prometheus metrics
+  metricsEnabled: true
+
+# Admin credentials (bcrypt hashed password)
+# Generate with: python -c "import bcrypt; print(bcrypt.hashpw(b'yourpassword', bcrypt.gensalt()).decode())"
+admin:
+  username: "admin"
+  # CHANGE THIS IN PRODUCTION
+  passwordHash: "$2b$12$LRqQQr4r4mQP9vQYdFLovemX9jL8P4F5E6Z5Q7Z8Z9Z0Z1Z2Z3Z4Z"
+
+# Persistent storage for ROM files
+persistence:
+  enabled: true
+  storageClass: "standard-rwx"
+  accessModes:
+    - ReadWriteMany
+  size: 50Gi
+  annotations: {}
+
+# PostgreSQL configuration
+postgresql:
+  enabled: true
+  auth:
+    username: ssmdhack
+    password: "changeme"
+    database: ssmdhack
+    # existingSecret: ""
+    # secretKeys:
+    #   adminPasswordKey: ""
+    #   userPasswordKey: ""
+  primary:
+    persistence:
+      enabled: true
+      size: 100Gi
+      storageClass: ""
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 250m
+        memory: 512Mi
+
+# Redis configuration (ephemeral cache)
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: false
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+
+# Cleanup CronJob configuration
+cleanup:
+  enabled: true
+  # Cron schedule (default: daily at 2 AM)
+  schedule: "0 2 * * *"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  # Additional pod labels
+  podLabels: {}
+  # Additional pod annotations
+  podAnnotations: {}
+
+# Prometheus ServiceMonitor
+serviceMonitor:
+  enabled: false
+  namespace: "monitoring"
+  interval: 30s
+  scrapeTimeout: 10s
+  labels: {}
+
+# PrometheusRule for alerting
+prometheusRule:
+  enabled: false
+  namespace: "monitoring"
+  labels: {}
+  rules: []
+  #  - alert: SSMDHackHighErrorRate
+  #    expr: rate(ss_requests_total{status=~"5.."}[5m]) > 0.1
+  #    for: 5m
+  #    labels:
+  #      severity: warning
+  #    annotations:
+  #      summary: "High error rate in SS MD Hack"
+
+# Network policy
+networkPolicy:
+  enabled: false
+  ingress: []
+  egress: []
+
+# Pod disruption budget
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+  # maxUnavailable: 1
+
+# Extra environment variables
+extraEnv: []
+#  - name: CUSTOM_VAR
+#    value: "custom_value"
+
+# Extra environment variables from secrets/configmaps
+extraEnvFrom: []
+#  - secretRef:
+#      name: my-secret
+#  - configMapRef:
+#      name: my-configmap
+
+# Extra volumes
+extraVolumes: []
+#  - name: extra-volume
+#    emptyDir: {}
+
+# Extra volume mounts
+extraVolumeMounts: []
+#  - name: extra-volume
+#    mountPath: /extra
+
+# Init containers
+initContainers: []
+#  - name: init-myservice
+#    image: busybox:1.28
+#    command: ['sh', '-c', 'echo init']
+
+# Sidecar containers
+sidecars: []
+#  - name: sidecar
+#    image: busybox:1.28
+#    command: ['sh', '-c', 'echo sidecar']

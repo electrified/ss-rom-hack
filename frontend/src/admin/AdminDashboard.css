@@ -1,0 +1,96 @@
+.admin-layout {
+  min-height: 100vh;
+  background: #0a0e27;
+}
+
+.admin-header {
+  background: #0f3460;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #00d4ff30;
+}
+
+.admin-header h1 {
+  margin: 0;
+  color: #00d4ff;
+  font-size: 1.5rem;
+}
+
+.admin-nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.admin-nav a {
+  color: #fff;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.admin-nav a:hover {
+  background: #00d4ff30;
+}
+
+.admin-content {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.admin-content h2 {
+  color: #00d4ff;
+  margin-bottom: 1.5rem;
+}
+
+.admin-content table {
+  background: #0f3460;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.admin-content th,
+.admin-content td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #00d4ff20;
+}
+
+.admin-content th {
+  background: #00d4ff20;
+  color: #00d4ff;
+  font-weight: 600;
+}
+
+.admin-content tr:hover {
+  background: #00d4ff10;
+}
+
+.admin-content .button.small {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #00d4ff;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination button {
+  padding: 0.5rem 1rem;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

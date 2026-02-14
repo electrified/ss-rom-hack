@@ -1,0 +1,26 @@
+{{- if .Values.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "ss-md-hack.fullname" . }}-roms
+  labels:
+    app.kubernetes.io/name: {{ include "ss-md-hack.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- with .Values.persistence.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  accessModes:
+{{ toYaml .Values.persistence.accessModes | indent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+{{- if .Values.persistence.storageClass }}
+{{- if (eq "-" .Values.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: {{ .Values.persistence.storageClass }}
+{{- end }}
+{{- end }}
+{{- end }}
