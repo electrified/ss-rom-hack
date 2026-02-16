@@ -1,0 +1,50 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: build-and-push
+spec:
+  params:
+    - name: repo-url
+      type: string
+      description: Git repository URL
+      default: https://github.com/electrified/ss-rom-hack.git
+    - name: revision
+      type: string
+      description: Git revision to build
+      default: main
+    - name: image-name
+      type: string
+      description: Image repository (without tag)
+      default: 192.168.1.9:32000/ss-md-hack
+    - name: image-tag
+      type: string
+      description: Image tag
+      default: latest
+  workspaces:
+    - name: shared-workspace
+      description: Workspace shared between tasks
+  tasks:
+    - name: fetch-source
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.repo-url)
+        - name: revision
+          value: $(params.revision)
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+    - name: build-and-push
+      taskRef:
+        name: buildah-insecure
+      runAfter:
+        - fetch-source
+      params:
+        - name: IMAGE
+          value: $(params.image-name):$(params.image-tag)
+        - name: TLSVERIFY
+          value: "false"
+      workspaces:
+        - name: source
+          workspace: shared-workspace

@@ -5,10 +5,10 @@
 replicaCount: 3
 
 image:
-  repository: ss-md-hack
+  repository: 192.168.1.9:32000/ss-md-hack
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""

@@ -1,6 +1,15 @@
-# Dockerfile for SS MD Hack
-# Uses Python 3.12 for compatibility
+# Stage 1: Build frontend
+FROM node:20-alpine AS frontend-builder
 
+WORKDIR /app/frontend
+
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+
+COPY frontend/ ./
+RUN npm run build
+
+# Stage 2: Build backend + serve frontend
 FROM python:3.12-slim
 
 # Install system dependencies
@@ -21,9 +30,13 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 # Copy the rest of the application
 COPY . .
 
+# Copy built frontend from stage 1
+COPY --from=frontend-builder /app/frontend/dist /app/frontend/dist
+
 # Set environment variables
 ENV PYTHONPATH=/app
 ENV STORAGE_PATH=/data/roms
+ENV FRONTEND_PATH=/app/frontend/dist
 
 # Expose port
 EXPOSE 8000
