@@ -1,4 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+
+const BASE = import.meta.env.BASE_URL;
+
+const CHEER_TRACKS = [
+  'cdda_04_ingame.ogg', 'cdda_06_ingame.ogg', 'cdda_07_ingame.ogg',
+  'cdda_08_ingame.ogg', 'cdda_09_ingame.ogg', 'cdda_11_ingame.ogg',
+  'cdda_13_ingame.ogg', 'cdda_14_ingame.ogg', 'cdda_15_ingame.ogg',
+  'cdda_16_ingame.ogg', 'cdda_17_ingame.ogg', 'cdda_18_ingame.ogg',
+  'cdda_20_ingame.ogg', 'cdda_21_ingame.ogg', 'cdda_22_ingame.ogg',
+];
 
 function ValidationResults({ results, onReset }) {
   if (!results) {
@@ -6,6 +16,14 @@ function ValidationResults({ results, onReset }) {
   }
 
   const { valid, errors, warnings } = results;
+
+  useEffect(() => {
+    if (!valid) return;
+    const track = CHEER_TRACKS[Math.floor(Math.random() * CHEER_TRACKS.length)];
+    const audio = new Audio(BASE + track);
+    const playPromise = audio.play().catch(() => {});
+    return () => { playPromise.then(() => audio.pause()).catch(() => {}); };
+  }, [results]);
   const hasErrors = errors && errors.length > 0;
   const hasWarnings = warnings && warnings.length > 0;
 
