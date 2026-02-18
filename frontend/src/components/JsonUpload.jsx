@@ -94,7 +94,7 @@ function JsonUpload({ romBytes, onValidationComplete, disabled }) {
           </>
         ) : (
           <>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginBottom: '1rem', opacity: 0.5 }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3aab28" strokeWidth="2" style={{ marginBottom: '1rem', opacity: 0.7 }}>
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
               <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -119,7 +119,7 @@ function JsonUpload({ romBytes, onValidationComplete, disabled }) {
       {fileName && !error && (
         <div className="file-info">
           <span className="filename">{fileName}</span>
-          <span style={{ color: '#2ecc71' }}>✓ Uploaded</span>
+          <span style={{ color: '#6dde52' }}>✓ Uploaded</span>
         </div>
       )}
 

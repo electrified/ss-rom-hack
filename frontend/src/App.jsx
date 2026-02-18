@@ -58,8 +58,14 @@ function App() {
   return (
     <div className="app">
       <header>
-        <h1>Sensible Soccer ROM Editor</h1>
-        <p>Upload, edit, and generate modified ROM files</p>
+        <div className="logo">
+          <div className="logo-ball">⚽</div>
+          <div className="logo-text">
+            <span className="logo-sensible">SENSIBLE</span>
+            <span className="logo-soccer">SOCCER</span>
+          </div>
+        </div>
+        <p>ROM Editor — upload, edit, and generate modified ROM files</p>
         <MusicPlayer />
       </header>
 
@@ -130,7 +136,7 @@ function App() {
           </button>
         </div>
       )}
-      <footer style={{ textAlign: 'center', marginTop: '3rem', color: '#888', fontSize: '0.8rem' }}>
+      <footer>
         v{__APP_VERSION__}
       </footer>
     </div>

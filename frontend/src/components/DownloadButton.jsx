@@ -105,9 +105,9 @@ function DownloadButton({ romBytes, teamsJson, jsonFileName, disabled, onSuccess
         </div>
       )}
 
-      <div style={{ marginTop: '2rem', padding: '1rem', background: '#0f3460', borderRadius: '8px', fontSize: '0.9rem' }}>
-        <strong style={{ color: '#00d4ff' }}>Next Steps:</strong>
-        <ul style={{ marginTop: '0.5rem', marginLeft: '1.5rem' }}>
+      <div className="tip-box">
+        <strong>Next Steps:</strong>
+        <ul>
           <li>Use an emulator to test your modified ROM</li>
           <li>If you encounter issues, check the validation warnings above</li>
           <li>Upload another JSON file to make additional changes without re-uploading the ROM</li>

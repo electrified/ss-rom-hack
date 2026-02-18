@@ -36,9 +36,7 @@ function TeamsSummary({ romInfo, teamsJson, onDownloadJson }) {
       <div className="info-grid">
         <div className="info-item">
           <div className="label">Edition</div>
-          <div className="value" style={{ textTransform: 'capitalize' }}>
-            {romInfo.edition}
-          </div>
+          <div className="value text-value">{romInfo.edition}</div>
         </div>
         <div className="info-item">
           <div className="label">File Size</div>
@@ -50,7 +48,7 @@ function TeamsSummary({ romInfo, teamsJson, onDownloadJson }) {
         </div>
       </div>
 
-      <h3 style={{ marginBottom: '1rem', color: '#888' }}>Team Counts</h3>
+      <h3 style={{ marginBottom: '1rem', color: '#5a8a5a' }}>Team Counts</h3>
       <div className="info-grid">
         <div className="info-item">
           <div className="label">National Teams</div>
@@ -67,7 +65,7 @@ function TeamsSummary({ romInfo, teamsJson, onDownloadJson }) {
       </div>
 
       <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-        <p style={{ marginBottom: '1rem', color: '#888' }}>
+        <p style={{ marginBottom: '1rem', color: '#5a8a5a' }}>
           Download the decoded teams JSON, edit it with your changes, then upload the modified file.
         </p>
         <button onClick={handleDownload}>
@@ -75,9 +73,9 @@ function TeamsSummary({ romInfo, teamsJson, onDownloadJson }) {
         </button>
       </div>
 
-      <div style={{ marginTop: '1rem', padding: '1rem', background: '#0f3460', borderRadius: '8px', fontSize: '0.9rem' }}>
-        <strong style={{ color: '#00d4ff' }}>Tip:</strong> Use any text editor or JSON editor to modify team names, 
-        player names, tactics, and colors. Make sure to keep the JSON structure intact!
+      <div className="tip-box">
+        <strong>Tip:</strong> Use any text editor or JSON editor to modify team names,
+        player names, tactics, and colors. Keep the JSON structure intact!
       </div>
     </div>
   );
