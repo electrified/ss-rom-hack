@@ -34,8 +34,7 @@ function ValidationResults({ results, onReset }) {
           <ul className="validation-list">
             {errors.map((error, index) => (
               <li key={index} className="validation-item error">
-                <span className="path">{error.path}</span>
-                <span>{error.message}</span>
+                <span>{error}</span>
               </li>
             ))}
           </ul>
@@ -53,8 +52,7 @@ function ValidationResults({ results, onReset }) {
           <ul className="validation-list">
             {warnings.map((warning, index) => (
               <li key={index} className="validation-item warning">
-                <span className="path">{warning.path}</span>
-                <span>{warning.message}</span>
+                <span>{warning}</span>
               </li>
             ))}
           </ul>

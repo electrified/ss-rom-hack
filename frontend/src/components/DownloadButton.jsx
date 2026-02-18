@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
-import { generateRom } from '../api';
+import React, { useState, useEffect } from 'react';
+import { updateRom } from '../lib/sslib/index';
 
-function DownloadButton({ sessionId, teamsJson, jsonFileName, disabled, onSuccess }) {
+function DownloadButton({ romBytes, teamsJson, jsonFileName, disabled, onSuccess }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [downloadedFileName, setDownloadedFileName] = useState(null);
+
+  useEffect(() => {
+    setSuccess(false);
+    setDownloadedFileName(null);
+    setError(null);
+  }, [teamsJson]);
 
   const generateFileName = () => {
     const now = new Date();
@@ -23,7 +29,7 @@ function DownloadButton({ sessionId, teamsJson, jsonFileName, disabled, onSucces
   };
 
   const handleDownload = async () => {
-    if (disabled || !sessionId || !teamsJson) {
+    if (disabled || !romBytes || !teamsJson) {
       return;
     }
 
@@ -34,7 +40,16 @@ function DownloadButton({ sessionId, teamsJson, jsonFileName, disabled, onSucces
 
     try {
       const fileName = generateFileName();
-      await generateRom(sessionId, teamsJson, fileName);
+      const modifiedRom = updateRom(romBytes, teamsJson);
+      const blob = new Blob([modifiedRom], { type: 'application/octet-stream' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
       setDownloadedFileName(fileName);
       setSuccess(true);
       if (onSuccess) {
@@ -61,7 +76,7 @@ function DownloadButton({ sessionId, teamsJson, jsonFileName, disabled, onSucces
           {isGenerating ? (
             <>
               <span className="spinner" style={{ marginRight: '0.5rem', verticalAlign: 'middle' }}></span>
-              Generating ROM...
+              Building ROM...
             </>
           ) : (
             <>

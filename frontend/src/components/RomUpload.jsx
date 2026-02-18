@@ -1,9 +1,9 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { uploadRom } from '../api';
+import { decodeRom } from '../lib/sslib/index';
 
 function RomUpload({ onUploadSuccess }) {
   const [isDragging, setIsDragging] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -41,16 +41,29 @@ function RomUpload({ onUploadSuccess }) {
       return;
     }
 
-    setIsUploading(true);
+    setIsLoading(true);
     setError(null);
 
     try {
-      const result = await uploadRom(file);
-      onUploadSuccess(result);
+      const buffer = await file.arrayBuffer();
+      const romBytes = new Uint8Array(buffer);
+      const teamsJson = decodeRom(romBytes);
+
+      const romInfo = {
+        edition: 'mega drive',
+        size: file.size,
+        teams_count: {
+          national: teamsJson.national.length,
+          club: teamsJson.club.length,
+          custom: teamsJson.custom.length,
+        },
+      };
+
+      onUploadSuccess({ romBytes, romInfo, teamsJson });
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Failed to decode ROM. Make sure this is a valid Sensible Soccer Mega Drive ROM.');
     } finally {
-      setIsUploading(false);
+      setIsLoading(false);
     }
   };
 
@@ -61,7 +74,7 @@ function RomUpload({ onUploadSuccess }) {
   return (
     <div className="card">
       <h2>Step 1: Upload ROM</h2>
-      <p>Upload your Sensible Soccer ROM file to get started.</p>
+      <p>Upload your Sensible Soccer ROM file to get started. All processing happens locally in your browser — nothing is uploaded to a server.</p>
       
       <div
         className={`upload-area ${isDragging ? 'dragover' : ''}`}
@@ -70,10 +83,10 @@ function RomUpload({ onUploadSuccess }) {
         onDrop={handleDrop}
         onClick={handleClick}
       >
-        {isUploading ? (
+        {isLoading ? (
           <>
             <div className="spinner"></div>
-            <p>Uploading and decoding ROM...</p>
+            <p>Decoding ROM...</p>
           </>
         ) : (
           <>

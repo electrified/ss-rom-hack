@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { validateTeams } from '../api';
+import { validateTeams } from '../lib/sslib/index';
 
-function JsonUpload({ sessionId, onValidationComplete, disabled }) {
+function JsonUpload({ romBytes, onValidationComplete, disabled }) {
   const [isDragging, setIsDragging] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
   const [error, setError] = useState(null);
@@ -33,6 +33,8 @@ function JsonUpload({ sessionId, onValidationComplete, disabled }) {
     if (files.length > 0) {
       handleFile(files[0]);
     }
+    // Reset so the same file can be re-selected and will trigger onChange again
+    e.target.value = '';
   }, []);
 
   const handleFile = async (file) => {
@@ -47,14 +49,12 @@ function JsonUpload({ sessionId, onValidationComplete, disabled }) {
     setFileName(file.name);
 
     try {
-      // Read the file
       const text = await file.text();
       const teamsJson = JSON.parse(text);
 
-      // Validate against the ROM
-      const result = await validateTeams(sessionId, teamsJson);
-      
-      // Pass result, JSON, and filename back to parent
+      const { errors, warnings } = validateTeams(romBytes, teamsJson);
+      const result = { valid: errors.length === 0, errors, warnings };
+
       onValidationComplete(result, teamsJson, file.name);
     } catch (err) {
       if (err instanceof SyntaxError) {
