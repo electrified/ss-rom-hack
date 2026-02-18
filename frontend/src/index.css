@@ -310,3 +310,41 @@ button.secondary:hover:not(:disabled) {
   color: #888;
   font-size: 0.9rem;
 }
+
+/* Music Player */
+.music-player {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.music-btn {
+  background: #0f3460;
+  color: #eee;
+  font-size: 0.85rem;
+  padding: 0.4rem 1rem;
+  font-weight: 500;
+}
+
+.music-btn.playing {
+  background: #1a4a7a;
+  color: #00d4ff;
+}
+
+.music-btn:hover:not(:disabled) {
+  background: #1a4a7a;
+  transform: none;
+}
+
+.music-track {
+  color: #888;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.music-error {
+  color: #e74c3c;
+  font-size: 0.8rem;
+}

@@ -29,7 +29,8 @@
       "Bash(xargs:*)",
       "WebSearch",
       "Bash(pip install:*)",
-      "Bash(source:*)"
+      "Bash(source:*)",
+      "Bash(/usr/bin/npm test)"
     ]
   }
 }

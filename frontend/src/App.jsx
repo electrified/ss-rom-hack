@@ -4,6 +4,7 @@ import TeamsSummary from './components/TeamsSummary';
 import JsonUpload from './components/JsonUpload';
 import ValidationResults from './components/ValidationResults';
 import DownloadButton from './components/DownloadButton';
+import MusicPlayer from './components/MusicPlayer';
 
 function App() {
   const [currentStep, setCurrentStep] = useState('upload');
@@ -59,6 +60,7 @@ function App() {
       <header>
         <h1>Sensible Soccer ROM Editor</h1>
         <p>Upload, edit, and generate modified ROM files</p>
+        <MusicPlayer />
       </header>
 
       {/* Progress Steps */}
@@ -128,6 +130,9 @@ function App() {
           </button>
         </div>
       )}
+      <footer style={{ textAlign: 'center', marginTop: '3rem', color: '#888', fontSize: '0.8rem' }}>
+        v{__APP_VERSION__}
+      </footer>
     </div>
   );
 }
