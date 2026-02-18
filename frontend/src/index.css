@@ -29,45 +29,59 @@ header {
 
 .logo {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .logo-ball {
-  font-size: 3rem;
+  font-size: 2.5rem;
   line-height: 1;
-  filter: drop-shadow(0 0 8px rgba(100, 220, 100, 0.5));
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 6px rgba(100, 220, 100, 0.6));
+  animation: pixel-bob 2s steps(2) infinite;
+}
+
+@keyframes pixel-bob {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-4px); }
 }
 
 .logo-text {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  line-height: 1;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .logo-sensible {
-  font-size: 1.3rem;
-  font-weight: 900;
-  letter-spacing: 0.25em;
-  color: #ffffff;
-  text-shadow: 0 0 20px rgba(100, 220, 80, 0.6);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  color: #c8e8c8;
+  text-shadow: 2px 2px 0 #1a3a1a;
+  image-rendering: pixelated;
 }
 
 .logo-soccer {
-  font-size: 2.8rem;
-  font-weight: 900;
-  letter-spacing: 0.12em;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.8rem;
   color: #6dde52;
-  text-shadow: 0 0 24px rgba(109, 222, 82, 0.5), 0 2px 0 rgba(0,0,0,0.5);
-  line-height: 0.9;
+  text-shadow:
+    3px 3px 0 #1a5c1a,
+    6px 6px 0 #0d2e0d,
+    0 0 20px rgba(109, 222, 82, 0.4);
+  image-rendering: pixelated;
+  line-height: 1.2;
 }
 
 header p {
   color: #5a8a5a;
-  font-size: 0.95rem;
-  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  font-family: 'Press Start 2P', monospace;
+  line-height: 1.8;
 }
 
 /* ── Card Component ── */
@@ -87,9 +101,19 @@ header p {
 }
 
 .card h2 {
+  font-family: 'Press Start 2P', monospace;
   color: #6dde52;
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  text-shadow: 2px 2px 0 #1a3a1a;
+}
+
+.card h3 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  line-height: 1.6;
+  text-shadow: 1px 1px 0 #1a3a1a;
 }
 
 /* ── Upload Area ── */
@@ -203,9 +227,8 @@ button.secondary:hover:not(:disabled) {
   padding: 0.75rem 1rem;
   margin-bottom: 0.5rem;
   border-radius: 6px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .validation-item.error {
