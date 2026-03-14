@@ -66,6 +66,9 @@ function App() {
           </div>
         </div>
         <p>ROM Editor — upload, edit, and generate modified ROM files</p>
+        <p style={{ fontSize: '0.65rem', color: '#3d5e3d', marginTop: '0.5rem', fontFamily: 'inherit', letterSpacing: '0.03em' }}>
+          Unofficial fan project — not affiliated with Sensible Software or any rights holder
+        </p>
         <MusicPlayer />
       </header>
 
@@ -137,7 +140,11 @@ function App() {
         </div>
       )}
       <footer>
-        v{__APP_VERSION__}
+        <div>v{__APP_VERSION__} &copy; 2026 Ed Brindley</div>
+        <div style={{ marginTop: '0.4rem', fontSize: '0.75em' }}>
+          Unofficial fan project — not affiliated with or endorsed by Sensible Software or any rights holder.
+          Sensible Soccer is a trademark of its respective owner.
+        </div>
       </footer>
     </div>
   );
