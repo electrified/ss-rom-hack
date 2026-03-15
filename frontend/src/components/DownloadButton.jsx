@@ -18,13 +18,12 @@ function DownloadButton({ romBytes, teamsJson, jsonFileName, disabled, onSuccess
     const timestamp = now.toISOString()
       .replace(/[:.]/g, '-')
       .slice(0, 19);
-    
+
     if (jsonFileName) {
-      // Remove .json extension and add timestamp
       const baseName = jsonFileName.replace(/\.json$/i, '');
       return `${baseName}_${timestamp}.md`;
     }
-    
+
     return `modified_rom_${timestamp}.md`;
   };
 
@@ -52,9 +51,6 @@ function DownloadButton({ romBytes, teamsJson, jsonFileName, disabled, onSuccess
       document.body.removeChild(a);
       setDownloadedFileName(fileName);
       setSuccess(true);
-      if (onSuccess) {
-        onSuccess();
-      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -63,12 +59,9 @@ function DownloadButton({ romBytes, teamsJson, jsonFileName, disabled, onSuccess
   };
 
   return (
-    <div className="card">
-      <h2>Step 4: Generate ROM</h2>
-      <p>Download your modified ROM file with all the changes applied.</p>
-
-      <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-        <button 
+    <div style={{ marginTop: '1.5rem' }}>
+      <div style={{ textAlign: 'center' }}>
+        <button
           onClick={handleDownload}
           disabled={disabled || isGenerating}
           style={{ minWidth: '250px' }}
@@ -100,19 +93,8 @@ function DownloadButton({ romBytes, teamsJson, jsonFileName, disabled, onSuccess
       {success && downloadedFileName && (
         <div className="success-message">
           <strong>Success!</strong> Your modified ROM has been downloaded as <code>{downloadedFileName}</code>
-          <br />
-          <small>You can now upload another JSON file to make additional changes.</small>
         </div>
       )}
-
-      <div className="tip-box">
-        <strong>Next Steps:</strong>
-        <ul>
-          <li>Use an emulator to test your modified ROM</li>
-          <li>If you encounter issues, check the validation warnings above</li>
-          <li>Upload another JSON file to make additional changes without re-uploading the ROM</li>
-        </ul>
-      </div>
     </div>
   );
 }

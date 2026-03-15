@@ -28,13 +28,11 @@ function ValidationResults({ results, onReset }) {
   const hasWarnings = warnings && warnings.length > 0;
 
   return (
-    <div className="card">
-      <h2>Validation Results</h2>
-      
+    <div style={{ marginTop: '1rem' }}>
       <div className={`validation-status ${valid ? 'valid' : 'invalid'}`}>
         <h3>{valid ? '✓ Validation Passed' : '✗ Validation Failed'}</h3>
         <p>
-          {valid 
+          {valid
             ? 'Your changes are valid and ready to be applied to the ROM.'
             : `Found ${errors.length} error(s) that must be fixed.`
           }
@@ -80,7 +78,7 @@ function ValidationResults({ results, onReset }) {
       {hasErrors && (
         <div style={{ marginTop: '2rem', textAlign: 'center' }}>
           <button onClick={onReset} className="secondary">
-            Try Another JSON File
+            Back to Editor
           </button>
         </div>
       )}

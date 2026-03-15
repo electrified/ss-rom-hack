@@ -1,18 +1,10 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { validateTeams } from '../validate.js';
+import type { RomStructure } from '../validate.js';
 
-// validateTeams requires a real ROM to find the pointer table.
-// We mock the decode module's findPointerTable and chainWalkRegion
-// to isolate the validation logic.
-vi.mock('../decode.js', () => ({
-  findPointerTable: vi.fn(() => ({
-    natStart: 0x020000, natEnd: 0x021000,
-    clubStart: 0x021002, clubEnd: 0x022000,
-    custStart: 0x022002, custEnd: 0x023000,
-    tableBase: 0x001000,
-  })),
-  chainWalkRegion: vi.fn(() => Array.from({ length: 1 }, (_, i) => i * 160)),
-}));
+const romStructure: RomStructure = {
+  teamCounts: { national: 1, club: 1, custom: 1 },
+};
 
 function makePlayer(overrides: Record<string, unknown> = {}) {
   return {
@@ -68,68 +60,89 @@ function makeTeamsJson(overrides: Record<string, unknown[]> = {}) {
   };
 }
 
-const fakeRom = new Uint8Array(0x030000);
+/** Collect all error strings from a validation result. */
+function allErrors(result: ReturnType<typeof validateTeams>): string[] {
+  const msgs = [...result.global];
+  for (const catTeams of Object.values(result.teams)) {
+    for (const te of Object.values(catTeams)) {
+      msgs.push(...te.team, ...te.formation);
+      for (const playerMsgs of Object.values(te.players)) {
+        msgs.push(...playerMsgs);
+      }
+    }
+  }
+  return msgs;
+}
 
 describe('validateTeams', () => {
   it('passes a valid minimal team JSON with no errors', () => {
-    const { errors, warnings } = validateTeams(fakeRom, makeTeamsJson());
-    expect(errors).toHaveLength(0);
-    expect(warnings).toHaveLength(0);
+    const result = validateTeams(romStructure, makeTeamsJson());
+    expect(result.valid).toBe(true);
+    expect(allErrors(result)).toHaveLength(0);
   });
 
   it('errors on missing top-level keys', () => {
-    const { errors } = validateTeams(fakeRom, { national: [] });
-    expect(errors.length).toBeGreaterThan(0);
-    expect(errors[0]).toMatch(/national.*club.*custom/i);
+    const result = validateTeams(romStructure, { national: [] });
+    expect(result.valid).toBe(false);
+    expect(result.global[0]).toMatch(/national.*club.*custom/i);
   });
 
   it('errors on invalid character in team name', () => {
-    const { errors } = validateTeams(fakeRom, makeTeamsJson({
+    const result = validateTeams(romStructure, makeTeamsJson({
       national: [makeTeam({ team: 'ENGLAND!' })],
     }));
+    expect(result.valid).toBe(false);
+    const errors = allErrors(result);
     expect(errors.some(e => e.includes('!') || e.includes('invalid chars'))).toBe(true);
   });
 
   it('errors on wrong player count', () => {
-    const { errors } = validateTeams(fakeRom, makeTeamsJson({
+    const result = validateTeams(romStructure, makeTeamsJson({
       national: [makeTeam({ players: Array.from({ length: 15 }, () => makePlayer()) })],
     }));
+    expect(result.valid).toBe(false);
+    const errors = allErrors(result);
     expect(errors.some(e => e.includes('16 players'))).toBe(true);
   });
 
   it('errors on invalid tactic', () => {
-    const { errors } = validateTeams(fakeRom, makeTeamsJson({
+    const result = validateTeams(romStructure, makeTeamsJson({
       national: [makeTeam({ tactic: '3-4-3' })],
     }));
+    expect(result.valid).toBe(false);
+    const errors = allErrors(result);
     expect(errors.some(e => e.includes('tactic'))).toBe(true);
   });
 
-  it('warns on formation missing goalkeeper slot', () => {
-    // Replace goalkeeper with a second right_back
+  it('flags formation missing goalkeeper slot', () => {
     const players = makeTeam().players.map((p: Record<string, unknown>, i: number) =>
       i === 0 ? { ...p, position: 'right_back' } : p
     );
-    const { warnings } = validateTeams(fakeRom, makeTeamsJson({
+    const result = validateTeams(romStructure, makeTeamsJson({
       national: [makeTeam({ players })],
     }));
-    expect(warnings.some(w => w.includes('formation slots invalid'))).toBe(true);
+    expect(result.valid).toBe(false);
+    const errors = allErrors(result);
+    expect(errors.some(e => e.includes('formation slots invalid'))).toBe(true);
   });
 
-  it('warns on wrong sub count', () => {
-    // Give only 4 subs instead of 5 (replace one sub with a forward at position 10)
+  it('flags wrong sub count', () => {
     const players = [...makeTeam().players];
-    // position 10 = second_forward, already used, so use a dup position to force wrong subs
     players[11] = makePlayer({ position: 'second_forward', role: 'forward', number: 12 });
-    const { warnings } = validateTeams(fakeRom, makeTeamsJson({
+    const result = validateTeams(romStructure, makeTeamsJson({
       national: [makeTeam({ players })],
     }));
-    expect(warnings.some(w => w.includes('subs'))).toBe(true);
+    expect(result.valid).toBe(false);
+    const errors = allErrors(result);
+    expect(errors.some(e => e.includes('subs'))).toBe(true);
   });
 
   it('errors on invalid skill value', () => {
-    const { errors } = validateTeams(fakeRom, makeTeamsJson({
+    const result = validateTeams(romStructure, makeTeamsJson({
       national: [makeTeam({ skill: 10 })],
     }));
+    expect(result.valid).toBe(false);
+    const errors = allErrors(result);
     expect(errors.some(e => e.includes('skill'))).toBe(true);
   });
 });

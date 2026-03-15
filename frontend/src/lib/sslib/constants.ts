@@ -8,6 +8,14 @@ export const ATTR_OFFSETS = [2, 4, 6, 22, 30, 38, 46, 54, 62, 70, 78, 86, 94, 10
 
 export const CATEGORIES = ['national', 'club', 'custom'] as const;
 
+// Maximum character lengths for 5-bit encoded text fields.
+// Derived from the autoFindTeams scanner heuristic (decode.ts) which
+// rejects strings longer than 25 chars as invalid team data.
+export const MAX_TEAM_NAME = 25;
+export const MAX_COUNTRY = 19;   // longest ROM value: "REPUBLIC OF IRELAND"
+export const MAX_COACH = 25;
+export const MAX_PLAYER_NAME = 25;
+
 export const COLOUR_NAMES: Record<number, string> = {
   0x01: "grey", 0x02: "white", 0x03: "black", 0x04: "brown",
   0x05: "dark_orange", 0x06: "orange",

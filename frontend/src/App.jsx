@@ -1,59 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import RomUpload from './components/RomUpload';
-import TeamsSummary from './components/TeamsSummary';
-import JsonUpload from './components/JsonUpload';
-import ValidationResults from './components/ValidationResults';
+import TeamEditor from './components/TeamEditor';
 import DownloadButton from './components/DownloadButton';
 import MusicPlayer from './components/MusicPlayer';
+import { validateTeams, extractRomStructure } from './lib/sslib/index';
 
 function App() {
   const [currentStep, setCurrentStep] = useState('upload');
   const [romBytes, setRomBytes] = useState(null);
-  const [romInfo, setRomInfo] = useState(null);
+  const [romStructure, setRomStructure] = useState(null);
   const [teamsJson, setTeamsJson] = useState(null);
-  const [validationResults, setValidationResults] = useState(null);
-  const [modifiedTeamsJson, setModifiedTeamsJson] = useState(null);
-  const [jsonFileName, setJsonFileName] = useState(null);
-  const [isValid, setIsValid] = useState(false);
+  const [validation, setValidation] = useState(null);
+  const debounceRef = useRef(null);
+  const editorRef = useRef(null);
+
+  useEffect(() => {
+    if (!romStructure || !teamsJson) {
+      setValidation(null);
+      return;
+    }
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setValidation(validateTeams(romStructure, teamsJson));
+    }, 300);
+    return () => clearTimeout(debounceRef.current);
+  }, [romStructure, teamsJson]);
 
   const handleUploadSuccess = (result) => {
     setRomBytes(result.romBytes);
-    setRomInfo(result.romInfo);
+    setRomStructure(extractRomStructure(result.romBytes));
     setTeamsJson(result.teamsJson);
-    setCurrentStep('summary');
-    setValidationResults(null);
-    setModifiedTeamsJson(null);
-    setIsValid(false);
+    setCurrentStep('edit');
   };
 
-  const handleValidationComplete = (results, json, fileName) => {
-    setValidationResults(results);
-    setModifiedTeamsJson(json);
-    setJsonFileName(fileName);
-    setIsValid(results && results.valid);
-    if (results) {
-      setCurrentStep('download');
+  useEffect(() => {
+    if (currentStep === 'edit' && editorRef.current) {
+      editorRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  };
+  }, [currentStep]);
 
-  const handleReset = () => {
-    setValidationResults(null);
-    setModifiedTeamsJson(null);
-    setJsonFileName(null);
-    setIsValid(false);
-    setCurrentStep('summary');
+  const handleTeamsChange = (newTeams) => {
+    setTeamsJson(newTeams);
   };
 
   const handleStartOver = () => {
     setCurrentStep('upload');
     setRomBytes(null);
-    setRomInfo(null);
+    setRomStructure(null);
     setTeamsJson(null);
-    setValidationResults(null);
-    setModifiedTeamsJson(null);
-    setJsonFileName(null);
-    setIsValid(false);
+    setValidation(null);
   };
+
+  const errorCount = validation
+    ? validation.global.length + Object.values(validation.teams).reduce(
+        (sum, catTeams) => sum + Object.values(catTeams).reduce(
+          (tSum, te) => tSum + te.team.length + te.formation.length +
+            Object.values(te.players).reduce((pSum, msgs) => pSum + msgs.length, 0),
+          0),
+        0)
+    : 0;
 
   return (
     <div className="app">
@@ -74,61 +79,52 @@ function App() {
 
       {/* Progress Steps */}
       <div className="steps">
-        <div className={`step ${currentStep === 'upload' ? 'active' : ''} ${currentStep !== 'upload' ? 'completed' : ''}`}>
+        <div className={`step ${currentStep === 'upload' ? 'active' : 'completed'}`}>
           <div className="step-number">1</div>
           <div className="step-label">Upload ROM</div>
         </div>
-        <div className={`step ${currentStep === 'summary' ? 'active' : ''} ${['validate', 'download'].includes(currentStep) ? 'completed' : ''}`}>
+        <div className={`step ${currentStep === 'edit' ? 'active' : ''}`}>
           <div className="step-number">2</div>
-          <div className="step-label">Download JSON</div>
-        </div>
-        <div className={`step ${currentStep === 'validate' ? 'active' : ''} ${currentStep === 'download' ? 'completed' : ''}`}>
-          <div className="step-number">3</div>
-          <div className="step-label">Validate</div>
-        </div>
-        <div className={`step ${currentStep === 'download' ? 'active' : ''}`}>
-          <div className="step-number">4</div>
-          <div className="step-label">Download ROM</div>
+          <div className="step-label">Edit Teams</div>
         </div>
       </div>
 
       {/* Step 1: Upload ROM */}
       <RomUpload onUploadSuccess={handleUploadSuccess} />
 
-      {/* Step 2: Teams Summary */}
-      {currentStep !== 'upload' && romInfo && teamsJson && (
-        <TeamsSummary
-          romInfo={romInfo}
+      {/* Step 2: Edit Teams */}
+      {currentStep !== 'upload' && teamsJson && romBytes && (
+        <TeamEditor
+          ref={editorRef}
           teamsJson={teamsJson}
-        />
-      )}
-
-      {/* Step 3: Upload Modified JSON */}
-      {currentStep !== 'upload' && romBytes && (
-        <JsonUpload
+          onTeamsChange={handleTeamsChange}
           romBytes={romBytes}
-          onValidationComplete={handleValidationComplete}
-          disabled={currentStep === 'upload'}
+          validation={validation}
         />
       )}
 
-      {/* Validation Results */}
-      {validationResults && (
-        <ValidationResults
-          results={validationResults}
-          onReset={handleReset}
-        />
-      )}
-
-      {/* Step 4: Download ROM */}
+      {/* Download ROM */}
       {currentStep !== 'upload' && (
-        <DownloadButton
-          romBytes={romBytes}
-          teamsJson={modifiedTeamsJson || teamsJson}
-          jsonFileName={jsonFileName}
-          disabled={!isValid}
-          onSuccess={handleReset}
-        />
+        <div className="card">
+          <h2>Download ROM</h2>
+
+          {validation && !validation.valid && (
+            <div className="error-message" style={{ marginBottom: '1rem' }}>
+              {errorCount} validation error{errorCount !== 1 ? 's' : ''} must be fixed before downloading.
+              {validation.global.length > 0 && (
+                <ul style={{ marginTop: '0.5rem', marginLeft: '1.5rem' }}>
+                  {validation.global.map((msg, i) => <li key={i}>{msg}</li>)}
+                </ul>
+              )}
+            </div>
+          )}
+
+          <DownloadButton
+            romBytes={romBytes}
+            teamsJson={teamsJson}
+            disabled={!validation?.valid}
+          />
+        </div>
       )}
 
       {/* Start Over Button */}

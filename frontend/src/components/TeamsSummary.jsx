@@ -1,26 +1,6 @@
 import React from 'react';
 
-function TeamsSummary({ romInfo, teamsJson, onDownloadJson }) {
-  const handleDownload = () => {
-    // Convert teams JSON to string with nice formatting
-    const jsonStr = JSON.stringify(teamsJson, null, 2);
-    
-    // Create a blob and download
-    const blob = new Blob([jsonStr], { type: 'application/json' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'teams.json';
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-    
-    if (onDownloadJson) {
-      onDownloadJson();
-    }
-  };
-
+function TeamsSummary({ romInfo, teamsJson }) {
   const formatFileSize = (bytes) => {
     if (bytes < 1024) return bytes + ' B';
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
@@ -31,8 +11,8 @@ function TeamsSummary({ romInfo, teamsJson, onDownloadJson }) {
 
   return (
     <div className="card">
-      <h2>Step 2: ROM Information</h2>
-      
+      <h2>ROM Information</h2>
+
       <div className="info-grid">
         <div className="info-item">
           <div className="label">Edition</div>
@@ -48,7 +28,6 @@ function TeamsSummary({ romInfo, teamsJson, onDownloadJson }) {
         </div>
       </div>
 
-      <h3 style={{ marginBottom: '1rem', color: '#5a8a5a' }}>Team Counts</h3>
       <div className="info-grid">
         <div className="info-item">
           <div className="label">National Teams</div>
@@ -62,20 +41,6 @@ function TeamsSummary({ romInfo, teamsJson, onDownloadJson }) {
           <div className="label">Custom Teams</div>
           <div className="value">{romInfo.teams_count.custom}</div>
         </div>
-      </div>
-
-      <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-        <p style={{ marginBottom: '1rem', color: '#5a8a5a' }}>
-          Download the decoded teams JSON, edit it with your changes, then upload the modified file.
-        </p>
-        <button onClick={handleDownload}>
-          Download teams.json
-        </button>
-      </div>
-
-      <div className="tip-box">
-        <strong>Tip:</strong> Use any text editor or JSON editor to modify team names,
-        player names, tactics, and colors. Keep the JSON structure intact!
       </div>
     </div>
   );

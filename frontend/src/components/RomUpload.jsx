@@ -32,6 +32,7 @@ function RomUpload({ onUploadSuccess }) {
     if (files.length > 0) {
       handleFile(files[0]);
     }
+    e.target.value = '';
   }, []);
 
   const handleFile = async (file) => {
