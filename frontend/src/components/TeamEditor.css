@@ -163,6 +163,91 @@
   line-height: 1.6;
 }
 
+/* ── Help Tip ── */
+.help-tip {
+  position: relative;
+  display: inline-flex;
+  margin-left: 0.3rem;
+  vertical-align: middle;
+}
+
+.help-tip-btn {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid #3d5e3d;
+  background: transparent;
+  color: #5a8a5a;
+  font-size: 0.55rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.help-tip-btn:hover,
+.help-tip-btn.active {
+  border-color: #3aab28;
+  color: #6dde52;
+  background: rgba(58, 171, 40, 0.15);
+}
+
+.help-tip-bubble {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a3a1a;
+  color: #c0d8c0;
+  font-size: 0.7rem;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  line-height: 1.4;
+  padding: 0.4rem 0.6rem;
+  border-radius: 5px;
+  border: 1px solid #3aab28;
+  white-space: normal;
+  width: max-content;
+  max-width: 220px;
+  z-index: 20;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  pointer-events: none;
+}
+
+.help-tip-bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #3aab28;
+}
+
+/* In table headers, show bubble below to avoid sticky header clipping */
+th .help-tip-bubble {
+  bottom: auto;
+  top: calc(100% + 6px);
+  left: auto;
+  right: -8px;
+  transform: none;
+}
+
+th .help-tip-bubble::after {
+  top: auto;
+  bottom: 100%;
+  left: auto;
+  right: 10px;
+  transform: none;
+  border-top-color: transparent;
+  border-bottom-color: #3aab28;
+}
+
 /* ── Form Fields ── */
 .form-row {
   display: grid;
@@ -229,106 +314,167 @@
 }
 
 .kit-set h5 {
-  font-size: 0.7rem;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.5rem;
   color: #c0d8c0;
-  margin-bottom: 0.5rem;
-  text-align: center;
-  font-weight: 600;
-}
-
-.kit-preview {
-  display: flex;
-  justify-content: center;
   margin-bottom: 0.75rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-.kit-shirt-preview {
-  width: 48px;
-  height: 48px;
+/* Kit mannequin - shirt + shorts + socks stacked */
+.kit-mannequin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  gap: 1px;
+}
+
+.kit-svg-shirt {
+  width: 100px;
+  height: 86px;
+}
+
+.kit-svg-shorts {
+  width: 100px;
+  height: 40px;
+  margin-top: -2px;
+}
+
+.kit-svg-socks {
+  width: 100px;
+  height: 42px;
+  margin-top: -2px;
+}
+
+/* Kit controls area */
+.kit-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Style selector row */
+.kit-style-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.kit-style-buttons {
+  display: flex;
+  gap: 2px;
+  background: #112211;
   border-radius: 4px;
-  border: 1px solid #1a3a1a;
+  padding: 2px;
+}
+
+.kit-style-btn {
+  flex: 1;
+  background: transparent;
+  color: #5a8a5a;
+  border: none;
+  padding: 0.3rem 0.2rem;
+  font-size: 0.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+
+.kit-style-btn:hover {
+  background: rgba(109, 222, 82, 0.1);
+  color: #6dde52;
+}
+
+.kit-style-btn.active {
+  background: #3aab28;
+  color: #fff;
+}
+
+/* Colour picker - compact trigger + popover */
+.kit-colour-picker {
   position: relative;
-  overflow: hidden;
 }
 
-.kit-shirt-preview.style-plain {
-  /* single color - handled by background */
-}
-
-.kit-shirt-preview.style-sleeves {
-  /* center is shirt1, sides are shirt2 via pseudo elements */
-}
-
-.kit-shirt-preview.style-vertical .kit-stripe {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50%;
-}
-
-.kit-shirt-preview.style-vertical .kit-stripe:first-child {
-  left: 0;
-}
-
-.kit-shirt-preview.style-vertical .kit-stripe:last-child {
-  right: 0;
-}
-
-.kit-shirt-preview.style-horizontal .kit-stripe {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 50%;
-}
-
-.kit-shirt-preview.style-horizontal .kit-stripe:first-child {
-  top: 0;
-}
-
-.kit-shirt-preview.style-horizontal .kit-stripe:last-child {
-  bottom: 0;
-}
-
-.kit-color-row {
+.kit-colour-trigger {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.4rem;
-}
-
-.kit-color-row:last-child {
-  margin-bottom: 0;
-}
-
-.kit-color-row label {
-  font-size: 0.7rem;
-  color: #5a8a5a;
-  width: 48px;
-  flex-shrink: 0;
-}
-
-.kit-color-row select {
-  flex: 1;
-  background: #0d220d;
+  gap: 0.4rem;
+  width: 100%;
+  background: #112211;
   border: 1px solid #1a3a1a;
-  color: #e8f0e8;
-  padding: 0.3rem 0.4rem;
   border-radius: 4px;
-  font-size: 0.75rem;
-  outline: none;
+  padding: 0.3rem 0.5rem;
   cursor: pointer;
+  transition: border-color 0.15s;
 }
 
-.kit-color-row select:focus {
+.kit-colour-trigger:hover {
   border-color: #3aab28;
 }
 
-.color-swatch {
+.kit-colour-trigger-swatch {
   width: 16px;
   height: 16px;
   border-radius: 3px;
-  border: 1px solid #1a3a1a;
+  border: 1px solid rgba(255,255,255,0.2);
   flex-shrink: 0;
+}
+
+.kit-colour-trigger-label {
+  font-size: 0.65rem;
+  color: #5a8a5a;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.kit-colour-trigger-name {
+  font-size: 0.7rem;
+  color: #c0d8c0;
+  margin-left: auto;
+  text-transform: capitalize;
+}
+
+.kit-colour-popover {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  margin-top: 2px;
+  background: #0d220d;
+  border: 1px solid #3aab28;
+  border-radius: 6px;
+  padding: 6px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.kit-colour-option {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.1s, transform 0.1s;
+}
+
+.kit-colour-option:hover {
+  border-color: #6dde52;
+  transform: scale(1.1);
+}
+
+.kit-colour-option.active {
+  border-color: #fff;
+  box-shadow: 0 0 4px rgba(109, 222, 82, 0.6);
 }
 
 /* ── Player Editor ── */
@@ -581,6 +727,23 @@
 
   .kit-sets {
     grid-template-columns: 1fr;
+  }
+
+  .kit-svg-shirt {
+    width: 80px;
+    height: 69px;
+  }
+
+  .kit-svg-shorts {
+    width: 80px;
+    height: 32px;
+    margin-top: -2px;
+  }
+
+  .kit-svg-socks {
+    width: 80px;
+    height: 34px;
+    margin-top: -2px;
   }
 
   .form-row {

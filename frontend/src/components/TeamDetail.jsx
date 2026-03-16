@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import KitEditor from './KitEditor';
 import PlayerEditor from './PlayerEditor';
+import HelpTip from './HelpTip';
 import { CHARSET, TACTIC_NAMES, MAX_TEAM_NAME, MAX_COUNTRY, MAX_COACH } from '../lib/sslib/index';
 
 const VALID_CHARS = new Set(CHARSET.slice(1));
@@ -76,7 +77,7 @@ function TeamDetail({ team: teamProp, onUpdate, errors }) {
             />
           </div>
           <div className="form-field">
-            <label>Country</label>
+            <label>Country<HelpTip text="Not used by custom or national teams." /></label>
             <input
               type="text"
               value={team.country}
@@ -112,7 +113,7 @@ function TeamDetail({ team: teamProp, onUpdate, errors }) {
             </select>
           </div>
           <div className="form-field">
-            <label>Flag</label>
+            <label>Flag<HelpTip text="Unused by the game engine. Safe to leave at 0." /></label>
             <select value={team.flag} onChange={e => update('flag', parseInt(e.target.value))}>
               <option value={0}>0</option>
               <option value={1}>1</option>

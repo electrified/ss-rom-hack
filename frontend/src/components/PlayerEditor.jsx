@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { CHARSET, POSITION_NAMES, ROLE_NAMES, HEAD_NAMES, MAX_PLAYER_NAME } from '../lib/sslib/index';
+import HelpTip from './HelpTip';
 
 const VALID_CHARS = new Set(CHARSET.slice(1));
 const POSITIONS = Object.values(POSITION_NAMES);
@@ -166,10 +167,10 @@ function PlayerEditor({ players: playersProp, onChange, playerErrors, formationE
             <tr>
               <th className="col-num">#</th>
               <th className="col-name">Name</th>
-              <th className="col-pos">Position</th>
-              <th className="col-role">Role</th>
-              <th className="col-head">Head</th>
-              <th className="col-star" title="Star player">★</th>
+              <th className="col-pos">Position<HelpTip text="Formation slot on the pitch. Determines where the player lines up (e.g. RB, CM, FW). Set to SUB for substitutes." /></th>
+              <th className="col-role">Role<HelpTip text="General role type (G/D/M/F). Should generally match the player's position." /></th>
+              <th className="col-head">Head<HelpTip text="Player's skin tone and hair colour appearance in-game." /></th>
+              <th className="col-star">★<HelpTip text="Star player. Only used in expert mode and doesn't affect custom teams." /></th>
             </tr>
           </thead>
           <tbody>
