@@ -30,7 +30,8 @@
       "WebSearch",
       "Bash(pip install:*)",
       "Bash(source:*)",
-      "Bash(/usr/bin/npm test)"
+      "Bash(/usr/bin/npm test)",
+      "Bash(npx:*)"
     ]
   }
 }
