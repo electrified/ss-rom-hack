@@ -53,11 +53,11 @@ function App() {
 
   const errorCount = validation
     ? validation.global.length + Object.values(validation.teams).reduce(
-        (sum, catTeams) => sum + Object.values(catTeams).reduce(
-          (tSum, te) => tSum + te.team.length + te.formation.length +
-            Object.values(te.players).reduce((pSum, msgs) => pSum + msgs.length, 0),
-          0),
-        0)
+      (sum, catTeams) => sum + Object.values(catTeams).reduce(
+        (tSum, te) => tSum + te.team.length + te.formation.length +
+          Object.values(te.players).reduce((pSum, msgs) => pSum + msgs.length, 0),
+        0),
+      0)
     : 0;
 
   return (
@@ -136,10 +136,10 @@ function App() {
         </div>
       )}
       <footer>
-        <div>v{__APP_VERSION__} &copy; 2026 Ed Brindley</div>
+        <div>v{__APP_VERSION__} &copy; 2026 Ed Brindley. Made in Sheffield and Coventry.</div>
         <div style={{ marginTop: '0.4rem', fontSize: '0.75em' }}>
           Unofficial fan project — not affiliated with or endorsed by Sensible Software or any rights holder.
-          Sensible Soccer is a trademark of its respective owner.
+          Sensible Soccer is a registered trademark of Electronic Arts Inc.
         </div>
       </footer>
     </div>
