@@ -75,9 +75,9 @@ function RomUpload({ onUploadSuccess }) {
   return (
     <div className="card">
       <h2>Step 1: Upload ROM</h2>
-      <p>Upload your Sensible Soccer ROM file to get started. All processing happens locally in your browser — nothing is uploaded to a server.</p>
+      <p>Upload your Sensible Soccer ROM file to get started. All processing happens locally in your browser, nothing is uploaded to a server.</p>
       <div className="tip-box" style={{ marginBottom: '1.5rem', borderLeftColor: '#f1c40f' }}>
-        <strong style={{ color: '#f1c40f' }}>Mega Drive only:</strong> Only Sensible Soccer for the <strong>Sega Mega Drive / Genesis</strong> is currently supported. SNES, Amiga, and other versions will not work.
+        <strong style={{ color: '#f1c40f' }}>Mega Drive only:</strong> Only Sensible Soccer for the <strong>Sega Mega Drive / Genesis</strong> is currently supported.
       </div>
       
       <div
