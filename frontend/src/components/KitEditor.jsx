@@ -20,10 +20,21 @@ function ShirtSvg({ style, color1, color2, id }) {
   const clipId = `shirt-clip-${id}`;
 
   const shirtPath = "M30.0,0.0 L23.4,0.0 L16.5,4.9 L6.0,27.5 L10.5,31.4 L18.3,20.1 L18.7,46.2 L41.3,46.2 L41.7,20.1 L49.5,31.4 L54.0,27.5 L43.5,4.9 L36.6,0.0 Z";
+  const bodyPath = "M30.0,0.0 L23.4,0.0 L16.5,4.9 L18.3,20.1 L18.7,46.2 L41.3,46.2 L41.7,20.1 L43.5,4.9 L36.6,0.0 Z";
+  const leftSleeve = "M16.5,4.9 L6.0,27.5 L10.5,31.4 L18.3,20.1 Z";
+  const rightSleeve = "M43.5,4.9 L54.0,27.5 L49.5,31.4 L41.7,20.1 Z";
 
   let fill;
-  if (style === 'plain' || style === 'sleeves') {
+  if (style === 'plain') {
     fill = <path d={shirtPath} fill={c1} fillRule="nonzero" />;
+  } else if (style === 'sleeves') {
+    fill = (
+      <React.Fragment>
+        <path d={bodyPath} fill={c1} />
+        <path d={leftSleeve} fill={c2} />
+        <path d={rightSleeve} fill={c2} />
+      </React.Fragment>
+    );
   } else if (style === 'vertical') {
     fill = (
       <React.Fragment>
