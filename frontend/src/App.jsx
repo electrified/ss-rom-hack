@@ -3,6 +3,7 @@ import RomUpload from './components/RomUpload';
 import TeamEditor from './components/TeamEditor';
 import DownloadButton from './components/DownloadButton';
 import MusicPlayer from './components/MusicPlayer';
+import { showCookiePreferences } from './cookieConsent';
 import { validateTeams, extractRomStructure } from './lib/sslib/index';
 
 function App() {
@@ -70,10 +71,7 @@ function App() {
             <span className="logo-soccer">SOCCER</span>
           </div>
         </div>
-        <p>ROM Editor — upload, edit, and generate modified ROM files</p>
-        <p style={{ fontSize: '0.65rem', color: '#3d5e3d', marginTop: '0.5rem', fontFamily: 'inherit', letterSpacing: '0.03em' }}>
-          Unofficial fan project — not affiliated with Sensible Software or any rights holder
-        </p>
+        <p>Mega Drive ROM Editor</p>
         <MusicPlayer />
       </header>
 
@@ -81,7 +79,7 @@ function App() {
       <div className="steps">
         <div className={`step ${currentStep === 'upload' ? 'active' : 'completed'}`}>
           <div className="step-number">1</div>
-          <div className="step-label">Upload ROM</div>
+          <div className="step-label">Open ROM</div>
         </div>
         <div className={`step ${currentStep === 'edit' ? 'active' : ''}`}>
           <div className="step-number">2</div>
@@ -89,7 +87,7 @@ function App() {
         </div>
       </div>
 
-      {/* Step 1: Upload ROM */}
+      {/* Step 1: Open ROM */}
       <RomUpload onUploadSuccess={handleUploadSuccess} />
 
       {/* Step 2: Edit Teams */}
@@ -131,11 +129,12 @@ function App() {
       {currentStep !== 'upload' && (
         <div style={{ textAlign: 'center', marginTop: '2rem' }}>
           <button onClick={handleStartOver} className="secondary">
-            Start Over (Upload New ROM)
+            Start Over (Open Another ROM)
           </button>
         </div>
       )}
       <footer>
+        <button className="cookie-settings" onClick={showCookiePreferences}>Cookie settings</button>
         <div>v{__APP_VERSION__} &copy; 2026 Ed Brindley. Made in Sheffield and Coventry.</div>
         <div style={{ marginTop: '0.4rem', fontSize: '0.75em' }}>
           Unofficial fan project — not affiliated with or endorsed by Sensible Software or any rights holder.

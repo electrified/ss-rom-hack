@@ -38,7 +38,7 @@ function RomUpload({ onUploadSuccess }) {
   const handleFile = async (file) => {
     // Validate file type (ROM files are typically .md or .bin)
     if (!file.name.match(/\.(md|bin)$/i)) {
-      setError('Please upload a valid ROM file (.md or .bin)');
+      setError('Please open a valid ROM file (.md or .bin)');
       return;
     }
 
@@ -74,10 +74,10 @@ function RomUpload({ onUploadSuccess }) {
 
   return (
     <div className="card">
-      <h2>Step 1: Upload ROM</h2>
-      <p>Upload your Sensible Soccer ROM file to get started. All processing happens locally in your browser, nothing is uploaded to a server.</p>
-      <div className="tip-box" style={{ marginBottom: '1.5rem', borderLeftColor: '#f1c40f' }}>
-        <strong style={{ color: '#f1c40f' }}>Mega Drive only:</strong> Only Sensible Soccer for the <strong>Sega Mega Drive / Genesis</strong> is currently supported.
+      <h2>Step 1: Open ROM</h2>
+      <p>Open your Sensible Soccer Mega Drive ROM to get started.</p>
+      <div className="tip-box" style={{ marginBottom: '1.5rem' }}>
+        All processing happens locally in your browser, nothing is uploaded to a server.
       </div>
       
       <div
