@@ -2,9 +2,12 @@ import {
   ATTR_SIZE, ATTR_OFFSETS,
   COLOUR_VALUES, STYLE_VALUES, HEAD_VALUES, ROLE_VALUES, POSITION_VALUES, TACTIC_VALUES,
 } from './constants.js';
-import { decodeTeamBlock, findPointerTable, chainWalkRegion } from './decode.js';
+import { findPointerTable, chainWalkRegion } from './decode.js';
 import { encodeTeamText, computePackedPositions } from './encode.js';
-import type { Team, TeamsJson } from './types.js';
+import type { Team } from './types.js';
+import { normalizeTeams } from './normalize';
+import { validateTeams, extractRomStructure } from './validate';
+import { availableEnd } from './layout';
 
 function resolveColour(val: string | number): number {
   return typeof val === 'string' ? COLOUR_VALUES[val] : val;
@@ -36,15 +39,11 @@ function applyKitAttrs(attrs: Uint8Array, kit: Team['kit']): void {
 }
 
 function applyTeamAttrs(attrs: Uint8Array, team: Team): void {
-  let tactic: number = typeof team.tactic === 'string'
-    ? TACTIC_VALUES[team.tactic]
-    : team.tactic as unknown as number;
-  attrs[18] = tactic;
-  attrs[19] = tactic;
-  attrs[20] = 0x00;
+  const tactic = TACTIC_VALUES[team.tactic];
+  if (attrs[19] !== tactic) { attrs[18] = tactic; attrs[19] = tactic; }
   const skill = team.skill ?? 0;
   const flag = team.flag ?? 0;
-  attrs[21] = ((skill & 0x07) << 3) | (flag & 0x01);
+  attrs[21] = (attrs[21] & ~0x39) | (skill << 3) | flag;
 }
 
 function applyPlayerAttrs(attrs: Uint8Array, players: Team['players']): void {
@@ -57,7 +56,7 @@ function applyPlayerAttrs(attrs: Uint8Array, players: Team['players']): void {
     const head = resolveHead(p.head);
     const star = p.star ? 1 : 0;
     attrs[recOff] = ((pos & 0x0F) << 4) | ((p.number - 1) & 0x0F);
-    attrs[recOff + 1] = ((star & 0x01) << 4) | ((role & 0x03) << 2) | (head & 0x03);
+    attrs[recOff + 1] = (attrs[recOff + 1] & 0xE0) | ((star & 0x01) << 4) | ((role & 0x03) << 2) | (head & 0x03);
   }
 }
 
@@ -69,7 +68,6 @@ export function buildRegion(rom: Uint8Array, blockOffsets: number[], teamsJson: 
   const view = new DataView(rom.buffer, rom.byteOffset, rom.byteLength);
 
   const attrBlocks = blockOffsets.map(off => rom.slice(off, off + ATTR_SIZE));
-  const originalTeams = blockOffsets.map(off => decodeTeamBlock(rom, off + ATTR_SIZE));
 
   const parts: Uint8Array[] = [];
   let changes = 0;
@@ -90,6 +88,7 @@ export function buildRegion(rom: Uint8Array, blockOffsets: number[], teamsJson: 
     applyPlayerAttrs(attrs, team.players);
 
     const blockSize = ATTR_SIZE + textBytes.length + (textBytes.length % 2);
+    if (blockSize > 500) throw new Error('Encoded team block exceeds 500 bytes');
     attrsView.setUint16(0, blockSize, false);
 
     const pad = textBytes.length % 2 !== 0 ? 1 : 0;
@@ -100,14 +99,9 @@ export function buildRegion(rom: Uint8Array, blockOffsets: number[], teamsJson: 
 
     parts.push(block);
 
-    const orig = originalTeams[i];
-    const playerNames = team.players.map(p => p.name);
-    if (
-      team.team !== orig.team || team.country !== orig.country ||
-      team.coach !== orig.coach || JSON.stringify(playerNames) !== JSON.stringify(orig.players)
-    ) {
-      changes++;
-    }
+    const oldSize = view.getUint16(blockOffsets[i]);
+    if (block.length !== oldSize || block.some((v, j) => v !== rom[blockOffsets[i] + j])) changes++;
+
   }
 
   // Concatenate all blocks
@@ -125,7 +119,10 @@ export function buildRegion(rom: Uint8Array, blockOffsets: number[], teamsJson: 
 /**
  * Apply edited team data to a ROM and return the modified ROM bytes.
  */
-export function updateRom(romBytes: Uint8Array, teamsJson: TeamsJson): Uint8Array {
+export function updateRom(romBytes: Uint8Array, input: unknown): Uint8Array {
+  const validation = validateTeams(extractRomStructure(romBytes), input);
+  if (!validation.valid) throw new Error(["Invalid team data", ...validation.global, ...Object.values(validation.teams).flatMap(cat => Object.values(cat).flatMap(e => [...e.team, ...e.formation, ...Object.values(e.players).flat()]))].join("\n"));
+  const teamsJson = normalizeTeams(input);
   const rom = new Uint8Array(romBytes);
   const view = new DataView(rom.buffer, rom.byteOffset, rom.byteLength);
 
@@ -150,16 +147,7 @@ export function updateRom(romBytes: Uint8Array, teamsJson: TeamsJson): Uint8Arra
   // Calculate available space
   const natStart = ptrs.natStart;
   const custEnd = ptrs.custEnd;
-  let maxEnd = custEnd;
-  let scanPos = custEnd;
-  while (scanPos < rom.length - 1) {
-    const word = view.getUint16(scanPos, false);
-    if (word !== 0) {
-      maxEnd = scanPos;
-      break;
-    }
-    scanPos += 2;
-  }
+  const maxEnd = availableEnd(rom, custEnd);
 
   // Concatenate regions with 2-byte zero gaps
   const nat = regionData['national'];
@@ -207,5 +195,8 @@ export function updateRom(romBytes: Uint8Array, teamsJson: TeamsJson): Uint8Arra
   view.setUint32(tb + 16, newClubEnd, false);
   view.setUint32(tb + 20, newCustEnd, false);
 
+  let checksum = 0;
+  for (let i = 0x200; i + 1 < rom.length; i += 2) checksum = (checksum + view.getUint16(i)) & 0xffff;
+  view.setUint16(0x18e, checksum);
   return rom;
 }

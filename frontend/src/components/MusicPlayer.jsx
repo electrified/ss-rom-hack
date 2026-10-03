@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ChiptuneJsPlayer } from 'chiptune3';
+import { createPlayback } from './playback';
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -33,126 +34,38 @@ function pickRandom(exclude) {
 }
 
 export default function MusicPlayer() {
-  const chiptuneRef = useRef(null);
-  const audioRef = useRef(null);
-  const currentTrackRef = useRef(null);
-  // Each new playTrack() call gets a unique session ID.
-  // Async callbacks discard themselves if the session has moved on.
-  const sessionRef = useRef(0);
-
-  const [playing, setPlaying] = useState(false);
-  const [ready, setReady] = useState(false);
-  const [trackLabel, setTrackLabel] = useState(null);
-
+  const controller = useRef(null);
+  const trackRef = useRef(null);
+  const [state, setState] = useState({playing: false, label: null, error: null});
   useEffect(() => {
-    const player = new ChiptuneJsPlayer({ repeatCount: 0 });
-    chiptuneRef.current = player;
-
-    player.onInitialized(() => setReady(true));
-    player.onError(() => {
-      // Capture session at the time the error fires to check staleness
-      // (sessionRef holds current value; any mismatch means we've moved on)
+    const playback = createPlayback({
+      createContext: () => {
+        if (!window.AudioContext) throw new Error('Music is unavailable in this browser.');
+        return new AudioContext();
+      },
+      createPlayer: context => new ChiptuneJsPlayer({context, repeatCount: 0}),
+      createAudio: url => new Audio(url),
+      fetchTrack: (...args) => fetch(...args),
+      onState: setState,
+      onEnded: previous => {
+        const next = pickRandom(previous); trackRef.current = next;
+        playback.play(next, BASE + next.file);
+      },
     });
-    player.onEnded(() => {
-      playTrack(pickRandom(currentTrackRef.current));
-    });
-
-    return () => {
-      sessionRef.current++;
-      player.stop();
-      stopAudio();
-    };
+    controller.current = playback;
+    return () => { playback.stop(false); controller.current = null; };
   }, []);
-
-  function stopAudio() {
-    if (audioRef.current) {
-      const a = audioRef.current;
-      audioRef.current = null;
-      a.onended = null;
-      a.onerror = null;
-      a.pause();
-    }
+  function playNext() {
+    const next = pickRandom(trackRef.current); trackRef.current = next;
+    controller.current?.play(next, BASE + next.file);
   }
-
-  function stopAll() {
-    sessionRef.current++;
-    if (chiptuneRef.current) {
-      chiptuneRef.current.setVol(0); // silence immediately (gain node is sync)
-      chiptuneRef.current.stop();    // async worklet message — arrives later
-    }
-    stopAudio();
-  }
-
-  function playTrack(track) {
-    stopAll();
-    const session = sessionRef.current;
-
-    currentTrackRef.current = track;
-    setTrackLabel(track.label);
-
-    if (track.type === 'mod') {
-      chiptuneRef.current.setVol(1);
-      chiptuneRef.current.context.resume().then(() => {
-        if (session !== sessionRef.current) return;
-        chiptuneRef.current.load(BASE + track.file);
-      });
-    } else {
-      const audio = new Audio(BASE + track.file);
-      audioRef.current = audio;
-
-      audio.onended = () => {
-        if (session !== sessionRef.current) return;
-        playTrack(pickRandom(currentTrackRef.current));
-      };
-      audio.onerror = () => {
-        if (session !== sessionRef.current) return;
-        // Skip to next track silently — error events can fire spuriously
-        // (e.g. aborted loads) even when audio subsequently plays fine.
-        playTrack(pickRandom(currentTrackRef.current));
-      };
-      audio.play().catch(() => {});
-    }
-  }
-
-  const toggle = () => {
-    if (!ready) return;
-    if (playing) {
-      stopAll();
-      setPlaying(false);
-      setTrackLabel(null);
-    } else {
-      playTrack(pickRandom());
-      setPlaying(true);
-    }
-  };
-
-  const skip = () => {
-    if (!ready || !playing) return;
-    playTrack(pickRandom(currentTrackRef.current));
-  };
-
-  return (
-    <div className="music-player">
-      <button
-        className={`music-btn ${playing ? 'playing' : ''}`}
-        onClick={toggle}
-        disabled={!ready}
-        title={playing ? 'Stop music' : 'Play Sensible Soccer music'}
-      >
-        {playing ? '⏹ Stop Music' : '▶ Play Music'}
-      </button>
-      {playing && (
-        <button
-          className="music-btn"
-          onClick={skip}
-          title="Skip to next track"
-        >
-          ⏭ Skip
-        </button>
-      )}
-      {playing && trackLabel && (
-        <span className="music-track">{trackLabel}</span>
-      )}
-    </div>
-  );
+  return <div className="music-player">
+    <button className={`music-btn ${state.playing ? 'playing' : ''}`}
+      onClick={() => state.playing ? controller.current?.stop() : playNext()}>
+      {state.playing ? '⏹ Stop Music' : '▶ Play Music'}
+    </button>
+    {state.playing && <button className="music-btn" onClick={playNext}>⏭ Skip</button>}
+    {state.label && <span className="music-track">{state.label}</span>}
+    {state.error && <span role="status">{state.error} <button onClick={playNext}>Try another track</button></span>}
+  </div>;
 }

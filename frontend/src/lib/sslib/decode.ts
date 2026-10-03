@@ -1,37 +1,30 @@
 import {
-  CHARSET, ATTR_SIZE, KNOWN_COUNTRIES,
+  CHARSET, ATTR_SIZE, ATTR_OFFSETS,
   COLOUR_NAMES, STYLE_NAMES, HEAD_NAMES, ROLE_NAMES, POSITION_NAMES, TACTIC_NAMES,
 } from './constants.js';
-import { encode5bitString, pack5bitValues } from './encode.js';
 import type { Kit, PointerTable, TeamsJson } from './types.js';
 
 /**
  * Decode a single 5-bit packed null-terminated string.
  * Returns [decoded_string, next_bit_position].
  */
-export function decode5bitString(data: Uint8Array, byteOffset: number, bitStart = 0): [string, number] {
+export function decode5bitString(data: Uint8Array, byteOffset: number, bitStart = 0, bitLimit = data.length * 8): [string, number] {
+  let pos = byteOffset * 8 + bitStart;
+  if (!Number.isInteger(pos) || pos < 0 || bitLimit > data.length * 8 || pos > bitLimit) throw new Error('Text position outside ROM/block');
   const result: string[] = [];
-  let bitPos = bitStart;
-  while (true) {
-    const absBit = byteOffset * 8 + bitPos;
-    const byteIdx = Math.floor(absBit / 8);
-    const bitIdx = absBit % 8;
-    if (byteIdx >= data.length) break;
-    // Treat out-of-bounds bytes as 0 (safe — real ROM has ample data beyond each string)
-    const b0 = data[byteIdx];
-    const b1 = byteIdx + 1 < data.length ? data[byteIdx + 1] : 0;
-    const b2 = byteIdx + 2 < data.length ? data[byteIdx + 2] : 0;
-    const val24 = (b0 << 16) | (b1 << 8) | b2;
-    const charVal = (val24 >> (24 - bitIdx - 5)) & 0x1F;
-    if (charVal === 0) {
-      return [result.join(''), bitPos + 5];
-    }
-    if (charVal >= CHARSET.length) break;
-    result.push(CHARSET[charVal]);
-    bitPos += 5;
-    if (result.length > 30) break;
+  while (pos + 5 <= bitLimit) {
+    let value = 0;
+    for (let bit = pos; bit < pos + 5; bit++) value = (value << 1) | ((data[Math.floor(bit / 8)] >> (7 - bit % 8)) & 1);
+    pos += 5;
+    if (value === 0) return [result.join(''), pos - byteOffset * 8];
+    if (value >= CHARSET.length) throw new Error('Invalid packed character');
+    result.push(CHARSET[value]);
   }
-  return [result.join(''), bitPos];
+  throw new Error('Unterminated packed string');
+}
+
+function requireRange(rom: Uint8Array, offset: number, size: number): void {
+  if (!Number.isInteger(offset) || offset < 0 || offset + size > rom.length) throw new Error('Truncated attribute block');
 }
 
 /**
@@ -39,8 +32,9 @@ export function decode5bitString(data: Uint8Array, byteOffset: number, bitStart 
  * Each player has an 8-byte record starting at blockOffset + 22.
  */
 export function decodePlayerAttrs(rom: Uint8Array, blockOffset: number): Array<{
-  number: number; position: string | number; role: string | number; head: string | number; star?: boolean
+  number: number; position: string; role: string; head: string; star?: boolean
 }> {
+  requireRange(rom, blockOffset, ATTR_SIZE);
   const players = [];
   const base = blockOffset + 22;
   for (let i = 0; i < 16; i++) {
@@ -51,11 +45,11 @@ export function decodePlayerAttrs(rom: Uint8Array, blockOffset: number): Array<{
     const roleVal = (appByte >> 2) & 0x03;
     const headVal = appByte & 0x03;
     const star = Boolean((appByte >> 4) & 0x01);
-    const p: { number: number; position: string | number; role: string | number; head: string | number; star?: boolean } = {
+    const p: { number: number; position: string; role: string; head: string; star?: boolean } = {
       number: (posByte & 0x0F) + 1,
-      position: POSITION_NAMES[posSlot] ?? posSlot,
-      role: ROLE_NAMES[roleVal] ?? roleVal,
-      head: HEAD_NAMES[headVal] ?? headVal,
+      position: POSITION_NAMES[posSlot] ?? `Unknown (${posSlot})`,
+      role: ROLE_NAMES[roleVal] ?? `Unknown (${roleVal})`,
+      head: HEAD_NAMES[headVal] ?? `Unknown (${headVal})`,
     };
     if (star) p.star = true;
     players.push(p);
@@ -67,9 +61,10 @@ export function decodePlayerAttrs(rom: Uint8Array, blockOffset: number): Array<{
  * Decode kit attributes from bytes 8-17 of the attribute block.
  */
 export function decodeKitAttrs(rom: Uint8Array, blockOffset: number): Kit {
+  requireRange(rom, blockOffset, 18);
   const b = blockOffset + 8;
-  const colour = (v: number) => COLOUR_NAMES[v] ?? v;
-  const style = (v: number) => STYLE_NAMES[v] ?? v;
+  const colour = (v: number) => COLOUR_NAMES[v] ?? `Unknown (${v})`;
+  const style = (v: number) => STYLE_NAMES[v] ?? `Unknown (${v})`;
   return {
     first: {
       style: style(rom[b]),
@@ -92,6 +87,7 @@ export function decodeKitAttrs(rom: Uint8Array, blockOffset: number): Kit {
  * Decode team-level attributes from bytes 18-21 of the attribute block.
  */
 export function decodeTeamAttrs(rom: Uint8Array, blockOffset: number): { tactic: string; skill: number; flag: number } {
+  requireRange(rom, blockOffset, 22);
   const tacticVal = rom[blockOffset + 19];
   return {
     tactic: TACTIC_NAMES[tacticVal] ?? String(tacticVal),
@@ -103,140 +99,43 @@ export function decodeTeamAttrs(rom: Uint8Array, blockOffset: number): { tactic:
 /**
  * Decode a full team block at the given ROM offset (text start).
  */
-export function decodeTeamBlock(rom: Uint8Array, offset: number): {
-  offset: number; team: string; country: string; coach: string;
-  players: string[]; textBits: number; textEnd: number;
-} {
-  let bitPos = 0;
-  let teamName: string, country: string, manager: string;
-  [teamName, bitPos] = decode5bitString(rom, offset, bitPos);
-  [country, bitPos] = decode5bitString(rom, offset, bitPos);
-  [manager, bitPos] = decode5bitString(rom, offset, bitPos);
-  const players: string[] = [];
-  for (let i = 0; i < 16; i++) {
-    let player: string;
-    [player, bitPos] = decode5bitString(rom, offset, bitPos);
-    players.push(player);
-  }
-  const textByteEnd = offset + Math.ceil(bitPos / 8);
-  return {
-    offset,
-    team: teamName,
-    country,
-    coach: manager,
-    players,
-    textBits: bitPos,
-    textEnd: textByteEnd,
-  };
+export function decodeTeamBlock(rom: Uint8Array, offset: number) {
+  const start = offset - ATTR_SIZE;
+  if (start < 0 || start + ATTR_SIZE > rom.length) throw new Error('Truncated team attributes');
+  const view = new DataView(rom.buffer, rom.byteOffset, rom.byteLength);
+  const size = view.getUint16(start);
+  if (size < 162 || size > 500 || size % 2 || start + size > rom.length) throw new Error('Invalid/truncated team block');
+  let textEnd = offset * 8;
+  const names = ATTR_OFFSETS.map(attr => {
+    const packed = view.getUint16(start + attr), byte = packed >> 5, bit = packed & 31;
+    if (byte < ATTR_SIZE || byte % 2 || bit >= 16 || byte >= size) throw new Error('Invalid packed text position');
+    const [name, end] = decode5bitString(rom, start + byte, bit, (start + size) * 8);
+    textEnd = Math.max(textEnd, (start + byte) * 8 + end);
+    return name;
+  });
+  return { offset, team: names[0], country: names[1], coach: names[2], players: names.slice(3),
+    textBits: textEnd - offset * 8, textEnd: Math.ceil(textEnd / 8) };
 }
 
-/**
- * Find the ROM offset of a 5-bit encoded team name.
- */
-export function findTeamOffset(rom: Uint8Array, teamName: string): number {
-  const values = Array.from(teamName.toUpperCase()).map(c => CHARSET.indexOf(c));
-  const { bytes: packed } = pack5bitValues(values);
-  const searchLen = Math.min(packed.length, 6);
-
-  function findBytes(haystack: Uint8Array, needle: Uint8Array, start: number, end: number): number {
-    for (let i = start; i <= end - needle.length; i++) {
-      let match = true;
-      for (let j = 0; j < needle.length; j++) {
-        if (haystack[i + j] !== needle[j]) { match = false; break; }
-      }
-      if (match) return i;
-    }
-    return -1;
-  }
-
-  let pos = findBytes(rom, packed.slice(0, searchLen), 0x020000, 0x030000);
-  if (pos === -1 && searchLen > 3) {
-    pos = findBytes(rom, packed.slice(0, 3), 0x020000, 0x030000);
-  }
-  return pos;
-}
-
-/**
- * Scan the ROM for team blocks by looking for valid team+country sequences.
- * Returns a list of offsets.
- */
-export function autoFindTeams(rom: Uint8Array, scanStart = 0x020000, scanEnd = 0x030000): number[] {
-  const found: number[] = [];
-  let offset = scanStart;
-  while (offset < scanEnd) {
-    const [name, bits1] = decode5bitString(rom, offset);
-    if (!name || name.length < 3 || name.length > 25) { offset++; continue; }
-    const [country, bits2] = decode5bitString(rom, offset, bits1);
-    if (!KNOWN_COUNTRIES.has(country)) { offset++; continue; }
-    const [manager, bits3] = decode5bitString(rom, offset, bits2);
-    if (!manager || manager.length < 3 || manager.length > 25) { offset++; continue; }
-    const [player1, bits4] = decode5bitString(rom, offset, bits3);
-    if (!player1 || player1.length < 3 || player1.length > 25) { offset++; continue; }
-    found.push(offset);
-    const textEndByte = offset + Math.ceil(bits4 / 8);
-    offset = textEndByte + 100;
-  }
-  return found;
-}
-
-/**
- * Find the 6-longword pointer table for the 3 team regions.
- */
+/** Find structures independently of editable team text. */
 export function findPointerTable(rom: Uint8Array): PointerTable {
   const view = new DataView(rom.buffer, rom.byteOffset, rom.byteLength);
-  const textOffsets = autoFindTeams(rom);
-  if (!textOffsets.length) throw new Error('No teams found in ROM');
-
-  function findBytes(needle: Uint8Array, start: number, end: number): number {
-    for (let i = start; i <= end - needle.length; i++) {
-      let match = true;
-      for (let j = 0; j < needle.length; j++) {
-        if (rom[i + j] !== needle[j]) { match = false; break; }
+  function candidate(base: number): PointerTable | null {
+    if (base < 0 || base + 24 > rom.length) return null;
+    const [ns, cs, us, ne, ce, ue] = Array.from({length: 6}, (_, i) => view.getUint32(base + i * 4));
+    if (!(ns > 0x10000 && ns < 0x40000 && base + 24 <= ns && ns < ne && ne + 2 === cs && cs < ce && ce + 2 === us && us < ue && ue <= rom.length && [ns, cs, us, ne, ce, ue].every(x => x % 2 === 0))) return null;
+    try {
+      for (const [start, end] of [[ns, ne], [cs, ce], [us, ue]]) {
+        for (const block of chainWalkRegion(rom, start, end)) decodeTeamBlock(rom, block + ATTR_SIZE);
       }
-      if (match) return i;
-    }
-    return -1;
+    } catch { return null; }
+    return {natStart: ns, clubStart: cs, custStart: us, natEnd: ne, clubEnd: ce, custEnd: ue, tableBase: base};
   }
-
-  for (const textOff of textOffsets) {
-    const blockStart = textOff - 150;
-    // Build 4-byte big-endian representation of blockStart
-    const target = new Uint8Array(4);
-    new DataView(target.buffer).setUint32(0, blockStart, false);
-
-    let pos = 0;
-    while (pos < 0x30000) {
-      const found = findBytes(target, pos, 0x30000);
-      if (found === -1) break;
-      for (let slot = 0; slot < 3; slot++) {
-        const tableBase = found - slot * 4;
-        if (tableBase < 0) continue;
-        if (tableBase + 24 > rom.length) continue;
-        const natS = view.getUint32(tableBase + 0, false);
-        const clubS = view.getUint32(tableBase + 4, false);
-        const custS = view.getUint32(tableBase + 8, false);
-        const natE = view.getUint32(tableBase + 12, false);
-        const clubE = view.getUint32(tableBase + 16, false);
-        const custE = view.getUint32(tableBase + 20, false);
-        if (
-          natS < clubS && clubS < custS &&
-          natS < natE && natE <= clubS &&
-          clubS < clubE && clubE <= custS &&
-          custS < custE &&
-          natS > 0x010000 && natS < 0x040000
-        ) {
-          return {
-            natStart: natS, clubStart: clubS, custStart: custS,
-            natEnd: natE, clubEnd: clubE, custEnd: custE,
-            tableBase,
-          };
-        }
-      }
-      pos = found + 1;
-    }
+  for (const base of [0x1EF22, 0x1EA42]) { const result = candidate(base); if (result) return result; }
+  for (let base = 0; base + 24 <= Math.min(rom.length, 0x30000); base += 2) {
+    const result = candidate(base); if (result) return result;
   }
-
-  throw new Error('Could not find pointer table in ROM code area');
+  throw new Error('No valid team pointer table found (unsupported or damaged ROM)');
 }
 
 /**
@@ -245,11 +144,13 @@ export function findPointerTable(rom: Uint8Array): PointerTable {
  */
 export function chainWalkRegion(rom: Uint8Array, regionStart: number, regionEnd: number): number[] {
   const view = new DataView(rom.buffer, rom.byteOffset, rom.byteLength);
+  if (!(regionStart >= 0 && regionStart < regionEnd && regionEnd <= rom.length) || regionStart % 2 || regionEnd % 2) throw new Error('Invalid region bounds/alignment');
   const blocks: number[] = [];
   let pos = regionStart;
   while (pos < regionEnd) {
+    if (pos + 2 > regionEnd) throw new Error('Truncated block size');
     const sz = view.getUint16(pos, false);
-    if (sz < 160 || sz > 500) {
+    if (sz < 160 || sz > 500 || sz % 2 || pos + sz > regionEnd) {
       throw new Error(`Bad block size ${sz} at 0x${pos.toString(16).toUpperCase()}`);
     }
     blocks.push(pos);
@@ -298,7 +199,7 @@ export function decodeRom(romBytes: Uint8Array): TeamsJson {
     output[catName] = teams.map(t => {
       const players = t.players.map((name, j) => {
         const pa = t.playerAttrs[j];
-        const pd: { name: string; number: number; position: string | number; role: string | number; head: string | number; star?: boolean } = {
+        const pd: { name: string; number: number; position: string; role: string; head: string; star?: boolean } = {
           name,
           number: pa.number,
           position: pa.position,

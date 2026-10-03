@@ -1,15 +1,18 @@
-import React, { useState, useRef, useCallback, forwardRef } from 'react';
+import React, { useState, useRef, useCallback, useEffect, forwardRef } from 'react';
 import TeamDetail from './TeamDetail';
-import { CATEGORIES } from '../lib/sslib/index';
+import { CATEGORIES, normalizeTeams, validateTeams } from '../lib/sslib/index';
 import './TeamEditor.css';
 
-const TeamEditor = forwardRef(function TeamEditor({ teamsJson, onTeamsChange, romBytes, validation }, ref) {
+const TeamEditor = forwardRef(function TeamEditor({ teamsJson, onTeamsChange, romStructure, validation }, ref) {
   const [category, setCategory] = useState('national');
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [search, setSearch] = useState('');
   const jsonInputRef = useRef(null);
+  const importRequest = useRef(0);
+  const [importError, setImportError] = useState(null);
+  useEffect(() => () => { importRequest.current++; }, []);
 
-  const teams = teamsJson[category] || [];
+  const teams = teamsJson[category];
   const filtered = search
     ? teams.filter((t) => {
         const q = search.toUpperCase();
@@ -66,18 +69,20 @@ const TeamEditor = forwardRef(function TeamEditor({ teamsJson, onTeamsChange, ro
     const file = e.target.files?.[0];
     if (!file) return;
     e.target.value = '';
+    const request = ++importRequest.current;
+    setImportError(null);
 
     try {
       const text = await file.text();
-      const parsed = JSON.parse(text);
-      if (parsed.national && parsed.club && parsed.custom) {
-        onTeamsChange(parsed);
-        setSelectedIndex(null);
-      } else {
-        alert('Invalid teams JSON: must contain national, club, and custom arrays.');
-      }
+      if (request !== importRequest.current) return;
+      const parsed = normalizeTeams(JSON.parse(text));
+      const checked = validateTeams(romStructure, parsed);
+      if (!checked.valid) throw new Error([...checked.global, ...Object.values(checked.teams).flatMap(cat => Object.values(cat).flatMap(t => [...t.team, ...t.formation, ...Object.values(t.players).flat()]))].join('\n'));
+      onTeamsChange(parsed);
+      setSelectedIndex(null);
+      setSearch('');
     } catch (err) {
-      alert('Failed to parse JSON file: ' + err.message);
+      if (request === importRequest.current) setImportError(err.message);
     }
   };
 
@@ -118,6 +123,8 @@ const TeamEditor = forwardRef(function TeamEditor({ teamsJson, onTeamsChange, ro
         </span>
       </div>
 
+      {importError && <div className="error-message" role="alert">Import failed: {importError}</div>}
+
       <div className="team-editor" style={{ marginTop: '1rem' }}>
         {/* Sidebar */}
         <div className="team-editor-sidebar">
@@ -139,7 +146,7 @@ const TeamEditor = forwardRef(function TeamEditor({ teamsJson, onTeamsChange, ro
           <div className="team-search">
             <input
               type="text"
-              placeholder="Search teams..."
+              aria-label="Search teams" placeholder="Search teams..."
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
@@ -154,7 +161,8 @@ const TeamEditor = forwardRef(function TeamEditor({ teamsJson, onTeamsChange, ro
               filteredWithIndex.map(({ team: t, index }) => {
                 const hasErrors = teamHasErrors(index);
                 return (
-                  <div
+                  <button
+                    type="button" aria-pressed={selectedIndex === index}
                     key={index}
                     className={`team-list-item ${selectedIndex === index ? 'selected' : ''} ${hasErrors ? 'has-error' : ''}`}
                     onClick={() => handleSelectTeam(index)}
@@ -162,7 +170,7 @@ const TeamEditor = forwardRef(function TeamEditor({ teamsJson, onTeamsChange, ro
                     {t.team}
                     {hasErrors && <span className="team-issue-dot error" />}
                     <span className="team-country">{t.country}</span>
-                  </div>
+                  </button>
                 );
               })
             )}

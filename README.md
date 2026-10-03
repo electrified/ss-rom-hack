@@ -1,124 +1,58 @@
-# Sensible Soccer (Mega Drive) ROM Tools
+# Sensible Soccer Mega Drive ROM Editor
 
-Tools for decoding and editing team data in Sensible Soccer Mega Drive ROMs.
-Works with both the **International Edition** and the **Original/European Edition**.
+A browser based editor for team data in Sensible Soccer Mega Drive ROMs. It
+supports the International and Original/European editions and processes ROMs
+locally in the browser.
 
-## What you can edit
+## Features
 
-- Team names, country names, coach names
-- All 16 player names per team
-- Kit colours and styles (plain, sleeves, vertical stripes, horizontal stripes)
-- Formation / tactic (4-4-2, 5-4-1, 4-5-1, 5-3-2, 3-5-2, 4-3-3, 3-3-4, 6-3-1)
-- Team skill level (0=best, 7=weakest)
-- Player positions, roles, shirt numbers, head types, star player flags
+- Edit national, club, and custom teams.
+- Change team, country, coach, and player names; formations; skills; flags; player
+  positions, roles, shirt numbers, head types, and star-player flags.
+- Edit kit colours and styles.
+- Import and export canonical team JSON.
+- Validate edits against the ROM's team counts and available capacity before
+  downloading the modified ROM.
 
-All 3 team regions are supported: national, club, and custom.
+## Run the editor
 
-## Usage
+Install the frontend dependencies and start the local server:
 
-### Extract teams to JSON
-
-```
-python3 decode_teams.py <rom_file> -o teams.json
-```
-
-Or pipe to stdout:
-
-```
-python3 decode_teams.py <rom_file> > teams.json
+```sh
+cd frontend
+npm ci
+npm run dev
 ```
 
-### Edit teams
+Open the URL printed by Vite, then choose **Open ROM file**. After editing,
+download the modified ROM or export the team data as JSON. ROM files and edits
+stay in the browser.
 
-Edit `teams.json` with any text editor. The structure is:
+## JSON format
 
-```json
-{
-  "national": [
-    {
-      "team": "ALBANIA",
-      "country": "ALBANIA",
-      "coach": "BUSHI",
-      "tactic": "3-5-2",
-      "skill": 4,
-      "kit": {
-        "first": {"style": "plain", "shirt1": "red", "shirt2": "red", "shorts": "red", "socks": "red"},
-        "second": {"style": "plain", "shirt1": "white", "shirt2": "white", "shorts": "white", "socks": "white"}
-      },
-      "players": [
-        {"name": "FOTO STRAKOSHA", "number": 1, "position": "goalkeeper", "role": "goalkeeper", "head": "white_dark"},
-        {"name": "HYSEN ZMIJANI", "number": 2, "position": "left_back", "role": "defender", "head": "white_dark"},
-        {"name": "RUDI VATA", "number": 5, "position": "centre_midfield", "role": "midfielder", "head": "white_dark", "star": true},
-        {"name": "XHEVAIR KAPLLANI", "number": 12, "position": "sub", "role": "goalkeeper", "head": "white_dark"}
-      ]
-    }
-  ],
-  "club": [...],
-  "custom": [...]
-}
+Each team requires `team`, `country`, `coach`, `tactic`, `skill`, `flag`, both
+complete kits, and exactly 16 players. Every player requires `name`, `number`,
+`position`, `role`, and `head`. Text uses uppercase characters from the supported
+charset. Team, coach, and player names are limited to 25 characters; countries
+are limited to 19. ROM capacity can impose a tighter overall limit.
+
+Enums must use the canonical string names. See [teams.schema.json](teams.schema.json)
+for the complete JSON contract and [rom-structure.md](rom-structure.md) for the
+binary layout.
+
+## Checks
+
+Use Node.js 26, or Node 22.22.2+ / 24.15.0+ in those release lines:
+
+```sh
+cd frontend
+npm ci
+npm run check
+npm run test:e2e
+npm audit
 ```
 
-### Write changes back to ROM
-
-```
-python3 update_teams.py <rom_file> teams.json -o modded.md
-```
-
-The output file is always separate from the input — the tool will not overwrite
-your original ROM. The tool shows which teams changed and what was modified.
-
-### Validate JSON without writing
-
-```
-python3 update_teams.py <rom_file> teams.json --validate
-```
-
-Checks team counts, character sets, enum values, and player attributes, then
-prints a summary and exits without writing a ROM.
-
-## Player fields
-
-| Field      | Values |
-|------------|--------|
-| `position` | `goalkeeper`, `right_back`, `left_back`, `centre_back`, `defender`, `right_midfield`, `centre_midfield`, `left_midfield`, `midfielder`, `forward`, `second_forward`, `sub` |
-| `role`     | `goalkeeper`, `defender`, `midfielder`, `forward` |
-| `head`     | `white_dark`, `white_blonde`, `black_dark` |
-| `star`     | `true` (omit if not a star player) |
-| `number`   | 1-16 |
-
-## Kit fields
-
-| Field    | Values |
-|----------|--------|
-| `style`  | `plain`, `sleeves`, `vertical`, `horizontal` |
-| colours  | `white`, `black`, `red`, `blue`, `green`, `yellow`, `orange`, `dark_orange`, `dark_red`, `light_blue`, `grey`, `light_grey`, `dark_grey`, `dark_grey_2`, `brown` |
-
-## JSON Schema
-
-A [JSON Schema](teams.schema.json) is provided for editor support. Add this to
-the top of your teams JSON file for VS Code autocomplete and validation:
-
-```json
-{
-  "$schema": "./teams.schema.json",
-  "national": [...]
-}
-```
-
-## Documentation
-
-- [rom-structure.md](rom-structure.md) - full binary layout of team blocks, attributes, and pointer tables
-
-## Quick recipes
-
-List all teams with their skill levels:
-
-```
-jq -r 'del(."$schema") | keys[] as $type | .[$type][] | [$type, .team, .skill] | @tsv' teams.json
-```
-
-Find all star players:
-
-```
-jq -r 'del(."$schema") | to_entries[] | .key as $type | .value[] | . as $team | .players[] | select(.star == true) | "\(.name) - \($team.team)"' teams.json
-```
+Browser tests require Chromium. Install it with `npx playwright install chromium`,
+or set `CHROMIUM_PATH` to an existing Chromium executable. Regenerate the schema
+after changing the domain constants with `npm run schema:generate` from
+`frontend`; `npm run check` detects stale generated schema output.

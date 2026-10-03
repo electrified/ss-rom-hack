@@ -4,6 +4,9 @@ import { CHARSET, ATTR_SIZE } from './constants.js';
  * Encode a string as a list of 5-bit values (with null terminator).
  */
 export function encode5bitString(text: string): number[] {
+  if (typeof text !== 'string' || [...text.toUpperCase()].some(c => !CHARSET.slice(1).includes(c))) {
+    throw new Error("Text must contain only A-Z, space, dash, apostrophe, or period");
+  }
   const values: number[] = [];
   for (const c of text.toUpperCase()) {
     const idx = CHARSET.indexOf(c);

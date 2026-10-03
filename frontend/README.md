@@ -14,14 +14,14 @@ In the GA web stream settings, disable Enhanced Measurement if you want only the
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 26 recommended (supported: 22.22.2+ on 22.x, 24.15.0+ on 24.x, or 26+)
 
 ### Setup
 
 From the `frontend` directory, install the dependencies:
 
 ```bash
-npm install
+npm ci
 ```
 
 ### Starting the Application
@@ -32,17 +32,20 @@ Start the development server:
 npm run dev
 ```
 
-The application will start on http://localhost:5173
+The application will start on http://localhost:5173/sensi/
 
 ### Usage
 
-1. Open your browser to http://localhost:5173
-2. **Step 1**: Upload your Sensible Soccer ROM file (.md or .bin)
-3. **Step 2**: Review the ROM information and download the `teams.json` file
-4. **Step 3**: Edit the JSON file with your changes (team names, players, tactics, etc.)
-5. **Step 4**: Upload your modified `teams.json` file
-6. **Step 5**: Review validation results (errors must be fixed, warnings are optional)
-7. **Step 6**: Download your modified ROM file
+1. Open the app and choose **Open ROM file** (or drag in a `.md`/`.bin` ROM).
+2. Select a category and team. Edit names, formation, players, and kits directly.
+3. Use **Export JSON** to save the current document, or **Import JSON** to replace it with validated team data.
+4. Correct validation errors and keep within the displayed team-data byte budget.
+5. Choose **Download Modified ROM**. The writer validates the exact current document and updates the ROM checksum.
+6. **Start Over** resets the document and cancels pending imports. Opening another ROM also starts a new editor document.
+
+Edits are held in memory; export JSON before closing or refreshing the page. All
+primary editing controls work with the keyboard. Import errors preserve the
+current document. The optional music player has independent error handling.
 
 ## Development
 
@@ -64,3 +67,18 @@ npm run build
 ```
 
 This creates a `dist/` folder with static files. Since the app is entirely client-side, you can host these files on any static web hosts (e.g., GitHub Pages, Vercel, Netlify, or AWS S3) without needing a backend server.
+
+## Checks and deployment
+
+Run `npm run check` for schema, lint, typecheck, frontend tests, and production
+build. `npm run test:e2e` exercises the production build in
+Chromium; install it first with `npx playwright install chromium` or set
+`CHROMIUM_PATH` to an existing executable. CI also runs the full dependency audit.
+
+The Vite base is `/sensi/`: serve `dist/` at that URL prefix. For another prefix,
+change `base` in `vite.config.js` and rebuild. `npm run preview` serves the built
+app locally at `/sensi/`; it is a verification server, not the hosting deployment.
+Keep development/test servers restricted to trusted interfaces. AudioWorklet-based
+MOD playback needs a secure context (HTTPS or localhost); ordinary editing does not
+require audio support. Unreachable legacy admin and six-step upload components have
+been removed; the current application does not require an API backend.

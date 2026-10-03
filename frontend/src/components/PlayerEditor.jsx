@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { CHARSET, POSITION_NAMES, ROLE_NAMES, HEAD_NAMES, MAX_PLAYER_NAME } from '../lib/sslib/index';
 import HelpTip from './HelpTip';
 
@@ -36,14 +36,14 @@ const PlayerRow = React.memo(function PlayerRow({ player, index, errors, onUpdat
             type="number"
             min={1}
             max={16}
-            value={player.number}
-            onChange={e => onUpdate(index, 'number', parseInt(e.target.value) || 1)}
+            aria-label={`Player ${index + 1}: Shirt number`} aria-invalid={errors.length > 0} aria-describedby={errors.length ? `player-errors-${index}` : undefined} value={player.number}
+            onChange={e => onUpdate(index, 'number', e.target.value === '' ? '' : Number(e.target.value))}
           />
         </td>
         <td className="col-name">
           <input
             type="text"
-            value={player.name}
+            aria-label={`Player ${index + 1}: Name`} aria-invalid={errors.length > 0} aria-describedby={errors.length ? `player-errors-${index}` : undefined} value={player.name}
             maxLength={MAX_PLAYER_NAME}
             className={nameInvalid ? 'invalid' : ''}
             onChange={e => onUpdate(index, 'name', e.target.value.toUpperCase())}
@@ -51,24 +51,27 @@ const PlayerRow = React.memo(function PlayerRow({ player, index, errors, onUpdat
           />
         </td>
         <td className="col-pos">
-          <select value={player.position}
+          <select aria-label={`Player ${index + 1}: Position`} aria-invalid={errors.length > 0} aria-describedby={errors.length ? `player-errors-${index}` : undefined} value={player.position}
             onChange={e => onUpdate(index, 'position', e.target.value)}>
+            {!POSITIONS.includes(player.position) && <option value={player.position}>{player.position}</option>}
             {POSITIONS.map(p => (
               <option key={p} value={p}>{POSITION_LABELS[p]}</option>
             ))}
           </select>
         </td>
         <td className="col-role">
-          <select value={player.role}
+          <select aria-label={`Player ${index + 1}: Role`} aria-invalid={errors.length > 0} aria-describedby={errors.length ? `player-errors-${index}` : undefined} value={player.role}
             onChange={e => onUpdate(index, 'role', e.target.value)}>
+            {!ROLES.includes(player.role) && <option value={player.role}>{player.role}</option>}
             {ROLES.map(r => (
               <option key={r} value={r}>{ROLE_LABELS[r]}</option>
             ))}
           </select>
         </td>
         <td className="col-head">
-          <select value={player.head}
+          <select aria-label={`Player ${index + 1}: Head`} aria-invalid={errors.length > 0} aria-describedby={errors.length ? `player-errors-${index}` : undefined} value={player.head}
             onChange={e => onUpdate(index, 'head', e.target.value)}>
+            {!HEADS.includes(player.head) && <option value={player.head}>{player.head}</option>}
             {HEADS.map(h => (
               <option key={h} value={h}>{HEAD_LABELS[h]}</option>
             ))}
@@ -78,14 +81,14 @@ const PlayerRow = React.memo(function PlayerRow({ player, index, errors, onUpdat
           <input
             type="checkbox"
             className="star-checkbox"
-            checked={!!player.star}
+            aria-label={`Player ${index + 1}: Star player`} checked={!!player.star}
             onChange={e => onUpdate(index, 'star', e.target.checked)}
           />
         </td>
       </tr>
       {errors.length > 0 && (
         <tr className="player-issue-row">
-          <td colSpan={6}>
+          <td colSpan={6} id={`player-errors-${index}`} role="alert">
             {errors.map((msg, i) => (
               <span key={i} className="player-issue-msg error">{msg}</span>
             ))}
@@ -96,48 +99,15 @@ const PlayerRow = React.memo(function PlayerRow({ player, index, errors, onUpdat
   );
 });
 
-const DEBOUNCE_MS = 300;
-
-function PlayerEditor({ players: playersProp, onChange, playerErrors, formationErrors }) {
-  const [players, setPlayers] = useState(playersProp);
-  const debounceRef = useRef(null);
-  const onChangeRef = useRef(onChange);
-  onChangeRef.current = onChange;
-  const playersRef = useRef(players);
-  playersRef.current = players;
-
-  const flush = useCallback(() => {
-    clearTimeout(debounceRef.current);
-    debounceRef.current = null;
-    onChangeRef.current(playersRef.current);
-  }, []);
-
+function PlayerEditor({ players, onChange, playerErrors, formationErrors }) {
   const updatePlayer = useCallback((index, field, value) => {
-    setPlayers(prev => {
-      const updated = prev.map((p, i) => {
-        if (i !== index) return p;
-        const newPlayer = { ...p, [field]: value };
-        if (field === 'star') {
-          if (value) {
-            newPlayer.star = true;
-          } else {
-            delete newPlayer.star;
-          }
-        }
-        return newPlayer;
-      });
-      playersRef.current = updated;
+    onChange(players.map((p, i) => {
+      if (i !== index) return p;
+      const updated = { ...p, [field]: value };
+      if (field === 'star' && !value) delete updated.star;
       return updated;
-    });
-    clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(flush, DEBOUNCE_MS);
-  }, [flush]);
-
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) flush();
-    };
-  }, [flush]);
+    }));
+  }, [players, onChange]);
 
   const starters = [];
   const subs = [];

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useId } from 'react';
 import { COLOUR_NAMES, STYLE_NAMES } from '../lib/sslib/index';
 
 const COLOURS = Object.values(COLOUR_NAMES);
@@ -108,6 +108,8 @@ function SocksSvg({ color }) {
 function ColourPicker({ selected, onSelect, label }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
+  const trigger = useRef(null);
+  const id = useId();
 
   const handleClickOutside = useCallback((e) => {
     if (ref.current && !ref.current.contains(e.target)) {
@@ -122,22 +124,24 @@ function ColourPicker({ selected, onSelect, label }) {
     }
   }, [open, handleClickOutside]);
 
+  useEffect(() => { if (open) ref.current?.querySelector('.kit-colour-option.active, .kit-colour-option')?.focus(); }, [open]);
+  const close = () => { setOpen(false); trigger.current?.focus(); };
   return (
-    <div className="kit-colour-picker" ref={ref}>
-      <button className="kit-colour-trigger" onClick={() => setOpen(!open)}>
+    <div onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); close(); } }} onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false); }} className="kit-colour-picker" ref={ref}>
+      <button type="button" ref={trigger} aria-expanded={open} aria-controls={id} aria-label={`${label}: ${selected}`} className="kit-colour-trigger" onClick={() => setOpen(!open)}>
         <span className="kit-colour-trigger-swatch" style={{ background: COLOUR_CSS[selected] || '#888' }} />
         <span className="kit-colour-trigger-label">{label}</span>
         <span className="kit-colour-trigger-name">{selected.replace(/_/g, ' ')}</span>
       </button>
       {open && (
-        <div className="kit-colour-popover">
+        <div className="kit-colour-popover" id={id} role="group" aria-label={`${label} colours`}>
           {COLOURS.map(c => (
             <button
               key={c}
               className={`kit-colour-option${c === selected ? ' active' : ''}`}
               style={{ background: COLOUR_CSS[c] || '#888' }}
-              title={c.replace(/_/g, ' ')}
-              onClick={() => { onSelect(c); setOpen(false); }}
+              aria-label={c.replace(/_/g, ' ')} aria-pressed={c === selected} title={c.replace(/_/g, ' ')}
+              onClick={() => { onSelect(c); close(); }}
             />
           ))}
         </div>
@@ -166,7 +170,7 @@ function KitSetEditor({ kitSet, label, id, onChange }) {
             {STYLES.map(s => (
               <button
                 key={s}
-                className={`kit-style-btn${s === kitSet.style ? ' active' : ''}`}
+                aria-label={`${label} style: ${STYLE_LABELS[s]}`} aria-pressed={s === kitSet.style} className={`kit-style-btn${s === kitSet.style ? ' active' : ''}`}
                 onClick={() => update('style', s)}
               >
                 {STYLE_LABELS[s] || s}
@@ -174,10 +178,10 @@ function KitSetEditor({ kitSet, label, id, onChange }) {
             ))}
           </div>
         </div>
-        <ColourPicker selected={kitSet.shirt1} onSelect={c => update('shirt1', c)} label="Shirt 1" />
-        <ColourPicker selected={kitSet.shirt2} onSelect={c => update('shirt2', c)} label="Shirt 2" />
-        <ColourPicker selected={kitSet.shorts} onSelect={c => update('shorts', c)} label="Shorts" />
-        <ColourPicker selected={kitSet.socks} onSelect={c => update('socks', c)} label="Socks" />
+        <ColourPicker selected={kitSet.shirt1} onSelect={c => update('shirt1', c)} label={`${label}: Shirt 1`} />
+        <ColourPicker selected={kitSet.shirt2} onSelect={c => update('shirt2', c)} label={`${label}: Shirt 2`} />
+        <ColourPicker selected={kitSet.shorts} onSelect={c => update('shorts', c)} label={`${label}: Shorts`} />
+        <ColourPicker selected={kitSet.socks} onSelect={c => update('socks', c)} label={`${label}: Socks`} />
       </div>
     </div>
   );

@@ -147,6 +147,11 @@ header p {
 
 /* ── Upload Area ── */
 .upload-area {
+  display: block;
+  width: 100%;
+  background: transparent;
+  font: inherit;
+  color: inherit;
   border: 2px dashed #1e421e;
   border-radius: 8px;
   padding: 3rem 2rem;
@@ -180,7 +185,7 @@ header p {
 }
 
 /* ── Buttons ── */
-button {
+button:where(:not(.upload-area, .team-list-item)) {
   background: #3aab28;
   color: #fff;
   border: none;
@@ -192,12 +197,12 @@ button {
   transition: all 0.3s ease;
 }
 
-button:hover:not(:disabled) {
+button:where(:not(.upload-area, .team-list-item)):hover:not(:disabled) {
   background: #4dcc38;
   transform: translateY(-1px);
 }
 
-button:disabled {
+button:where(:not(.upload-area, .team-list-item)):disabled {
   background: #1a321a;
   color: #3d5e3d;
   cursor: not-allowed;
@@ -493,3 +498,5 @@ footer {
   font-size: 0.8rem;
   font-style: italic;
 }
+
+button.upload-area:focus-visible { outline: 2px solid #c8e8c8; outline-offset: 3px; }

@@ -44,13 +44,11 @@ the custom region in the International edition.
 
 ### Finding the pointer table
 
-`find_pointer_table()` in `decode_teams.py` locates the table automatically:
-
-1. Use `auto_find_teams()` to find team text offsets in the ROM
-2. For each candidate block start address, search the code area (0–0x30000)
-   for it as a BE 32-bit value
-3. Try interpreting the match as slot 0, 1, or 2 of the table
-4. Validate the 6 pointers have correct ordering
+`findPointerTable()` in `frontend/src/lib/sslib/decode.ts`
+checks the known table locations first, then scans aligned candidate tables in
+the code area. Every candidate must have ordered, in-bounds, word-aligned region
+pointers, two-byte region gaps, valid block chains, and bounded packed strings.
+Editable country, team, coach, and player names do not identify the edition.
 
 
 ## Known Offsets
@@ -287,7 +285,8 @@ The in-game team editor (`$01C960`) also reads/writes byte 19. For all
 national and club teams in the original ROM, bytes 18 and 19 are identical.
 Custom teams have byte 18=0 but byte 19 varies (including two extra
 formations not available for national/club teams). The tools read from
-byte 19 and write both bytes to keep them in sync.
+byte 19. Changing the tactic updates both bytes; unchanged tactics preserve
+their original byte 18 values.
 
 **Tactic/formation values:**
 
@@ -313,8 +312,7 @@ skill=0; Malta, Luxembourg etc. have skill=7.
 The match setup code at `$01F982` explicitly masks it away with
 `andi.w #$38` when extracting the skill value. In the ROM data, flag=0
 marks British/Irish teams, but no game logic acts on this. It may be
-vestigial metadata from development. See `division-research.md` for the
-full disassembly analysis.
+vestigial metadata from development. The underlying disassembly notes are not included in this repository.
 
 
 ### Player Records (bytes 22–149)
@@ -346,9 +344,9 @@ Encodes the formation slot and shirt number in a single byte:
 | 2     | left_back        | Left back                           |
 | 3     | centre_back      | Centre back                         |
 | 4     | defender         | Defender (4th slot, formation-dependent) |
-| 5     | right_midfield   | Right midfield                      |
-| 6     | centre_midfield  | Centre midfield                     |
-| 7     | left_midfield    | Left midfield                       |
+| 5     | right_midfielder   | Right midfield                      |
+| 6     | centre_midfielder  | Centre midfield                     |
+| 7     | left_midfielder    | Left midfield                       |
 | 8     | midfielder       | Midfielder (4th slot, formation-dependent) |
 | 9     | forward          | Forward                             |
 | 10    | second_forward   | Second forward                      |
@@ -402,3 +400,18 @@ Example (Partizani Tirana, block size 0x0148 = 328 bytes):
 │     └───────────────────────────────────────────────────────────── bytes 2-3: team name (0x12C0)
 └─────────────────────────────────────────────────────────────────── bytes 0-1: block size (0x0148 = 328)
 ```
+
+## Writer invariants
+
+Every public update validates and normalizes the complete JSON document before
+writing. Supported editor text lengths are 25/19/25 characters for
+team/country/coach and 25 for each player, with a maximum 500-byte block guard.
+Decoders enforce ROM and block bounds, packed-position alignment, and actual
+terminators. Position fields are read from the attributes, as the game does.
+
+Available space extends from the national region start through the custom region
+and consecutive zero words, stopping before the first nonzero word or aligned EOF.
+An unmatched final byte is not usable capacity. Validation and writing share the
+same size calculation. The writer preserves reserved attribute bits, clears
+leftover team bytes after shrinkage, updates all six pointers, and recalculates
+the big-endian word-sum checksum at `0x18E` over complete words from `0x200` onward.

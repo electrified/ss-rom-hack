@@ -1,16 +1,3 @@
-# Python
-**/__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-venv/
-.venv/
-*.egg-info/
-dist/
-build/
-*.egg
-
 # Node
 node_modules/
 npm-debug.log*
@@ -39,3 +26,7 @@ Thumbs.db
 # ROM/Debug files
 *.md.bak
 *.rom
+
+# Browser test artifacts
+frontend/test-results/
+frontend/playwright-report/

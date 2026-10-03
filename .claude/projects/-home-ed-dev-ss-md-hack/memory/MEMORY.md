@@ -8,7 +8,6 @@
 - **Decode routine**: `0x019658` (intl) / `0x0193AE` approx (orig)
 - **Team data block** (intl): `0x0243DC` - `0x029260` (~19.6KB)
 - Each team block: team name + country + manager + 16 players (all 5-bit null-terminated) + ~150 bytes attribute data
-- Tool: `decode_teams.py` decodes all 64 teams
 
 ## RNC Blocks
 - 4 RNC method 2 blocks in both ROMs (graphics/ZID tile data)

@@ -13,3 +13,5 @@ export {
   ROLE_NAMES, ROLE_VALUES,
   POSITION_NAMES, POSITION_VALUES,
 } from './constants.js';
+
+export { normalizeTeams, TeamDataError } from './normalize';

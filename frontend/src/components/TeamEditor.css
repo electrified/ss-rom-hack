@@ -90,6 +90,13 @@
 }
 
 .team-list-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  font: inherit;
+  border: none;
+  border-radius: 0;
   padding: 0.5rem 0.75rem;
   cursor: pointer;
   border-bottom: 1px solid #1a3a1a;
@@ -773,3 +780,7 @@ th .help-tip-bubble::after {
     grid-template-columns: 1fr;
   }
 }
+
+.team-list-item:focus-visible, .kit-colour-option:focus-visible, .help-tip-btn:focus-visible { outline: 2px solid #c8e8c8; outline-offset: -2px; }
+
+.field-label { display: flex; align-items: baseline; gap: 0.25rem; }

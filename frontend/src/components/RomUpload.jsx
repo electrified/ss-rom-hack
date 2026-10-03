@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { decodeRom } from '../lib/sslib/index';
 
 function RomUpload({ onUploadSuccess }) {
@@ -6,18 +6,20 @@ function RomUpload({ onUploadSuccess }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
+  const requestRef = useRef(0);
+  useEffect(() => () => { requestRef.current++; }, []);
 
-  const handleDragOver = useCallback((e) => {
+  const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragging(true);
-  }, []);
+  };
 
-  const handleDragLeave = useCallback((e) => {
+  const handleDragLeave = (e) => {
     e.preventDefault();
     setIsDragging(false);
-  }, []);
+  };
 
-  const handleDrop = useCallback((e) => {
+  const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
     
@@ -25,17 +27,19 @@ function RomUpload({ onUploadSuccess }) {
     if (files.length > 0) {
       handleFile(files[0]);
     }
-  }, []);
+  };
 
-  const handleFileInput = useCallback((e) => {
+  const handleFileInput = (e) => {
     const files = e.target.files;
     if (files.length > 0) {
       handleFile(files[0]);
     }
     e.target.value = '';
-  }, []);
+  };
 
   const handleFile = async (file) => {
+    const request = ++requestRef.current;
+    setIsLoading(false);
     // Validate file type (ROM files are typically .md or .bin)
     if (!file.name.match(/\.(md|bin)$/i)) {
       setError('Please open a valid ROM file (.md or .bin)');
@@ -47,6 +51,7 @@ function RomUpload({ onUploadSuccess }) {
 
     try {
       const buffer = await file.arrayBuffer();
+      if (request !== requestRef.current) return;
       const romBytes = new Uint8Array(buffer);
       const teamsJson = decodeRom(romBytes);
 
@@ -62,9 +67,9 @@ function RomUpload({ onUploadSuccess }) {
 
       onUploadSuccess({ romBytes, romInfo, teamsJson });
     } catch (err) {
-      setError(err.message || 'Failed to decode ROM. Make sure this is a valid Sensible Soccer Mega Drive ROM.');
+      if (request === requestRef.current) setError(err.message || 'Failed to decode ROM. Make sure this is a valid Sensible Soccer Mega Drive ROM.');
     } finally {
-      setIsLoading(false);
+      if (request === requestRef.current) setIsLoading(false);
     }
   };
 
@@ -80,7 +85,7 @@ function RomUpload({ onUploadSuccess }) {
         All processing happens locally in your browser, nothing is uploaded to a server.
       </div>
       
-      <div
+      <button type="button" aria-label="Open ROM file"
         className={`upload-area ${isDragging ? 'dragover' : ''}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -103,7 +108,7 @@ function RomUpload({ onUploadSuccess }) {
             <p className="file-types">Supported: .md, .bin files</p>
           </>
         )}
-      </div>
+      </button>
 
       <input
         ref={fileInputRef}
@@ -114,7 +119,7 @@ function RomUpload({ onUploadSuccess }) {
       />
 
       {error && (
-        <div className="error-message">
+        <div className="error-message" role="alert">
           <strong>Error:</strong> {error}
         </div>
       )}

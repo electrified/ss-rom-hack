@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import RomUpload from './components/RomUpload';
 import TeamEditor from './components/TeamEditor';
 import DownloadButton from './components/DownloadButton';
 import MusicPlayer from './components/MusicPlayer';
+import EditorBoundary from './components/EditorBoundary';
 import { showCookiePreferences } from './cookieConsent';
 import { validateTeams, extractRomStructure } from './lib/sslib/index';
 
@@ -11,25 +12,21 @@ function App() {
   const [romBytes, setRomBytes] = useState(null);
   const [romStructure, setRomStructure] = useState(null);
   const [teamsJson, setTeamsJson] = useState(null);
-  const [validation, setValidation] = useState(null);
-  const debounceRef = useRef(null);
+  const [documentId, setDocumentId] = useState(0);
+  const [uploadId, setUploadId] = useState(0);
+  const generation = useRef(0);
   const editorRef = useRef(null);
-
-  useEffect(() => {
-    if (!romStructure || !teamsJson) {
-      setValidation(null);
-      return;
-    }
-    clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      setValidation(validateTeams(romStructure, teamsJson));
-    }, 300);
-    return () => clearTimeout(debounceRef.current);
-  }, [romStructure, teamsJson]);
+  const validation = useMemo(() => romStructure && teamsJson ? validateTeams(romStructure, teamsJson) : null, [romStructure, teamsJson]);
+  const lastValid = useRef(null);
+  useEffect(() => { if (validation?.valid) lastValid.current = teamsJson; }, [validation, teamsJson]);
 
   const handleUploadSuccess = (result) => {
+    const structure = extractRomStructure(result.romBytes);
+    generation.current++;
+    setDocumentId(generation.current);
+    lastValid.current = result.teamsJson;
     setRomBytes(result.romBytes);
-    setRomStructure(extractRomStructure(result.romBytes));
+    setRomStructure(structure);
     setTeamsJson(result.teamsJson);
     setCurrentStep('edit');
   };
@@ -41,15 +38,18 @@ function App() {
   }, [currentStep]);
 
   const handleTeamsChange = (newTeams) => {
-    setTeamsJson(newTeams);
+    if (documentId === generation.current) setTeamsJson(newTeams);
   };
 
   const handleStartOver = () => {
+    generation.current++;
+    setDocumentId(generation.current);
+    setUploadId(id => id + 1);
+    lastValid.current = null;
     setCurrentStep('upload');
     setRomBytes(null);
     setRomStructure(null);
     setTeamsJson(null);
-    setValidation(null);
   };
 
   const errorCount = validation
@@ -88,17 +88,23 @@ function App() {
       </div>
 
       {/* Step 1: Open ROM */}
-      <RomUpload onUploadSuccess={handleUploadSuccess} />
+      <RomUpload key={uploadId} onUploadSuccess={handleUploadSuccess} />
 
       {/* Step 2: Edit Teams */}
       {currentStep !== 'upload' && teamsJson && romBytes && (
+        <EditorBoundary key={documentId} teams={teamsJson} onRecover={() => {
+          setTeamsJson(lastValid.current);
+          generation.current++;
+          setDocumentId(generation.current);
+        }}>
         <TeamEditor
           ref={editorRef}
           teamsJson={teamsJson}
           onTeamsChange={handleTeamsChange}
-          romBytes={romBytes}
+          romStructure={romStructure}
           validation={validation}
         />
+        </EditorBoundary>
       )}
 
       {/* Download ROM */}
@@ -117,6 +123,8 @@ function App() {
             </div>
           )}
 
+          {validation?.budget && <p role="status">Team data: {validation.budget.used} / {validation.budget.capacity} bytes
+            ({validation.budget.capacity - validation.budget.used} bytes remaining)</p>}
           <DownloadButton
             romBytes={romBytes}
             teamsJson={teamsJson}
