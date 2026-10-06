@@ -4,11 +4,22 @@ const rom = Buffer.from(fixtureRom());
 const teams = fixtureTeams();
 const upload = {name:'synthetic.md', mimeType:'application/octet-stream', buffer:rom};
 
+test('serves football favicons at the configured site base', async ({page, request}) => {
+  await page.route('https://www.googletagmanager.com/gtag/js?*', route => route.fulfill({body: ''}));
+  await page.goto('./');
+  const icons = await page.locator('link[rel~="icon"]').evaluateAll(nodes => nodes.map(node => ({
+    href: node.href, type: node.getAttribute('type'),
+  })));
+  expect(icons.map(icon => icon.type)).toEqual(['image/svg+xml', 'image/png', null]);
+  for (const icon of icons) {
+    const response = await request.get(icon.href);
+    expect(response.ok()).toBe(true);
+  }
+});
+
 test('keyboard workflow, labels, validation, imports and immediate downloads', async ({page}) => {
   const exceptions=[];page.on('pageerror',e=>exceptions.push(e.message));
   await page.goto('./');
-  const reject=page.getByRole('button',{name:'Reject optional cookies',exact:true});
-  if (await reject.isVisible()) await reject.click();
   // Native button activation opens the chooser without pointer input.
   const open=page.getByRole('button',{name:'Open ROM file'});await open.focus();
   const chooserPromise=page.waitForEvent('filechooser');await page.keyboard.press('Enter');const chooser=await chooserPromise;await chooser.setFiles(upload);
@@ -42,26 +53,4 @@ test('keyboard workflow, labels, validation, imports and immediate downloads', a
   await expect(page.getByText('Select a team from the list to edit')).toBeVisible();
   await team.focus();await page.keyboard.press('Enter');await expect(page.getByLabel('Team Name',{exact:true})).toHaveValue('ALPHA');
   expect(exceptions).toEqual([]);
-});
-
-test('MOD playback loads local worklets, routes audio and closes its context on stop', async ({page}) => {
-  await page.addInitScript(() => {
-    window.reviewContexts=[];window.reviewPlayCount=0;window.reviewConnections=0;
-    const Original=window.AudioContext;
-    window.AudioContext=class extends Original {
-      constructor(...args){super(...args);window.reviewContexts.push(this);}
-      createGain(){const node=super.createGain();const connect=node.connect.bind(node);node.connect=(target,...args)=>{if(target===this.destination)window.reviewConnections++;return connect(target,...args);};return node;}
-    };
-    const post=MessagePort.prototype.postMessage;
-    MessagePort.prototype.postMessage=function(value,...args){if(value?.cmd==='play')window.reviewPlayCount++;return post.call(this,value,...args);};
-  });
-  await page.goto('./');
-  const reject=page.getByRole('button',{name:'Reject optional cookies',exact:true});if(await reject.isVisible())await reject.click();
-  await page.evaluate(()=>{Math.random=()=>0;});
-  await page.getByRole('button',{name:'▶ Play Music'}).click();
-  await page.waitForFunction(()=>window.reviewPlayCount===1);
-  expect(await page.evaluate(()=>window.reviewConnections)).toBe(1);
-  await page.getByRole('button',{name:'⏹ Stop Music'}).click();
-  await page.waitForFunction(()=>window.reviewContexts.every(context=>context.state==='closed'));
-  await expect(page.getByRole('button',{name:'Open ROM file'})).toBeEnabled();
 });

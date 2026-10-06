@@ -1,14 +1,14 @@
 # Sensible Soccer ROM Editor - Web Interface
 
-This is the web interface for the Sensible Soccer ROM Editor, built with **React + Vite**. ROM processing runs locally in your browser. Optional Google Analytics runs only after a visitor accepts analytics cookies; ROM contents and team edits are not sent to analytics.
+This is the web interface for the Sensible Soccer ROM Editor, built with **React + Vite**. ROM processing runs locally in your browser. Google Analytics loads automatically when configured; ROM contents and team edits are not sent to analytics.
 
-## Analytics and cookie preferences
+## Analytics
 
-The banner uses [CookieConsent](https://cookieconsent.orestbida.com/), bundled locally through npm. Visitors can accept, reject, or manage optional analytics and revisit their choice using **Cookie settings** in the footer. Choices last 180 days. Withdrawing consent disables GA collection and clears its cookies without reloading the editor.
+Google Analytics initializes on page load without a cookie notice. Production builds use `VITE_GA_MEASUREMENT_ID` from `.env.production`. A missing or invalid ID disables analytics; development has no ID configured by default.
 
-Production builds use `G-0RKDRT3Y45` from `.env.production`. Development has analytics disabled by default. To test locally, copy `.env.example` to `.env.local` and set `VITE_GA_MEASUREMENT_ID` to your web stream's `G-...` measurement ID. Deployment environment variables can override the production ID; rebuild after changing them. This ID is public, not a secret. A missing or invalid ID disables analytics and removes the optional analytics category.
+To test locally, set `VITE_GA_MEASUREMENT_ID` in `.env.development.local` to your test web stream's `G-...` measurement ID and restart Vite. Use `.env.production.local` or deployment environment variables to override the production ID, then rebuild. This ID is public, not a secret.
 
-In the GA web stream settings, disable Enhanced Measurement if you want only the page view configured here (and to avoid automatic form, download, or URL-based events). Advertising signals and ad personalization are disabled in code. No Google script is loaded before opt-in. After opting in, verify the visit in GA Realtime; rejection should produce no Google Analytics requests. Use a fresh browser profile to verify the initial banner, then test withdrawal and a reload to verify the saved choice.
+Advertising signals and ad personalization are disabled in code. The initial page view excludes URL parameters, fragments, and the referrer. In the GA web stream settings, disable Enhanced Measurement if you want only the page view configured here (and to avoid automatic form, download, or URL-based events).
 
 ## Quick Start
 
@@ -45,7 +45,7 @@ The application will start on http://localhost:5173/sensi/
 
 Edits are held in memory; export JSON before closing or refreshing the page. All
 primary editing controls work with the keyboard. Import errors preserve the
-current document. The optional music player has independent error handling.
+current document.
 
 ## Development
 
@@ -78,7 +78,17 @@ Chromium; install it first with `npx playwright install chromium` or set
 The Vite base is `/sensi/`: serve `dist/` at that URL prefix. For another prefix,
 change `base` in `vite.config.js` and rebuild. `npm run preview` serves the built
 app locally at `/sensi/`; it is a verification server, not the hosting deployment.
-Keep development/test servers restricted to trusted interfaces. AudioWorklet-based
-MOD playback needs a secure context (HTTPS or localhost); ordinary editing does not
-require audio support. Unreachable legacy admin and six-step upload components have
+Keep development/test servers restricted to trusted interfaces. Unreachable legacy admin and six-step upload components have
 been removed; the current application does not require an API backend.
+
+## Search visibility
+
+The page heading, introduction, guide and footer are static HTML in `index.html`;
+React mounts the editor inside `#root`. Keep the global stylesheet linked from
+HTML so the guide remains styled without JavaScript. Vite replaces
+`%APP_VERSION%` with the package version at development/build time.
+
+The canonical and Open Graph URLs use `https://maidavale.org/sensi/`.
+`public/sitemap.xml` lists that same URL. If the deployment path changes, update
+these along with Vite's base. See [SEO_ACTIONS.md](../SEO_ACTIONS.md) for the
+verification results, root-site changes and publishing/Search Console checklist.

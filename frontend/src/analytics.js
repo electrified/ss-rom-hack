@@ -1,27 +1,12 @@
-// Basic consent mode: no Google script or request until analytics is accepted.
 export function createAnalytics(measurementId) {
   const enabled = /^G-[A-Z0-9]+$/.test(measurementId || '');
   let loaded = false;
 
-  return function setConsent(accepted) {
-    if (!enabled) return;
-    window[`ga-disable-${measurementId}`] = !accepted;
-    if (!accepted && !loaded) return;
-
+  return function initAnalytics() {
+    if (!enabled || loaded) return;
+    loaded = true;
     window.dataLayer = window.dataLayer || [];
     window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
-    if (!loaded) {
-      window.gtag('consent', 'default', {
-        analytics_storage: 'denied',
-        ad_storage: 'denied',
-        ad_user_data: 'denied',
-        ad_personalization: 'denied',
-      });
-    }
-    window.gtag('consent', 'update', { analytics_storage: accepted ? 'granted' : 'denied' });
-    if (!accepted || loaded) return;
-
-    loaded = true;
     window.gtag('js', new Date());
     window.gtag('config', measurementId, {
       allow_google_signals: false,

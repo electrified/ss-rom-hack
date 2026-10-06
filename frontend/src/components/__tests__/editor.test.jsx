@@ -5,8 +5,6 @@ import { render, screen, fireEvent, waitFor, cleanup, act } from '@testing-libra
 import App from '../../App';
 import { fixtureRom, fixtureTeams } from '../../lib/sslib/__tests__/fixtures';
 import { updateRom, decodeRom } from '../../lib/sslib';
-vi.mock('../MusicPlayer', () => ({default: () => null}));
-vi.mock('../../cookieConsent', () => ({showCookiePreferences: vi.fn()}));
 const rom = fixtureRom();
 let downloaded;
 afterEach(() => {cleanup();vi.restoreAllMocks();});

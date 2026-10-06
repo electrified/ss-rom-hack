@@ -2,9 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import RomUpload from './components/RomUpload';
 import TeamEditor from './components/TeamEditor';
 import DownloadButton from './components/DownloadButton';
-import MusicPlayer from './components/MusicPlayer';
 import EditorBoundary from './components/EditorBoundary';
-import { showCookiePreferences } from './cookieConsent';
 import { validateTeams, extractRomStructure } from './lib/sslib/index';
 
 function App() {
@@ -62,19 +60,7 @@ function App() {
     : 0;
 
   return (
-    <div className="app">
-      <header>
-        <div className="logo">
-          <div className="logo-ball">⚽</div>
-          <div className="logo-text">
-            <span className="logo-sensible">SENSIBLE</span>
-            <span className="logo-soccer">SOCCER</span>
-          </div>
-        </div>
-        <p>Mega Drive ROM Editor</p>
-        <MusicPlayer />
-      </header>
-
+    <>
       {/* Progress Steps */}
       <div className="steps">
         <div className={`step ${currentStep === 'upload' ? 'active' : 'completed'}`}>
@@ -135,21 +121,13 @@ function App() {
 
       {/* Start Over Button */}
       {currentStep !== 'upload' && (
-        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+        <div style={{ textAlign: 'center', marginBlock: '2rem' }}>
           <button onClick={handleStartOver} className="secondary">
             Start Over (Open Another ROM)
           </button>
         </div>
       )}
-      <footer>
-        <button className="cookie-settings" onClick={showCookiePreferences}>Cookie settings</button>
-        <div>v{__APP_VERSION__} &copy; 2026 Ed Brindley. Made in Sheffield and Coventry.</div>
-        <div style={{ marginTop: '0.4rem', fontSize: '0.75em' }}>
-          Unofficial fan project — not affiliated with or endorsed by Sensible Software or any rights holder.
-          Sensible Soccer is a registered trademark of Electronic Arts Inc.
-        </div>
-      </footer>
-    </div>
+    </>
   );
 }
 

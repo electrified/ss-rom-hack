@@ -2,12 +2,66 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" sizes="any" />
+    <link rel="icon" type="image/png" href="./favicon-64.png" sizes="64x64" />
+    <link rel="shortcut icon" href="./favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sensible Soccer ROM Editor</title>
+    <title>Sensible Soccer ROM Editor for Mega Drive / Genesis</title>
+    <meta name="description" content="Edit Sensible Soccer Mega Drive/Genesis teams, players, kits and formations in your browser. Import team JSON and download your modified ROM." />
+    <link rel="canonical" href="https://maidavale.org/sensi/" />
+    <meta property="og:title" content="Sensible Soccer ROM Editor for Mega Drive / Genesis" />
+    <meta property="og:description" content="Edit Sensible Soccer Mega Drive/Genesis teams, players, kits and formations in your browser. Import team JSON and download your modified ROM." />
+    <meta property="og:url" content="https://maidavale.org/sensi/" />
+    <meta property="og:type" content="website" />
+    <link rel="stylesheet" href="/src/index.css" />
   </head>
   <body>
-    <div id="root"></div>
+    <div class="app">
+      <header>
+        <div class="logo" aria-hidden="true">
+          <div class="logo-ball">⚽</div>
+          <div class="logo-text">
+            <span class="logo-sensible">SENSIBLE</span>
+            <span class="logo-soccer">SOCCER</span>
+          </div>
+        </div>
+        <h1>Sensible Soccer ROM Editor for Mega Drive / Genesis</h1>
+        <p class="site-intro">Edit teams, players and kits in your browser. Your ROM files and edits stay on your device; no installation is needed.</p>
+      </header>
+      <main>
+        <div id="root"><p class="card">The editor requires JavaScript. If it does not load, enable JavaScript or reload the page. You can read the instructions and supported versions below without it.</p></div>
+        <article class="card editor-guide" aria-label="ROM editor guide">
+          <h2 id="supported-versions">Supported versions</h2>
+          <p>This editor supports the International and Original/European editions of Sensible Soccer for the Sega Mega Drive. The console is also known as the Sega Genesis; this does not mean every regional ROM release has been tested. Open a supported ROM in <code>.md</code> or <code>.bin</code> format. Amiga, PC and other console versions are not supported.</p>
+          <p>You supply your own ROM file. This site does not provide game downloads. Keep an untouched copy of your original ROM so you can return to it later.</p>
+
+          <h2 id="editable-data">What you can edit</h2>
+          <p>Update national, club and custom teams, including team names, countries, coaches, formations, skills and flags. Change player names, positions, roles, shirt numbers, head types and star-player flags. Choose kit colours and styles to give each team its own appearance.</p>
+          <p>You can also export team data as JSON and import it again later. Imports are validated before replacing the current document, and invalid imports leave your current edits intact.</p>
+
+          <h2 id="how-to-use">How to use the editor</h2>
+          <ol>
+            <li>Choose <strong>Open ROM file</strong> above, or drag a supported file into the upload area.</li>
+            <li>Select a category and team, then edit its players, team details and kits.</li>
+            <li>Resolve any validation errors and check the displayed team-data byte budget.</li>
+            <li>Export JSON to save your team data, or choose <strong>Download Modified ROM</strong> to save a playable ROM with your changes.</li>
+          </ol>
+          <p>The download is a new file; the editor does not overwrite your original. The ROM checksum is updated when the modified file is generated.</p>
+
+          <h2 id="common-questions">Common questions</h2>
+          <h3>Are my ROM files uploaded?</h3>
+          <p>No. ROM decoding, editing and downloading happen locally in your browser. Google Analytics measures visits, but ROM contents and team edits are not sent to it.</p>
+          <h3>How do I keep my changes?</h3>
+          <p>Download the modified ROM or export JSON before closing or refreshing the page. Unsaved edits are held in memory. Opening another ROM or choosing Start Over begins a new document.</p>
+          <h3>Why can’t I download my edited ROM?</h3>
+          <p>Downloads are disabled while validation errors remain. Names and other text must fit the supported character set and length limits. Longer names can also exceed the ROM’s total team-data capacity, even when each name is individually valid. Shorten text or correct the highlighted fields, then try again.</p>
+        </article>
+      </main>
+      <footer>
+        <div>v%APP_VERSION% &copy; 2026 Ed Brindley. Made in Sheffield and Coventry.</div>
+        <div class="site-disclaimer">Unofficial fan project — not affiliated with or endorsed by Sensible Software or any rights holder. Sensible Soccer is a registered trademark of Electronic Arts Inc.</div>
+      </footer>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
