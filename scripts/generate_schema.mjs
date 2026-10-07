@@ -2,7 +2,7 @@ import {readFileSync, writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {dirname, resolve} from 'node:path';
 import {
-  CATEGORIES, COLOUR_VALUES, STYLE_VALUES, TACTIC_VALUES, POSITION_VALUES,
+  CATEGORIES, COLOUR_VALUES, STYLE_VALUES, FORMATION_VALUES, POSITION_VALUES,
   ROLE_VALUES, HEAD_VALUES, MAX_TEAM_NAME, MAX_COUNTRY, MAX_COACH, MAX_PLAYER_NAME,
 } from '../frontend/src/lib/sslib/constants.ts';
 
@@ -22,10 +22,10 @@ const kitSet = obj({style: enumeration(STYLE_VALUES), ...Object.fromEntries(
 )});
 const team = obj({
   team: text(MAX_TEAM_NAME), country: text(MAX_COUNTRY), coach: text(MAX_COACH),
-  tactic: enumeration(TACTIC_VALUES), skill: integer(0, 7), flag: integer(0, 1),
+  formation: enumeration(FORMATION_VALUES), skill: integer(0, 7), flag: integer(0, 1),
   kit: obj(Object.fromEntries(['first', 'second'].map(key => [key, {$ref: '#/$defs/kitSet'}]))),
   players: {type: 'array', items: {$ref: '#/$defs/player'}, minItems: 16, maxItems: 16},
-}, ['team', 'country', 'coach', 'tactic', 'skill', 'flag', 'kit', 'players']);
+}, ['team', 'country', 'coach', 'formation', 'skill', 'flag', 'kit', 'players']);
 const schema = {
   $schema: 'https://json-schema.org/draft/2020-12/schema',
   title: 'Sensible Soccer canonical team data', description: 'Canonical team data format.',

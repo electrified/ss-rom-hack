@@ -72,15 +72,15 @@ describe('decodeKitAttrs', () => {
 });
 
 describe('decodeTeamAttrs', () => {
-  it('decodes tactic, skill, flag', () => {
+  it('decodes formation, skill, flag', () => {
     const block = new Uint8Array(30);
-    // tactic at byte 19 = 5 => "4-3-3"
+    // formation at byte 19 = 5 => "4-3-3"
     block[19] = 5;
     // byte 21: skill bits [5:3]=3, flag bit[0]=1 => 0b00011001 = 0x19
     block[21] = (3 << 3) | 1;
 
     const attrs = decodeTeamAttrs(block, 0);
-    expect(attrs.tactic).toBe('4-3-3');
+    expect(attrs.formation).toBe('4-3-3');
     expect(attrs.skill).toBe(3);
     expect(attrs.flag).toBe(1);
   });

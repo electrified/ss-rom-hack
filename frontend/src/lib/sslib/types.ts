@@ -24,7 +24,7 @@ export interface Team {
   team: string;
   country: string;
   coach: string;
-  tactic: string;
+  formation: string;
   skill: number;
   flag: number;
   kit: Kit;

@@ -39,12 +39,12 @@ export const HEAD_VALUES: Record<string, number> = Object.fromEntries(
   Object.entries(HEAD_NAMES).map(([k, v]) => [v, Number(k)])
 );
 
-export const TACTIC_NAMES: Record<number, string> = {
+export const FORMATION_NAMES: Record<number, string> = {
   0: "4-4-2", 1: "5-4-1", 2: "4-5-1", 3: "5-3-2",
-  4: "3-5-2", 5: "4-3-3", 6: "3-3-4", 7: "6-3-1",
+  4: "3-5-2", 5: "4-3-3", 6: "Attack", 7: "Defend",
 };
-export const TACTIC_VALUES: Record<string, number> = Object.fromEntries(
-  Object.entries(TACTIC_NAMES).map(([k, v]) => [v, Number(k)])
+export const FORMATION_VALUES: Record<string, number> = Object.fromEntries(
+  Object.entries(FORMATION_NAMES).map(([k, v]) => [v, Number(k)])
 );
 
 export const ROLE_NAMES: Record<number, string> = {

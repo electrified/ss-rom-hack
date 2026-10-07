@@ -22,7 +22,7 @@ function makeTeam(overrides: Record<string, unknown> = {}) {
     team: 'ENGLAND',
     country: 'ENGLAND',
     coach: 'SMITH',
-    tactic: '4-4-2',
+    formation: '4-4-2',
     skill: 3,
     flag: 0,
     kit: {
@@ -105,13 +105,13 @@ describe('validateTeams', () => {
     expect(errors.some(e => e.includes('16 players'))).toBe(true);
   });
 
-  it('errors on invalid tactic', () => {
+  it('errors on invalid formation', () => {
     const result = validateTeams(romStructure, makeTeamsJson({
-      national: [makeTeam({ tactic: '3-4-3' })],
+      national: [makeTeam({ formation: '3-4-3' })],
     }));
     expect(result.valid).toBe(false);
     const errors = allErrors(result);
-    expect(errors.some(e => e.includes('tactic'))).toBe(true);
+    expect(errors.some(e => e.includes('formation'))).toBe(true);
   });
 
   it('flags formation missing goalkeeper slot', () => {
@@ -123,7 +123,10 @@ describe('validateTeams', () => {
     }));
     expect(result.valid).toBe(false);
     const errors = allErrors(result);
-    expect(errors.some(e => e.includes('formation slots invalid'))).toBe(true);
+    expect(errors).toContain('Missing formation position: Goalkeeper.');
+    expect(errors).toContain('Formation: Right back has 2 players.');
+    expect(result.teams.national[0].players[0]).toContain('Duplicate position: Right back.');
+    expect(result.teams.national[0].players[1]).toContain('Duplicate position: Right back.');
   });
 
   it('flags wrong sub count', () => {

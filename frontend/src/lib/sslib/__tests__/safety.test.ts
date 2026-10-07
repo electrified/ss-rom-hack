@@ -34,7 +34,7 @@ describe('ROM safety', () => {
   });
   it('returns errors for malformed shapes, missing fields and invalid primitives', () => {
     for (const d of [null, 1, [], {}, {national: null, club: [], custom: []}]) expect(validateTeams(structure, d).valid).toBe(false);
-    for (const [field, values] of Object.entries({team:[null,42,{},[]], kit:[null,{}, {first:{}}], skill:[true,1.5,'3',null,NaN,Infinity], flag:[false,2,null], tactic:['toString','__proto__',null,8]})) {
+    for (const [field, values] of Object.entries({team:[null,42,{},[]], kit:[null,{}, {first:{}}], skill:[true,1.5,'3',null,NaN,Infinity], flag:[false,2,null], formation:['toString','__proto__',null,8]})) {
       for (const value of values) { const d: any = fixtureTeams(); d.national[0][field] = value; expect(validateTeams(structure, d).valid, `${field} ${value}`).toBe(false); }
     }
     for (const field of ['team','country','coach','kit','players']) { const d: any = fixtureTeams(); delete d.national[0][field]; expect(validateTeams(structure,d).valid).toBe(false); }

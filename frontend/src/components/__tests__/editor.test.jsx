@@ -61,3 +61,35 @@ describe('editor document lifecycle',()=>{
     fireEvent.click(screen.getByRole('button',{name:/Start Over/}));await act(async()=>releaseROM(rom.buffer));expect(screen.queryByRole('button',{name:'Export JSON'})).toBeNull();
   });
 });
+
+describe('combined player position editing', () => {
+  it('preserves stored roles until explicit edits, then exports both fields', async () => {
+    await setup();
+    expect(screen.queryByLabelText('Player 2: Role')).toBeNull();
+    fireEvent.change(screen.getByLabelText('Player 2: Name'), {target:{value:'OTHER NAME'}});
+    expect((await exportJSON()).national[0].players[1].role).toBe('forward');
+    fireEvent.click(screen.getByLabelText('Player 2: Use usual role'));
+    expect((await exportJSON()).national[0].players[1].role).toBe('defender');
+    fireEvent.change(screen.getByLabelText('Player 2: Stored role'), {target:{value:'midfielder'}});
+    expect((await exportJSON()).national[0].players[1].role).toBe('midfielder');
+    for (const role of ['goalkeeper','defender','midfielder','forward']) {
+      fireEvent.change(screen.getByLabelText('Player 2: Position'), {target:{value:`sub:${role}`}});
+      expect((await exportJSON()).national[0].players[1]).toMatchObject({position:'sub',role});
+    }
+    fireEvent.change(screen.getByLabelText('Player 2: Position'), {target:{value:'right_back'}});
+    expect((await exportJSON()).national[0].players[1]).toMatchObject({position:'right_back',role:'defender'});
+  });
+  it('explains a clash and clears it when the missing position is filled', async () => {
+    await setup();
+    fireEvent.change(screen.getByLabelText('Player 6: Position'), {target:{value:'centre_midfielder'}});
+    expect(screen.getByText('Missing formation position: Right midfield.')).toBeTruthy();
+    expect(screen.getAllByText('Duplicate position: Centre midfield.')).toHaveLength(2);
+    expect(screen.getByRole('button',{name:'Download Modified ROM'}).disabled).toBe(true);
+    fireEvent.change(screen.getByLabelText('Player 7: Position'), {target:{value:'right_midfielder'}});
+    expect(screen.queryByText('Missing formation position: Right midfield.')).toBeNull();
+    expect(screen.getByRole('button',{name:'Download Modified ROM'}).disabled).toBe(false);
+    const data = await exportJSON();
+    expect(data.national[0].players[5].role).toBe('midfielder');
+    expect(data.national[0].players[6].role).toBe('midfielder');
+  });
+});

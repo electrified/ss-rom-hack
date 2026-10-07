@@ -2,10 +2,10 @@ import React, { useCallback } from 'react';
 import KitEditor from './KitEditor';
 import PlayerEditor from './PlayerEditor';
 import HelpTip from './HelpTip';
-import { CHARSET, TACTIC_NAMES, MAX_TEAM_NAME, MAX_COUNTRY, MAX_COACH } from '../lib/sslib/index';
+import { CHARSET, FORMATION_NAMES, changeFormation, MAX_TEAM_NAME, MAX_COUNTRY, MAX_COACH } from '../lib/sslib/index';
 
 const VALID_CHARS = new Set(CHARSET.slice(1));
-const TACTICS = Object.values(TACTIC_NAMES);
+const FORMATIONS = Object.values(FORMATION_NAMES);
 const EMPTY_ARRAY = [];
 const EMPTY_OBJECT = {};
 
@@ -66,10 +66,10 @@ function TeamDetail({ team, onUpdate, errors }) {
             />
           </div>
           <div className="form-field">
-            <label htmlFor="team-tactic">Tactic</label>
-            <select id="team-tactic" aria-describedby={teamErrors.length ? "team-errors" : undefined} value={team.tactic} onChange={e => update('tactic', e.target.value)}>
-              {!TACTICS.includes(team.tactic) && <option value={team.tactic}>{team.tactic}</option>}
-              {TACTICS.map(t => <option key={t} value={t}>{t}</option>)}
+            <label htmlFor="team-formation">Formation</label>
+            <select id="team-formation" aria-describedby={teamErrors.length ? "team-errors" : undefined} value={team.formation} onChange={e => onUpdate(changeFormation(team, e.target.value))}>
+              {!FORMATIONS.includes(team.formation) && <option value={team.formation}>{team.formation}</option>}
+              {FORMATIONS.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
         </div>
@@ -93,6 +93,7 @@ function TeamDetail({ team, onUpdate, errors }) {
       <KitEditor kit={team.kit} onChange={onKitChange} />
 
       <PlayerEditor
+        formation={team.formation}
         players={team.players}
         onChange={onPlayersChange}
         playerErrors={playerErrors}

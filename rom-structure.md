@@ -207,7 +207,7 @@ position back to the attribute copy in RAM.
 | 4 | 2 | Packed position: country |
 | 6 | 2 | Packed position: coach |
 | 8 | 10 | Kit attributes (2 x 5 bytes, see below) |
-| 18 | 4 | Team attributes (tactic, skill, flag — see below) |
+| 18 | 4 | Team attributes (formation, skill, flag — see below) |
 | 22 | 128 | Player records (16 x 8 bytes, see below) |
 | Total | 150 | |
 
@@ -272,12 +272,12 @@ Team-level gameplay attributes:
 
 | Offset | Field | Values |
 |--------|-------|--------|
-| 18 | Tactic | 0-7 (formation, see table — initial/default value) |
-| 19 | Tactic | 0-7 (formation — gameplay-active value, see below) |
+| 18 | Formation | 0-7 (formation, see table — initial/default value) |
+| 19 | Formation | 0-7 (formation — gameplay-active value, see below) |
 | 20 | (unused) | Always 0x00 |
 | 21 | Composite | Bits 3-5: skill (0=best, 7=weakest)<br>Bit 0: flag (unused by game engine, see below)<br>Bits 1-2, 6-7: always 0 |
 
-**Bytes 18 and 19 — two tactic bytes:**
+**Bytes 18 and 19 — two formation bytes:**
 
 Both bytes store a formation value. Byte 19 is the one the game engine
 actually reads at match time (code at `$01F968` copies it to runtime RAM).
@@ -285,10 +285,10 @@ The in-game team editor (`$01C960`) also reads/writes byte 19. For all
 national and club teams in the original ROM, bytes 18 and 19 are identical.
 Custom teams have byte 18=0 but byte 19 varies (including two extra
 formations not available for national/club teams). The tools read from
-byte 19. Changing the tactic updates both bytes; unchanged tactics preserve
+byte 19. Changing the formation updates both bytes; unchanged formations preserve
 their original byte 18 values.
 
-**Tactic/formation values:**
+**Formation values:**
 
 | Value | Formation |
 |-------|-----------|
@@ -298,12 +298,33 @@ their original byte 18 values.
 | 3     | 5-3-2     |
 | 4     | 3-5-2     |
 | 5     | 4-3-3     |
-| 6     | 3-3-4     |
-| 7     | 6-3-1     |
+| 6     | Attack     |
+| 7     | Defend     |
 
 Values 6–7 are only used by custom teams in the original ROM. The formation
-lookup table at `$016034` contains 8 entries, each pointing to an 11-slot
-sub-table mapping formation slots to roles (GK/DEF/MID/FWD).
+lookup table is at `$016034` in International and `$01603C` in Original/European.
+It contains eight 32-bit pointers, each pointing to eleven big-endian 16-bit
+role words (0=GK, 1=DEF, 2=MID, 3=FWD). Both ROMs have identical role mappings:
+
+| Formation | Roles for slots 0–10 |
+| --- | --- |
+| 4-4-2 | 0 1 1 1 1 2 2 2 2 3 3 |
+| 5-4-1 | 0 1 1 1 1 2 1 2 2 2 3 |
+| 4-5-1 | 0 1 1 1 1 2 2 2 2 2 3 |
+| 5-3-2 | 0 1 1 1 1 2 1 2 2 3 3 |
+| 3-5-2 | 0 1 1 2 1 2 2 2 2 3 3 |
+| 4-3-3 | 0 1 1 1 1 2 2 3 2 3 3 |
+| Attack | 0 1 1 2 1 2 3 3 2 3 3 |
+| Defend | 0 1 1 1 1 2 1 1 2 2 3 |
+
+The library's `formation.ts` uses these tables for explicit editor assignments.
+Slot names in JSON remain unchanged. The UI uses the familiar 4-4-2 labels where
+the role is unchanged, and a role plus slot number where it differs (for example,
+“Defender (slot 7)” rather than “Centre midfield” in 5-4-1).
+Stored role mismatches remain valid and are preserved during loading, import,
+validation and unrelated edits. Changing a position sets its expected role;
+changing formation updates only starters that matched the old expected role.
+Substitute roles and existing overrides are preserved on formation changes.
 
 **Skill** correlates with real-world team quality. Brazil, Germany etc. have
 skill=0; Malta, Luxembourg etc. have skill=7.
@@ -391,8 +412,8 @@ Example (Partizani Tirana, block size 0x0148 = 328 bytes):
 01 48 12 c0 14 05 14 8d 00 0c 0c 02 0c 00 02 02 02 02  04 04 00 21
 │     │     │     │     │                 │              │  │  │  └─ byte 21: skill=4 (bits 3-5=100), flag=1 (bit 0)
 │     │     │     │     │                 │              │  │  └──── byte 20: unused (0x00)
-│     │     │     │     │                 │              │  └─────── byte 19: tactic=4 (3-5-2, gameplay-active)
-│     │     │     │     │                 │              └────────── byte 18: tactic=4 (3-5-2, initial/default)
+│     │     │     │     │                 │              │  └─────── byte 19: formation=4 (3-5-2, gameplay-active)
+│     │     │     │     │                 │              └────────── byte 18: formation=4 (3-5-2, initial/default)
 │     │     │     │     │                 └───────────────────────── bytes 13-17: second kit
 │     │     │     │     └─────────────────────────────────────────── bytes 8-12: first kit
 │     │     │     └───────────────────────────────────────────────── bytes 6-7: coach position

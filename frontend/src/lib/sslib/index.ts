@@ -9,9 +9,11 @@ export {
   COLOUR_NAMES, COLOUR_VALUES,
   STYLE_NAMES, STYLE_VALUES,
   HEAD_NAMES, HEAD_VALUES,
-  TACTIC_NAMES, TACTIC_VALUES,
+  FORMATION_NAMES, FORMATION_VALUES,
   ROLE_NAMES, ROLE_VALUES,
   POSITION_NAMES, POSITION_VALUES,
 } from './constants.js';
 
 export { normalizeTeams, TeamDataError } from './normalize';
+
+export { expectedRole, positionLabel, assignPosition, changeFormation, ROLE_LABELS } from './formation';

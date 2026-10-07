@@ -1,4 +1,4 @@
-import { CHARSET, CATEGORIES, COLOUR_NAMES, STYLE_NAMES, TACTIC_NAMES, POSITION_NAMES, ROLE_NAMES, HEAD_NAMES, MAX_TEAM_NAME, MAX_COUNTRY, MAX_COACH, MAX_PLAYER_NAME } from './constants';
+import { CHARSET, CATEGORIES, COLOUR_NAMES, STYLE_NAMES, FORMATION_NAMES, POSITION_NAMES, ROLE_NAMES, HEAD_NAMES, MAX_TEAM_NAME, MAX_COUNTRY, MAX_COACH, MAX_PLAYER_NAME } from './constants';
 import type { TeamsJson } from './types';
 
 export interface DataIssue { category?: string; team?: number; player?: number; message: string }
@@ -39,9 +39,9 @@ export function normalizeTeams(input: unknown): TeamsJson {
     if (!Array.isArray(root[cat])) { fail(`${cat} must be an array; JSON must contain national, club, custom keys`); continue; }
     output[cat] = root[cat].map((raw, i) => {
       context = {category: cat, team: i};
-      const team = record(raw, ['team', 'country', 'coach', 'tactic', 'skill', 'flag', 'kit', 'players'], 'team');
+      const team = record(raw, ['team', 'country', 'coach', 'formation', 'skill', 'flag', 'kit', 'players'], 'team');
       const info = {team: text(team.team, 'team', MAX_TEAM_NAME), country: text(team.country, 'country', MAX_COUNTRY), coach: text(team.coach, 'coach', MAX_COACH),
-        tactic: enumeration(team.tactic, TACTIC_NAMES, 'tactic'),
+        formation: enumeration(team.formation, FORMATION_NAMES, 'formation'),
         skill: integer(team.skill, 'skill', 0, 7), flag: integer(team.flag, 'flag', 0, 1)};
       const kit = record(team.kit, ['first', 'second'], 'kit');
       const kitSet = (prefix: string) => {

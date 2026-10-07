@@ -1,6 +1,6 @@
 import {
   CHARSET, ATTR_SIZE, ATTR_OFFSETS,
-  COLOUR_NAMES, STYLE_NAMES, HEAD_NAMES, ROLE_NAMES, POSITION_NAMES, TACTIC_NAMES,
+  COLOUR_NAMES, STYLE_NAMES, HEAD_NAMES, ROLE_NAMES, POSITION_NAMES, FORMATION_NAMES,
 } from './constants.js';
 import type { Kit, PointerTable, TeamsJson } from './types.js';
 
@@ -86,11 +86,11 @@ export function decodeKitAttrs(rom: Uint8Array, blockOffset: number): Kit {
 /**
  * Decode team-level attributes from bytes 18-21 of the attribute block.
  */
-export function decodeTeamAttrs(rom: Uint8Array, blockOffset: number): { tactic: string; skill: number; flag: number } {
+export function decodeTeamAttrs(rom: Uint8Array, blockOffset: number): { formation: string; skill: number; flag: number } {
   requireRange(rom, blockOffset, 22);
-  const tacticVal = rom[blockOffset + 19];
+  const formationVal = rom[blockOffset + 19];
   return {
-    tactic: TACTIC_NAMES[tacticVal] ?? String(tacticVal),
+    formation: FORMATION_NAMES[formationVal] ?? String(formationVal),
     skill: (rom[blockOffset + 21] >> 3) & 0x07,
     flag: rom[blockOffset + 21] & 0x01,
   };
@@ -213,7 +213,7 @@ export function decodeRom(romBytes: Uint8Array): TeamsJson {
         team: t.team,
         country: t.country,
         coach: t.coach,
-        tactic: t.teamAttrs.tactic,
+        formation: t.teamAttrs.formation,
         skill: t.teamAttrs.skill,
         flag: t.teamAttrs.flag,
         kit: t.kit,

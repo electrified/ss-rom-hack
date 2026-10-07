@@ -9,7 +9,7 @@ const charset = "\0ABCDEFGHIJKLMNOPQRSTUVWXYZ -'.";
 export function fixtureTeams(): TeamsJson {
   const team = (name: string) => {
     const kit = {style: 'plain', shirt1: 'white', shirt2: 'red', shorts: 'blue', socks: 'white'};
-    return {team: name, country: 'USA', coach: 'A', tactic: '4-4-2', skill: 3, flag: 0,
+    return {team: name, country: 'USA', coach: 'A', formation: '4-4-2', skill: 3, flag: 0,
       kit: {first: {...kit}, second: {...kit}},
       players: positions.map((position, i) => ({name: `PLAYER ${String.fromCharCode(65 + i)}`,
         number: i + 1, position, role: i === 0 ? 'goalkeeper' : 'forward', head: 'white_dark'}))};

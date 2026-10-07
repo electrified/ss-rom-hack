@@ -568,13 +568,14 @@ th .help-tip-bubble::after {
   min-width: 140px;
 }
 
-.player-table .col-pos {
-  width: 110px;
-}
-
-.player-table .col-role {
-  width: 90px;
-}
+.player-table .col-pos { min-width: 205px; }
+.stored-role { display: block; color: #c8ddc8; font-size: 0.75rem; padding: 0.2rem; }
+.advanced-player-settings { margin-top: 1rem; }
+.advanced-player-settings summary { cursor: pointer; padding: 0.5rem 0; }
+.advanced-player-settings p { margin: 0.5rem 0; }
+.role-overrides { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; }
+.role-overrides label { display: flex; flex-direction: column; gap: 0.25rem; }
+.role-overrides select { padding: 0.5rem; color: #e8f0e8; background: #0d220d; border: 1px solid #3a5c3a; }
 
 .player-table .col-head {
   width: 110px;
@@ -592,14 +593,6 @@ th .help-tip-bubble::after {
   accent-color: #3aab28;
 }
 
-.player-section-label {
-  font-size: 0.65rem;
-  color: #3d5e3d;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 0.5rem 0.5rem 0.25rem;
-  background: #0d220d;
-}
 
 /* ── JSON Import/Export Bar ── */
 .json-bar {
@@ -784,3 +777,5 @@ th .help-tip-bubble::after {
 .team-list-item:focus-visible, .kit-colour-option:focus-visible, .help-tip-btn:focus-visible { outline: 2px solid #c8e8c8; outline-offset: -2px; }
 
 .field-label { display: flex; align-items: baseline; gap: 0.25rem; }
+
+button.role-reset { display: block; background: transparent; color: #c8ddc8; font: inherit; padding: 0.2rem 0; text-decoration: underline; }

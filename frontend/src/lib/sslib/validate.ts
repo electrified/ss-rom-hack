@@ -2,6 +2,7 @@ import { CATEGORIES, POSITION_VALUES, POSITION_NAMES } from './constants';
 import { findPointerTable, chainWalkRegion } from './decode';
 import { normalizeTeams, TeamDataError } from './normalize';
 import { availableEnd, encodedSize } from './layout';
+import { positionLabel } from './formation';
 import type { TeamsJson } from './types';
 export interface TeamErrors { team: string[]; formation: string[]; players: Record<number, string[]> }
 export interface ValidationResult { valid: boolean; global: string[]; teams: Record<string, Record<number, TeamErrors>>; budget?: {used: number; capacity: number} }
@@ -39,12 +40,18 @@ export function validateTeams(structure: RomStructure, input: unknown): Validati
     if (teams[cat].length !== count) { result.valid = false; result.global.push(`${cat}: expected ${count} teams, got ${teams[cat].length}`); }
     teams[cat].forEach((team, i) => {
       const slots = team.players.map(p => POSITION_VALUES[p.position]);
-      const starters = slots.filter(s => s !== 15);
-      if (JSON.stringify([...starters].sort((a, b) => a - b)) !== JSON.stringify(Array.from({length: 11}, (_, j) => j))) {
-        const e = error(cat, i);
-        e.formation.push('formation slots invalid: use each starting position exactly once');
-        slots.forEach((slot, j) => { if (slot !== 15 && starters.filter(s => s === slot).length > 1) (e.players[j] ??= []).push(`duplicate position: ${POSITION_NAMES[slot]}`); });
+      const missing: string[] = [];
+      for (let slot = 0; slot < 11; slot++) {
+        const occupants = slots.flatMap((value, index) => value === slot ? [index] : []);
+        const label = positionLabel(team.formation, POSITION_NAMES[slot]);
+        if (occupants.length === 0) missing.push(label);
+        if (occupants.length > 1) {
+          const e = error(cat, i);
+          e.formation.push(`Formation: ${label} has ${occupants.length} players.`);
+          for (const index of occupants) (e.players[index] ??= []).push(`Duplicate position: ${label}.`);
+        }
       }
+      if (missing.length) error(cat, i).formation.push(`Missing formation ${missing.length === 1 ? 'position' : 'positions'}: ${missing.join(', ')}.`);
       if (slots.filter(s => s === 15).length !== 5) error(cat, i).formation.push(`expected 5 subs, got ${slots.filter(s => s === 15).length}`);
     });
   }

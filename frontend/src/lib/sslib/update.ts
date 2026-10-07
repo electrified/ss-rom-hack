@@ -1,6 +1,6 @@
 import {
   ATTR_SIZE, ATTR_OFFSETS,
-  COLOUR_VALUES, STYLE_VALUES, HEAD_VALUES, ROLE_VALUES, POSITION_VALUES, TACTIC_VALUES,
+  COLOUR_VALUES, STYLE_VALUES, HEAD_VALUES, ROLE_VALUES, POSITION_VALUES, FORMATION_VALUES,
 } from './constants.js';
 import { findPointerTable, chainWalkRegion } from './decode.js';
 import { encodeTeamText, computePackedPositions } from './encode.js';
@@ -39,8 +39,8 @@ function applyKitAttrs(attrs: Uint8Array, kit: Team['kit']): void {
 }
 
 function applyTeamAttrs(attrs: Uint8Array, team: Team): void {
-  const tactic = TACTIC_VALUES[team.tactic];
-  if (attrs[19] !== tactic) { attrs[18] = tactic; attrs[19] = tactic; }
+  const formation = FORMATION_VALUES[team.formation];
+  if (attrs[19] !== formation) { attrs[18] = formation; attrs[19] = formation; }
   const skill = team.skill ?? 0;
   const flag = team.flag ?? 0;
   attrs[21] = (attrs[21] & ~0x39) | (skill << 3) | flag;

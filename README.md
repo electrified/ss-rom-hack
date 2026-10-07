@@ -30,7 +30,7 @@ stay in the browser.
 
 ## JSON format
 
-Each team requires `team`, `country`, `coach`, `tactic`, `skill`, `flag`, both
+Each team requires `team`, `country`, `coach`, `formation`, `skill`, `flag`, both
 complete kits, and exactly 16 players. Every player requires `name`, `number`,
 `position`, `role`, and `head`. Text uses uppercase characters from the supported
 charset. Team, coach, and player names are limited to 25 characters; countries

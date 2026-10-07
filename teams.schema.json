@@ -39,7 +39,7 @@
         "team",
         "country",
         "coach",
-        "tactic",
+        "formation",
         "skill",
         "flag",
         "kit",
@@ -62,7 +62,7 @@
           "pattern": "^[A-Z .'-]*$",
           "maxLength": 25
         },
-        "tactic": {
+        "formation": {
           "type": "string",
           "enum": [
             "4-4-2",
@@ -71,8 +71,8 @@
             "5-3-2",
             "3-5-2",
             "4-3-3",
-            "3-3-4",
-            "6-3-1"
+            "Attack",
+            "Defend"
           ]
         },
         "skill": {
