@@ -248,18 +248,20 @@ Each team has two kits (first and second), 5 bytes each:
 | 2     | Vertical   | Vertical stripes (shirt1 + shirt2)   |
 | 3     | Horizontal | Horizontal stripes (shirt1 + shirt2) |
 
-**Colour palette indices:**
+**Supported kit colour indices:**
 
 | Value | Colour | Value | Colour |
 |-------|--------|-------|--------|
-| 0x01 | Grey | 0x09 | Dark grey 2 |
-| 0x02 | White | 0x0A | Red |
-| 0x03 | Black | 0x0B | Blue |
-| 0x04 | Brown | 0x0C | Dark red |
-| 0x05 | Dark orange | 0x0D | Light blue |
+| 0x01 | Grey | 0x0B | Blue |
+| 0x02 | White | 0x0C | Dark red |
+| 0x03 | Black | 0x0D | Light blue |
 | 0x06 | Orange | 0x0E | Green |
-| 0x07 | Light grey | 0x0F | Yellow |
-| 0x08 | Dark grey | | |
+| 0x0A | Red | 0x0F | Yellow |
+
+The International ROM's ten-entry kit-colour lookup table is at `0x01FAFA`;
+the Original ROM has the same table at `0x01F430`. All stock team kit colour
+fields use these ten values. Values `0x04`, `0x05`, and `0x07`–`0x09` are not
+supported kit colour choices.
 
 Example (Lazio): `00 0D 0D 02 02  00 0F 0F 0F 0F`
 → First kit: plain, light blue shirt, white shorts & socks.

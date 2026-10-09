@@ -5,9 +5,8 @@ const COLOURS = Object.values(COLOUR_NAMES);
 const STYLES = Object.values(STYLE_NAMES);
 
 const COLOUR_CSS = {
-  grey: '#808080', white: '#ffffff', black: '#1a1a1a', brown: '#8B4513',
-  dark_orange: '#cc6600', orange: '#ff8c00', light_grey: '#c0c0c0',
-  dark_grey: '#505050', dark_grey_2: '#404040', red: '#dc2626',
+  grey: '#808080', white: '#ffffff', black: '#1a1a1a', orange: '#ff8c00',
+  red: '#dc2626',
   blue: '#2563eb', dark_red: '#8b0000', light_blue: '#60a5fa',
   green: '#16a34a', yellow: '#eab308',
 };

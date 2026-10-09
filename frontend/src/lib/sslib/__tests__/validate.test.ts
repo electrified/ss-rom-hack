@@ -81,6 +81,16 @@ describe('validateTeams', () => {
     expect(allErrors(result)).toHaveLength(0);
   });
 
+  it('rejects kit colours absent from the game lookup table', () => {
+    for (const colour of ['brown', 'dark_orange', 'light_grey', 'dark_grey', 'dark_grey_2']) {
+      const team = makeTeam();
+      team.kit.first.shirt1 = colour;
+      const result = validateTeams(romStructure, makeTeamsJson({ national: [team] }));
+      expect(result.valid).toBe(false);
+      expect(allErrors(result).some(e => e.includes('kit shirt1'))).toBe(true);
+    }
+  });
+
   it('errors on missing top-level keys', () => {
     const result = validateTeams(romStructure, { national: [] });
     expect(result.valid).toBe(false);

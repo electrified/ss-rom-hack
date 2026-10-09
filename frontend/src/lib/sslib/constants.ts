@@ -15,9 +15,8 @@ export const MAX_COACH = 25;
 export const MAX_PLAYER_NAME = 25;
 
 export const COLOUR_NAMES: Record<number, string> = {
-  0x01: "grey", 0x02: "white", 0x03: "black", 0x04: "brown",
-  0x05: "dark_orange", 0x06: "orange",
-  0x07: "light_grey", 0x08: "dark_grey", 0x09: "dark_grey_2",
+  // The game's kit-colour lookup table contains only these ten IDs.
+  0x01: "grey", 0x02: "white", 0x03: "black", 0x06: "orange",
   0x0A: "red", 0x0B: "blue", 0x0C: "dark_red", 0x0D: "light_blue",
   0x0E: "green", 0x0F: "yellow",
 };

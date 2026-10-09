@@ -24,6 +24,13 @@ async function exportJSON(){fireEvent.click(screen.getByRole('button',{name:'Exp
 function importJSON(value){fileRead('.json-file-input',{name:'teams.json',text:async()=>JSON.stringify(value)});}
 
 describe('editor document lifecycle',()=>{
+  it('offers exactly the ten game-supported kit colours',async()=>{
+    await setup();
+    fireEvent.click(screen.getByRole('button',{name:/First Kit: Shirt 1:/}));
+    const picker=screen.getByRole('group',{name:'First Kit: Shirt 1 colours'});
+    const colours=[...picker.querySelectorAll('button')].map(button=>button.getAttribute('aria-label'));
+    expect(colours).toEqual(['grey','white','black','orange','red','blue','dark red','light blue','green','yellow']);
+  });
   for(const strict of [true,false]) it(`exports current edits immediately and imports replace them (strict=${strict})`,async()=>{
     await setup(strict);
     fireEvent.change(screen.getByLabelText('Team Name'),{target:{value:'EDITED'}});

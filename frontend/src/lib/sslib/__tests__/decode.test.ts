@@ -45,11 +45,11 @@ describe('decodeKitAttrs', () => {
     block[b + 2] = 0x0A;
     block[b + 3] = 0x0B;
     block[b + 4] = 0x0F;
-    // second: style=0(plain), shirt1=0x0E(green), shirt2=0x03(black), shorts=0x04(brown), socks=0x01(grey)
+    // second: style=0(plain), shirt1=0x0E(green), shirt2=0x03(black), shorts=0x06(orange), socks=0x01(grey)
     block[b + 5] = 0;
     block[b + 6] = 0x0E;
     block[b + 7] = 0x03;
-    block[b + 8] = 0x04;
+    block[b + 8] = 0x06;
     block[b + 9] = 0x01;
 
     const kit = decodeKitAttrs(block, 0);
@@ -61,7 +61,7 @@ describe('decodeKitAttrs', () => {
     expect(kit.second.style).toBe('plain');
     expect(kit.second.shirt1).toBe('green');
     expect(kit.second.shirt2).toBe('black');
-    expect(kit.second.shorts).toBe('brown');
+    expect(kit.second.shorts).toBe('orange');
     expect(kit.second.socks).toBe('grey');
   });
 
