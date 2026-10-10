@@ -50,6 +50,23 @@ the code area. Every candidate must have ordered, in-bounds, word-aligned region
 pointers, two-byte region gaps, valid block chains, and bounded packed strings.
 Editable country, team, coach, and player names do not identify the edition.
 
+### Values used by the library
+
+`frontend/src/lib/sslib/rom-format.ts` holds the binary layout values shared
+by the decoder, encoder, validator, and writer. The table below separates
+observed ROM fields from limits chosen by this editor.
+
+| Value | Basis |
+|-------|-------|
+| 2-byte words, 4-byte pointers, 5-bit text characters | The block size word, pointer table, and text decoder described below. |
+| 22-byte team header, 16 player records of 8 bytes | The attribute layout below; together these give the 150-byte attribute block. |
+| Text position offsets `2, 4, 6`, then `22 + 8 × player index` | The 19-entry lookup table at `0x019630` in International and `0x0193A6` in Original. Both ROM tables contain these same offsets. |
+| Two 2-byte gaps between three team regions | The pointer relationships in both stock ROMs. |
+| Pointer table addresses `0x01EF22`, `0x01EA42` | Locations observed in the International and Original ROMs; candidate scanning also supports other locations. |
+| `0x18E` checksum field, word sum from `0x200` | Mega Drive header checksum format; the writer recomputes it after edits. |
+| 160-byte chain-walk minimum, 500-byte block maximum | Defensive editor bounds. A decoded block also needs at least 150 attribute bytes plus a 2-byte text word. These are validation limits, not fields stored elsewhere in the ROM. |
+| Pointer scan through `0x30000`; first region start between `0x10000` and `0x40000` | Discovery bounds used to reject false matches while scanning. They are not part of the team data format. |
+
 
 ## Known Offsets
 
@@ -262,6 +279,24 @@ The International ROM's ten-entry kit-colour lookup table is at `0x01FAFA`;
 the Original ROM has the same table at `0x01F430`. All stock team kit colour
 fields use these ten values. Values `0x04`, `0x05`, and `0x07`–`0x09` are not
 supported kit colour choices.
+
+The editor's display colours were sampled from the game's
+[Edit Teams screen](docs/screenshots/game-kit-editor.png) in MAME, using the
+active Mega Drive normal palette. The kit IDs select these palette entries
+directly:
+
+| Kit ID | Name | Rendered RGB |
+|--------|------|--------------|
+| `0x01` | Grey | `#ACACAC` |
+| `0x02` | White | `#FFFFFF` |
+| `0x03` | Black | `#000000` |
+| `0x06` | Orange | `#FF7400` |
+| `0x0A` | Red | `#FF0000` |
+| `0x0B` | Blue | `#0000FF` |
+| `0x0C` | Dark red | `#740034` |
+| `0x0D` | Light blue | `#9090FF` |
+| `0x0E` | Green | `#349000` |
+| `0x0F` | Yellow | `#FFFF00` |
 
 Example (Lazio): `00 0D 0D 02 02  00 0F 0F 0F 0F`
 → First kit: plain, light blue shirt, white shorts & socks.

@@ -130,6 +130,17 @@ describe('chainWalkRegion', () => {
     expect(blocks).toEqual([0, 160]);
   });
 
+  it('walks a large region without relying on recursion depth', () => {
+    const count = 3000;
+    const size = 160;
+    const rom = new Uint8Array(count * size);
+    const view = new DataView(rom.buffer);
+    Array.from({ length: count }, (_, index) => view.setUint16(index * size, size));
+    const blocks = chainWalkRegion(rom, 0, rom.length);
+    expect(blocks).toHaveLength(count);
+    expect(blocks[blocks.length - 1]).toBe((count - 1) * size);
+  });
+
   it('throws on bad block size', () => {
     const buf = new Uint8Array(10);
     const view = new DataView(buf.buffer);

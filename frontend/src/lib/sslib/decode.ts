@@ -2,25 +2,57 @@ import {
   CHARSET, ATTR_SIZE, ATTR_OFFSETS,
   COLOUR_NAMES, STYLE_NAMES, HEAD_NAMES, ROLE_NAMES, POSITION_NAMES, FORMATION_NAMES,
 } from './constants.js';
-import type { Kit, PointerTable, TeamsJson } from './types.js';
+import type { Kit, KitColour, Player, PointerTable, Team, TeamsJson } from './types.js';
+import {
+  BITS_PER_BYTE, TEXT_BITS_PER_CHARACTER, TEXT_CHARACTER_MASK, PLAYER_COUNT,
+  PLAYER_RECORD_OFFSET, PLAYER_RECORD_BYTES, PLAYER_POSITION_OFFSET, PLAYER_APPEARANCE_OFFSET,
+  KIT_OFFSET, KIT_BYTES, KIT_COUNT, FORMATION_ACTIVE_OFFSET, TEAM_FLAGS_OFFSET,
+  SKILL_SHIFT, SKILL_MASK, FLAG_MASK, POSITION_SHIFT, NIBBLE_MASK, ROLE_SHIFT,
+  TWO_BIT_MASK, STAR_MASK, WORD_BYTES, LONG_BYTES, REGION_GAP_BYTES,
+  MIN_BLOCK_BYTES, MIN_DECODED_BLOCK_BYTES, MAX_BLOCK_BYTES, POINTER_COUNT,
+  POINTER_TABLE_BYTES, KNOWN_POINTER_TABLES, POINTER_SCAN_END, POINTER_DATA_START,
+  POINTER_DATA_END,
+} from './rom-format.js';
+
+interface TeamAttributes { formation: string; skill: number; flag: number }
+interface DecodedName { name: string; endBit: number }
+interface DecodedTeamBlock {
+  offset: number;
+  team: string;
+  country: string;
+  coach: string;
+  players: string[];
+  textBits: number;
+  textEnd: number;
+}
+interface DecodedRegionTeam extends DecodedTeamBlock {
+  blockOffset: number;
+  kit: Kit;
+  teamAttrs: TeamAttributes;
+  playerAttrs: Omit<Player, 'name'>[];
+}
+interface BlockWalkState { offset: number; blocks: number[] }
 
 /**
  * Decode a single 5-bit packed null-terminated string.
  * Returns [decoded_string, next_bit_position].
  */
-export function decode5bitString(data: Uint8Array, byteOffset: number, bitStart = 0, bitLimit = data.length * 8): [string, number] {
-  let pos = byteOffset * 8 + bitStart;
-  if (!Number.isInteger(pos) || pos < 0 || bitLimit > data.length * 8 || pos > bitLimit) throw new Error('Text position outside ROM/block');
-  const result: string[] = [];
-  while (pos + 5 <= bitLimit) {
-    let value = 0;
-    for (let bit = pos; bit < pos + 5; bit++) value = (value << 1) | ((data[Math.floor(bit / 8)] >> (7 - bit % 8)) & 1);
-    pos += 5;
-    if (value === 0) return [result.join(''), pos - byteOffset * 8];
-    if (value >= CHARSET.length) throw new Error('Invalid packed character');
-    result.push(CHARSET[value]);
+export function decode5bitString(data: Uint8Array, byteOffset: number, bitStart = 0, bitLimit = data.length * BITS_PER_BYTE): [string, number] {
+  const start = byteOffset * BITS_PER_BYTE + bitStart;
+  if (!Number.isInteger(start) || start < 0 || bitLimit > data.length * BITS_PER_BYTE || start > bitLimit) {
+    throw new Error('Text position outside ROM/block');
   }
-  throw new Error('Unterminated packed string');
+
+  const values = Array.from({ length: Math.floor((bitLimit - start) / TEXT_BITS_PER_CHARACTER) }, (_, index): number => {
+    const position = start + index * TEXT_BITS_PER_CHARACTER;
+    const byteIndex = Math.floor(position / BITS_PER_BYTE);
+    const word = (data[byteIndex] << BITS_PER_BYTE) | (data[byteIndex + 1] ?? 0);
+    return (word >> (2 * BITS_PER_BYTE - TEXT_BITS_PER_CHARACTER - position % BITS_PER_BYTE)) & TEXT_CHARACTER_MASK;
+  });
+  const ending = values.findIndex((value): boolean => value === 0 || value >= CHARSET.length);
+  if (ending < 0) throw new Error('Unterminated packed string');
+  if (values[ending] !== 0) throw new Error('Invalid packed character');
+  return [values.slice(0, ending).map((value): string => CHARSET[value]).join(''), start + (ending + 1) * TEXT_BITS_PER_CHARACTER - byteOffset * BITS_PER_BYTE];
 }
 
 function requireRange(rom: Uint8Array, offset: number, size: number): void {
@@ -31,111 +63,130 @@ function requireRange(rom: Uint8Array, offset: number, size: number): void {
  * Decode the 16 player attribute records from the attribute block.
  * Each player has an 8-byte record starting at blockOffset + 22.
  */
-export function decodePlayerAttrs(rom: Uint8Array, blockOffset: number): Array<{
-  number: number; position: string; role: string; head: string; star?: boolean
-}> {
+export function decodePlayerAttrs(rom: Uint8Array, blockOffset: number): Omit<Player, 'name'>[] {
   requireRange(rom, blockOffset, ATTR_SIZE);
-  const players = [];
-  const base = blockOffset + 22;
-  for (let i = 0; i < 16; i++) {
-    const recOff = base + i * 8 + 2; // skip 2-byte packed text position
-    const posByte = rom[recOff];
-    const appByte = rom[recOff + 1];
-    const posSlot = (posByte >> 4) & 0x0F;
-    const roleVal = (appByte >> 2) & 0x03;
-    const headVal = appByte & 0x03;
-    const star = Boolean((appByte >> 4) & 0x01);
-    const p: { number: number; position: string; role: string; head: string; star?: boolean } = {
-      number: (posByte & 0x0F) + 1,
-      position: POSITION_NAMES[posSlot] ?? `Unknown (${posSlot})`,
-      role: ROLE_NAMES[roleVal] ?? `Unknown (${roleVal})`,
-      head: HEAD_NAMES[headVal] ?? `Unknown (${headVal})`,
+  return Array.from({ length: PLAYER_COUNT }, (_, index): Omit<Player, 'name'> => {
+    const attributeOffset = blockOffset + PLAYER_RECORD_OFFSET + index * PLAYER_RECORD_BYTES + PLAYER_POSITION_OFFSET;
+    const positionAndNumber = rom[attributeOffset];
+    const appearance = rom[attributeOffset + PLAYER_APPEARANCE_OFFSET - PLAYER_POSITION_OFFSET];
+    const position = positionAndNumber >> POSITION_SHIFT;
+    const role = (appearance >> ROLE_SHIFT) & TWO_BIT_MASK;
+    const head = appearance & TWO_BIT_MASK;
+
+    return {
+      number: (positionAndNumber & NIBBLE_MASK) + 1,
+      position: POSITION_NAMES[position] ?? `Unknown (${position})`,
+      role: ROLE_NAMES[role] ?? `Unknown (${role})`,
+      head: HEAD_NAMES[head] ?? `Unknown (${head})`,
+      ...(appearance & STAR_MASK ? { star: true } : {}),
     };
-    if (star) p.star = true;
-    players.push(p);
-  }
-  return players;
+  });
 }
 
 /**
  * Decode kit attributes from bytes 8-17 of the attribute block.
  */
 export function decodeKitAttrs(rom: Uint8Array, blockOffset: number): Kit {
-  requireRange(rom, blockOffset, 18);
-  const b = blockOffset + 8;
-  const colour = (v: number) => COLOUR_NAMES[v] ?? `Unknown (${v})`;
-  const style = (v: number) => STYLE_NAMES[v] ?? `Unknown (${v})`;
-  return {
-    first: {
-      style: style(rom[b]),
-      shirt1: colour(rom[b + 1]),
-      shirt2: colour(rom[b + 2]),
-      shorts: colour(rom[b + 3]),
-      socks: colour(rom[b + 4]),
-    },
-    second: {
-      style: style(rom[b + 5]),
-      shirt1: colour(rom[b + 6]),
-      shirt2: colour(rom[b + 7]),
-      shorts: colour(rom[b + 8]),
-      socks: colour(rom[b + 9]),
-    },
-  };
+  requireRange(rom, blockOffset, KIT_OFFSET + KIT_COUNT * KIT_BYTES);
+  const nameFor = (names: Record<number, string>, value: number): string => names[value] ?? `Unknown (${value})`;
+  const decodeKit = (offset: number): KitColour => ({
+    style: nameFor(STYLE_NAMES, rom[offset]),
+    shirt1: nameFor(COLOUR_NAMES, rom[offset + 1]),
+    shirt2: nameFor(COLOUR_NAMES, rom[offset + 2]),
+    shorts: nameFor(COLOUR_NAMES, rom[offset + 3]),
+    socks: nameFor(COLOUR_NAMES, rom[offset + 4]),
+  });
+
+  return { first: decodeKit(blockOffset + KIT_OFFSET), second: decodeKit(blockOffset + KIT_OFFSET + KIT_BYTES) };
 }
 
 /**
  * Decode team-level attributes from bytes 18-21 of the attribute block.
  */
-export function decodeTeamAttrs(rom: Uint8Array, blockOffset: number): { formation: string; skill: number; flag: number } {
-  requireRange(rom, blockOffset, 22);
-  const formationVal = rom[blockOffset + 19];
+export function decodeTeamAttrs(rom: Uint8Array, blockOffset: number): TeamAttributes {
+  requireRange(rom, blockOffset, TEAM_FLAGS_OFFSET + 1);
+  const formationVal = rom[blockOffset + FORMATION_ACTIVE_OFFSET];
   return {
     formation: FORMATION_NAMES[formationVal] ?? String(formationVal),
-    skill: (rom[blockOffset + 21] >> 3) & 0x07,
-    flag: rom[blockOffset + 21] & 0x01,
+    skill: (rom[blockOffset + TEAM_FLAGS_OFFSET] >> SKILL_SHIFT) & SKILL_MASK,
+    flag: rom[blockOffset + TEAM_FLAGS_OFFSET] & FLAG_MASK,
   };
 }
 
 /**
  * Decode a full team block at the given ROM offset (text start).
  */
-export function decodeTeamBlock(rom: Uint8Array, offset: number) {
+export function decodeTeamBlock(rom: Uint8Array, offset: number): DecodedTeamBlock {
   const start = offset - ATTR_SIZE;
   if (start < 0 || start + ATTR_SIZE > rom.length) throw new Error('Truncated team attributes');
   const view = new DataView(rom.buffer, rom.byteOffset, rom.byteLength);
   const size = view.getUint16(start);
-  if (size < 162 || size > 500 || size % 2 || start + size > rom.length) throw new Error('Invalid/truncated team block');
-  let textEnd = offset * 8;
-  const names = ATTR_OFFSETS.map(attr => {
-    const packed = view.getUint16(start + attr), byte = packed >> 5, bit = packed & 31;
-    if (byte < ATTR_SIZE || byte % 2 || bit >= 16 || byte >= size) throw new Error('Invalid packed text position');
-    const [name, end] = decode5bitString(rom, start + byte, bit, (start + size) * 8);
-    textEnd = Math.max(textEnd, (start + byte) * 8 + end);
-    return name;
+  if (size < MIN_DECODED_BLOCK_BYTES || size > MAX_BLOCK_BYTES || size % WORD_BYTES || start + size > rom.length) throw new Error('Invalid/truncated team block');
+
+  const decoded = ATTR_OFFSETS.map((attributeOffset): DecodedName => {
+    const packedPosition = view.getUint16(start + attributeOffset);
+    const byteOffset = packedPosition >> TEXT_BITS_PER_CHARACTER;
+    const bitOffset = packedPosition & TEXT_CHARACTER_MASK;
+    if (byteOffset < ATTR_SIZE || byteOffset % WORD_BYTES || bitOffset >= WORD_BYTES * BITS_PER_BYTE || byteOffset >= size) {
+      throw new Error('Invalid packed text position');
+    }
+
+    const [name, bitsRead] = decode5bitString(rom, start + byteOffset, bitOffset, (start + size) * BITS_PER_BYTE);
+    return { name, endBit: (start + byteOffset) * BITS_PER_BYTE + bitsRead };
   });
-  return { offset, team: names[0], country: names[1], coach: names[2], players: names.slice(3),
-    textBits: textEnd - offset * 8, textEnd: Math.ceil(textEnd / 8) };
+  const names = decoded.map(({ name }): string => name);
+  const textEnd = Math.max(offset * BITS_PER_BYTE, ...decoded.map(({ endBit }): number => endBit));
+
+  return {
+    offset,
+    team: names[0],
+    country: names[1],
+    coach: names[2],
+    players: names.slice(3),
+    textBits: textEnd - offset * BITS_PER_BYTE,
+    textEnd: Math.ceil(textEnd / BITS_PER_BYTE),
+  };
 }
 
 /** Find structures independently of editable team text. */
 export function findPointerTable(rom: Uint8Array): PointerTable {
   const view = new DataView(rom.buffer, rom.byteOffset, rom.byteLength);
+
   function candidate(base: number): PointerTable | null {
-    if (base < 0 || base + 24 > rom.length) return null;
-    const [ns, cs, us, ne, ce, ue] = Array.from({length: 6}, (_, i) => view.getUint32(base + i * 4));
-    if (!(ns > 0x10000 && ns < 0x40000 && base + 24 <= ns && ns < ne && ne + 2 === cs && cs < ce && ce + 2 === us && us < ue && ue <= rom.length && [ns, cs, us, ne, ce, ue].every(x => x % 2 === 0))) return null;
-    try {
-      for (const [start, end] of [[ns, ne], [cs, ce], [us, ue]]) {
-        for (const block of chainWalkRegion(rom, start, end)) decodeTeamBlock(rom, block + ATTR_SIZE);
+    if (base < 0 || base + POINTER_TABLE_BYTES > rom.length) return null;
+    const [natStart, clubStart, custStart, natEnd, clubEnd, custEnd] =
+      Array.from({ length: POINTER_COUNT }, (_, index): number => view.getUint32(base + index * LONG_BYTES));
+    const pointers = [natStart, clubStart, custStart, natEnd, clubEnd, custEnd];
+    const hasValidBounds = natStart > POINTER_DATA_START && natStart < POINTER_DATA_END &&
+      base + POINTER_TABLE_BYTES <= natStart && natStart < natEnd &&
+      natEnd + REGION_GAP_BYTES === clubStart && clubStart < clubEnd &&
+      clubEnd + REGION_GAP_BYTES === custStart && custStart < custEnd && custEnd <= rom.length &&
+      pointers.every((pointer): boolean => pointer % WORD_BYTES === 0);
+    if (!hasValidBounds) return null;
+
+    const regions = [[natStart, natEnd], [clubStart, clubEnd], [custStart, custEnd]];
+    const validRegions = regions.every(([start, end]): boolean => {
+      try {
+        chainWalkRegion(rom, start, end).forEach((block): void => {
+          decodeTeamBlock(rom, block + ATTR_SIZE);
+        });
+        return true;
+      } catch {
+        return false;
       }
-    } catch { return null; }
-    return {natStart: ns, clubStart: cs, custStart: us, natEnd: ne, clubEnd: ce, custEnd: ue, tableBase: base};
+    });
+    if (!validRegions) return null;
+
+    return { natStart, clubStart, custStart, natEnd, clubEnd, custEnd, tableBase: base };
   }
-  for (const base of [0x1EF22, 0x1EA42]) { const result = candidate(base); if (result) return result; }
-  for (let base = 0; base + 24 <= Math.min(rom.length, 0x30000); base += 2) {
-    const result = candidate(base); if (result) return result;
-  }
-  throw new Error('No valid team pointer table found (unsupported or damaged ROM)');
+
+  const known = KNOWN_POINTER_TABLES.reduce<PointerTable | null>(
+    (found, base): PointerTable | null => found ?? candidate(base), null);
+  const scanCount = Math.max(0, Math.floor((Math.min(rom.length, POINTER_SCAN_END) - POINTER_TABLE_BYTES) / WORD_BYTES) + 1);
+  const discovered = known ?? Array.from({ length: scanCount }, (_, index): number => index * WORD_BYTES)
+    .reduce<PointerTable | null>((found, base): PointerTable | null => found ?? candidate(base), null);
+  if (!discovered) throw new Error('No valid team pointer table found (unsupported or damaged ROM)');
+  return discovered;
 }
 
 /**
@@ -143,39 +194,40 @@ export function findPointerTable(rom: Uint8Array): PointerTable {
  * Returns list of block start offsets.
  */
 export function chainWalkRegion(rom: Uint8Array, regionStart: number, regionEnd: number): number[] {
+  if (!(regionStart >= 0 && regionStart < regionEnd && regionEnd <= rom.length) || regionStart % WORD_BYTES || regionEnd % WORD_BYTES) {
+    throw new Error('Invalid region bounds/alignment');
+  }
+
   const view = new DataView(rom.buffer, rom.byteOffset, rom.byteLength);
-  if (!(regionStart >= 0 && regionStart < regionEnd && regionEnd <= rom.length) || regionStart % 2 || regionEnd % 2) throw new Error('Invalid region bounds/alignment');
-  const blocks: number[] = [];
-  let pos = regionStart;
-  while (pos < regionEnd) {
-    if (pos + 2 > regionEnd) throw new Error('Truncated block size');
-    const sz = view.getUint16(pos, false);
-    if (sz < 160 || sz > 500 || sz % 2 || pos + sz > regionEnd) {
-      throw new Error(`Bad block size ${sz} at 0x${pos.toString(16).toUpperCase()}`);
+  const maxBlocks = Math.ceil((regionEnd - regionStart) / MIN_BLOCK_BYTES);
+  const result = Array.from({ length: maxBlocks }).reduce<BlockWalkState>((state): BlockWalkState => {
+    if (state.offset === regionEnd) return state;
+    const offset = state.offset;
+    if (offset + WORD_BYTES > regionEnd) throw new Error('Truncated block size');
+    const size = view.getUint16(offset);
+    if (size < MIN_BLOCK_BYTES || size > MAX_BLOCK_BYTES || size % WORD_BYTES || offset + size > regionEnd) {
+      throw new Error(`Bad block size ${size} at 0x${offset.toString(16).toUpperCase()}`);
     }
-    blocks.push(pos);
-    pos += sz;
+    return { offset: offset + size, blocks: [...state.blocks, offset] };
+  }, { offset: regionStart, blocks: [] });
+  if (result.offset !== regionEnd) {
+    throw new Error(`Chain walk ended at 0x${result.offset.toString(16).toUpperCase()}, expected 0x${regionEnd.toString(16).toUpperCase()}`);
   }
-  if (pos !== regionEnd) {
-    throw new Error(`Chain walk ended at 0x${pos.toString(16).toUpperCase()}, expected 0x${regionEnd.toString(16).toUpperCase()}`);
-  }
-  return blocks;
+  return result.blocks;
 }
 
 /**
  * Decode all teams in a region.
  */
-export function decodeRegion(rom: Uint8Array, regionStart: number, regionEnd: number) {
-  const blocks = chainWalkRegion(rom, regionStart, regionEnd);
-  return blocks.map(blockOff => {
-    const textOff = blockOff + 150;
-    const info = decodeTeamBlock(rom, textOff);
+export function decodeRegion(rom: Uint8Array, regionStart: number, regionEnd: number): DecodedRegionTeam[] {
+  return chainWalkRegion(rom, regionStart, regionEnd).map((blockOffset): DecodedRegionTeam => {
+    const info = decodeTeamBlock(rom, blockOffset + ATTR_SIZE);
     return {
       ...info,
-      blockOffset: blockOff,
-      kit: decodeKitAttrs(rom, blockOff),
-      teamAttrs: decodeTeamAttrs(rom, blockOff),
-      playerAttrs: decodePlayerAttrs(rom, blockOff),
+      blockOffset,
+      kit: decodeKitAttrs(rom, blockOffset),
+      teamAttrs: decodeTeamAttrs(rom, blockOffset),
+      playerAttrs: decodePlayerAttrs(rom, blockOffset),
     };
   });
 }
@@ -184,43 +236,22 @@ export function decodeRegion(rom: Uint8Array, regionStart: number, regionEnd: nu
  * Decode all teams from a ROM.
  */
 export function decodeRom(romBytes: Uint8Array): TeamsJson {
-  const ptrs = findPointerTable(romBytes);
+  const pointers = findPointerTable(romBytes);
+  const decodeTeams = (start: number, end: number): Team[] =>
+    decodeRegion(romBytes, start, end).map(({ team, country, coach, players, playerAttrs, teamAttrs, kit }): Team => ({
+      team,
+      country,
+      coach,
+      formation: teamAttrs.formation,
+      skill: teamAttrs.skill,
+      flag: teamAttrs.flag,
+      kit,
+      players: players.map((name, index): Player => ({ name, ...playerAttrs[index] })),
+    }));
 
-  const categories = [
-    ['national', ptrs.natStart, ptrs.natEnd],
-    ['club', ptrs.clubStart, ptrs.clubEnd],
-    ['custom', ptrs.custStart, ptrs.custEnd],
-  ] as const;
-
-  const output: TeamsJson = { national: [], club: [], custom: [] };
-
-  for (const [catName, start, end] of categories) {
-    const teams = decodeRegion(romBytes, start, end);
-    output[catName] = teams.map(t => {
-      const players = t.players.map((name, j) => {
-        const pa = t.playerAttrs[j];
-        const pd: { name: string; number: number; position: string; role: string; head: string; star?: boolean } = {
-          name,
-          number: pa.number,
-          position: pa.position,
-          role: pa.role,
-          head: pa.head,
-        };
-        if (pa.star) pd.star = true;
-        return pd;
-      });
-      return {
-        team: t.team,
-        country: t.country,
-        coach: t.coach,
-        formation: t.teamAttrs.formation,
-        skill: t.teamAttrs.skill,
-        flag: t.teamAttrs.flag,
-        kit: t.kit,
-        players,
-      };
-    });
-  }
-
-  return output;
+  return {
+    national: decodeTeams(pointers.natStart, pointers.natEnd),
+    club: decodeTeams(pointers.clubStart, pointers.clubEnd),
+    custom: decodeTeams(pointers.custStart, pointers.custEnd),
+  };
 }

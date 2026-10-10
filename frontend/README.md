@@ -88,7 +88,11 @@ React mounts the editor inside `#root`. Keep the global stylesheet linked from
 HTML so the guide remains styled without JavaScript. Vite replaces
 `%APP_VERSION%` with the package version at development/build time.
 
-The canonical and Open Graph URLs use `https://maidavale.org/sensi/`.
-`public/sitemap.xml` lists that same URL. If the deployment path changes, update
-these along with Vite's base. See [SEO_ACTIONS.md](../SEO_ACTIONS.md) for the
-verification results, root-site changes and publishing/Search Console checklist.
+The canonical and Open Graph URLs use `https://maidavale.org/sensi/`. If the
+deployment path changes, update these along with Vite's base.
+
+## Documentation screenshots
+
+The [screenshot gallery](../docs/screenshots/README.md) contains images generated
+by Playwright while editing `ssint_orig.md`. Its README includes the regeneration
+command and a description of each image.

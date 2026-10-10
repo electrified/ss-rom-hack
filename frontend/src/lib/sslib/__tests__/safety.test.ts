@@ -3,7 +3,8 @@ import { fixtureRom, fixtureTeams } from './fixtures';
 import { decodeRom, updateRom, validateTeams, extractRomStructure } from '../index';
 import { findPointerTable, chainWalkRegion, decode5bitString } from '../decode';
 import { encode5bitString } from '../encode';
-import { availableEnd } from '../layout';
+import { availableEnd, encodedSize } from '../layout';
+import { normalizeTeams, TeamDataError } from '../normalize';
 const rom = fixtureRom();
 const structure = extractRomStructure(rom);
 
@@ -23,6 +24,23 @@ describe('ROM safety', () => {
     expect(view.getUint16(0x18e)).toBe(sum);
     expect(result.slice(-2)).toEqual(rom.slice(-2));
   });
+  it('preserves reserved team and player attribute bits when editing owned fields', () => {
+    const source = fixtureRom();
+    const start = findPointerTable(source).natStart;
+    source[start + 21] |= 0xC6;
+    source[start + 25] |= 0xA0;
+    const teams = decodeRom(source);
+    teams.national[0].skill = 5;
+    teams.national[0].flag = 1;
+    teams.national[0].players[0].head = 'white_blonde';
+    teams.national[0].players[0].star = true;
+
+    const result = updateRom(source, teams);
+    expect(result[start + 21]).toBe(0xC6 | (5 << 3) | 1);
+    expect(result[start + 25]).toBe(0xA0 | 0x10 | 1);
+    expect(decodeRom(result)).toEqual(teams);
+    expect(source[start + 21] & 0xC6).toBe(0xC6);
+  });
   it('rejects NUL at every text field and the encoder boundary', () => {
     for (let i = 0; i < 19; i++) {
       const d = fixtureTeams(), t = d.national[0];
@@ -40,6 +58,23 @@ describe('ROM safety', () => {
     for (const field of ['team','country','coach','kit','players']) { const d: any = fixtureTeams(); delete d.national[0][field]; expect(validateTeams(structure,d).valid).toBe(false); }
     for (const [field,value] of [['star','false'],['number',1.5],['number','1'],['number',undefined],['role','constructor']]) { const d: any=fixtureTeams();d.national[0].players[0][field as string]=value;expect(validateTeams(structure,d).valid).toBe(false); }
   });
+  it('keeps multiple validation issues attached to their team and player', () => {
+    const teams = fixtureTeams();
+    teams.national[0].team = 'BAD!';
+    teams.national[0].players[0].number = 17;
+    teams.club[0].kit.first.shirt1 = 'brown';
+    try {
+      normalizeTeams(teams);
+      throw new Error('Expected validation to fail');
+    } catch (error) {
+      expect(error).toBeInstanceOf(TeamDataError);
+      expect((error as TeamDataError).issues).toEqual([
+        { category: 'national', team: 0, message: 'team: invalid chars (use uppercase A-Z, space, dash, apostrophe, period)' },
+        { category: 'national', team: 0, player: 0, message: 'number must be an integer 1-16' },
+        { category: 'club', team: 0, message: expect.stringContaining('first kit shirt1') },
+      ]);
+    }
+  });
   it('enforces canonical text lengths and character set', () => {
     for (const [field,n] of [['team',25],['country',19],['coach',25]] as const) {
       const d=fixtureTeams();d.national[0][field]='A'.repeat(n);expect(validateTeams(structure,d).valid).toBe(true);
@@ -52,6 +87,43 @@ describe('ROM safety', () => {
     expect(validateTeams(extractRomStructure(r),d).valid).toBe(true);
     d.national[0].coach='LONG COACH';expect(validateTeams(extractRomStructure(r),d).valid).toBe(false);expect(() => updateRom(r,d)).toThrow(/overflows/);
     for (const odd of [0,1]) { const zero=new Uint8Array(rom.length+odd);zero.set(r);expect(availableEnd(zero,p.custEnd)).toBe(zero.length-odd);expect(() => updateRom(zero,d)).not.toThrow(); }
+  });
+  it('uses the final zero word but stops before the following nonzero data', () => {
+    const tight = fixtureRom({padding: 2});
+    const teams = decodeRom(tight);
+    const originalSize = encodedSize(teams);
+    const originalName = teams.national[0].team;
+    const suffix = Array.from({length: 10}, (_, i) => 'A'.repeat(i + 1))
+      .find(value => {
+        teams.national[0].team = originalName + value;
+        return encodedSize(teams) === originalSize + 2;
+      });
+    if (!suffix) throw new Error('Fixture has no two-byte growth case');
+    teams.national[0].team = originalName + suffix;
+    expect(extractRomStructure(tight).capacity).toBe(originalSize + 2);
+    expect(decodeRom(updateRom(tight, teams))).toEqual(teams);
+
+    const noPadding = fixtureRom({padding: 0});
+    expect(() => updateRom(noPadding, teams)).toThrow(/overflows/);
+  });
+  it('updates region boundaries and clears bytes left by shorter text', () => {
+    const source = fixtureRom({padding: 0});
+    const before = findPointerTable(source);
+    const teams = decodeRom(source);
+    teams.national[0].team = 'A';
+    teams.national[0].players[0].name = '';
+    teams.club[0].team = 'LONGER CLUB NAME';
+    teams.custom[0].team = 'C';
+    teams.custom[0].players[0].name = '';
+    const result = updateRom(source, teams);
+    const after = findPointerTable(result);
+
+    expect(after.natEnd + 2).toBe(after.clubStart);
+    expect(after.clubEnd + 2).toBe(after.custStart);
+    expect(after.custEnd).toBeLessThan(before.custEnd);
+    expect(result.slice(after.custEnd, before.custEnd)).toEqual(new Uint8Array(before.custEnd - after.custEnd));
+    expect(result.slice(before.custEnd)).toEqual(source.slice(before.custEnd));
+    expect(decodeRom(result)).toEqual(teams);
   });
   it('rejects truncated ROMs, invalid positions and missing terminators', () => {
     const p=findPointerTable(rom);

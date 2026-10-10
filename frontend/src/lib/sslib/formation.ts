@@ -37,7 +37,7 @@ export function assignPosition(player: Player, formation: string, position: stri
 }
 export function changeFormation(team: Team, formation: string): Team {
   if (!FORMATION_ROLES[formation]) throw new Error('Unsupported formation');
-  return {...team, formation, players: team.players.map(player => {
+  return {...team, formation, players: team.players.map((player): Player => {
     const oldRole = expectedRole(team.formation, player.position);
     const newRole = expectedRole(formation, player.position);
     return oldRole && newRole && player.role === oldRole ? {...player, role: newRole} : player;

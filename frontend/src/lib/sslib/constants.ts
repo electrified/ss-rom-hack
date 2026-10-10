@@ -1,10 +1,6 @@
 export const CHARSET = "\x00ABCDEFGHIJKLMNOPQRSTUVWXYZ -'.";
 
-export const ATTR_SIZE = 150;
-
-// Offsets within the 150-byte attribute block where packed text positions
-// are stored (19 entries for: team, country, coach, 16 players)
-export const ATTR_OFFSETS = [2, 4, 6, 22, 30, 38, 46, 54, 62, 70, 78, 86, 94, 102, 110, 118, 126, 134, 142];
+export { ATTRIBUTE_BYTES as ATTR_SIZE, TEXT_POSITION_OFFSETS as ATTR_OFFSETS } from './rom-format.ts';
 
 export const CATEGORIES = ['national', 'club', 'custom'] as const;
 
@@ -21,21 +17,21 @@ export const COLOUR_NAMES: Record<number, string> = {
   0x0E: "green", 0x0F: "yellow",
 };
 export const COLOUR_VALUES: Record<string, number> = Object.fromEntries(
-  Object.entries(COLOUR_NAMES).map(([k, v]) => [v, Number(k)])
+  Object.entries(COLOUR_NAMES).map(([k, v]): [string, number] => [v, Number(k)])
 );
 
 export const STYLE_NAMES: Record<number, string> = {
   0: "plain", 1: "sleeves", 2: "vertical", 3: "horizontal",
 };
 export const STYLE_VALUES: Record<string, number> = Object.fromEntries(
-  Object.entries(STYLE_NAMES).map(([k, v]) => [v, Number(k)])
+  Object.entries(STYLE_NAMES).map(([k, v]): [string, number] => [v, Number(k)])
 );
 
 export const HEAD_NAMES: Record<number, string> = {
   0: "white_dark", 1: "white_blonde", 2: "black_dark",
 };
 export const HEAD_VALUES: Record<string, number> = Object.fromEntries(
-  Object.entries(HEAD_NAMES).map(([k, v]) => [v, Number(k)])
+  Object.entries(HEAD_NAMES).map(([k, v]): [string, number] => [v, Number(k)])
 );
 
 export const FORMATION_NAMES: Record<number, string> = {
@@ -43,14 +39,14 @@ export const FORMATION_NAMES: Record<number, string> = {
   4: "3-5-2", 5: "4-3-3", 6: "Attack", 7: "Defend",
 };
 export const FORMATION_VALUES: Record<string, number> = Object.fromEntries(
-  Object.entries(FORMATION_NAMES).map(([k, v]) => [v, Number(k)])
+  Object.entries(FORMATION_NAMES).map(([k, v]): [string, number] => [v, Number(k)])
 );
 
 export const ROLE_NAMES: Record<number, string> = {
   0: "goalkeeper", 1: "defender", 2: "midfielder", 3: "forward",
 };
 export const ROLE_VALUES: Record<string, number> = Object.fromEntries(
-  Object.entries(ROLE_NAMES).map(([k, v]) => [v, Number(k)])
+  Object.entries(ROLE_NAMES).map(([k, v]): [string, number] => [v, Number(k)])
 );
 
 export const POSITION_NAMES: Record<number, string> = {
@@ -59,7 +55,7 @@ export const POSITION_NAMES: Record<number, string> = {
   9: "forward", 10: "second_forward", 15: "sub",
 };
 export const POSITION_VALUES: Record<string, number> = Object.fromEntries(
-  Object.entries(POSITION_NAMES).map(([k, v]) => [v, Number(k)])
+  Object.entries(POSITION_NAMES).map(([k, v]): [string, number] => [v, Number(k)])
 );
 
 export const KNOWN_COUNTRIES = new Set([

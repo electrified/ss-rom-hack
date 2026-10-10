@@ -5,10 +5,9 @@ const COLOURS = Object.values(COLOUR_NAMES);
 const STYLES = Object.values(STYLE_NAMES);
 
 const COLOUR_CSS = {
-  grey: '#808080', white: '#ffffff', black: '#1a1a1a', orange: '#ff8c00',
-  red: '#dc2626',
-  blue: '#2563eb', dark_red: '#8b0000', light_blue: '#60a5fa',
-  green: '#16a34a', yellow: '#eab308',
+  grey: '#acacac', white: '#ffffff', black: '#000000', orange: '#ff7400',
+  red: '#ff0000', blue: '#0000ff', dark_red: '#740034', light_blue: '#9090ff',
+  green: '#349000', yellow: '#ffff00',
 };
 
 const STYLE_LABELS = { plain: 'Plain', sleeves: 'Sleeves', vertical: 'Stripes', horizontal: 'Hoops' };

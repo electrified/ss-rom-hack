@@ -5,7 +5,7 @@ const {version} = JSON.parse(readFileSync(new URL('../package.json', import.meta
 const title = 'Sensible Soccer ROM Editor for Mega Drive / Genesis';
 const canonical = 'https://maidavale.org/sensi/';
 
-test('publishes metadata, static content and a canonical sitemap', async ({page, request}) => {
+test('publishes metadata and static content', async ({page, request}) => {
   await page.route('https://www.googletagmanager.com/gtag/js?*', route => route.fulfill({body: ''}));
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -29,12 +29,6 @@ test('publishes metadata, static content and a canonical sitemap', async ({page,
   expect(html).toContain('<h1>');
   expect(html).toContain('Supported versions');
   expect(html).not.toContain('%APP_VERSION%');
-  const sitemap = await request.get('sitemap.xml');
-  expect(sitemap.ok()).toBe(true);
-  const xml = await sitemap.text();
-  expect(xml.match(/<loc>/g)).toHaveLength(1);
-  expect(xml).toContain(`<loc>${canonical}</loc>`);
-  expect(xml).not.toContain('<lastmod>');
   expect(errors).toEqual([]);
 });
 

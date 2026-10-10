@@ -8,6 +8,14 @@ import type { Team } from './types.js';
 import { normalizeTeams } from './normalize';
 import { validateTeams, extractRomStructure } from './validate';
 import { availableEnd } from './layout';
+import {
+  PLAYER_RECORD_OFFSET, PLAYER_RECORD_BYTES, PLAYER_POSITION_OFFSET, PLAYER_APPEARANCE_OFFSET,
+  KIT_OFFSET, KIT_BYTES, FORMATION_DEFAULT_OFFSET, FORMATION_ACTIVE_OFFSET,
+  TEAM_FLAGS_OFFSET, SKILL_SHIFT, TEAM_EDIT_MASK, POSITION_SHIFT, NIBBLE_MASK,
+  ROLE_SHIFT, TWO_BIT_MASK, STAR_MASK, APPEARANCE_RESERVED_MASK, WORD_BYTES,
+  LONG_BYTES, REGION_GAP_BYTES, MAX_BLOCK_BYTES, ROM_CHECKSUM_OFFSET,
+  ROM_CHECKSUM_START, ROM_CHECKSUM_MASK,
+} from './rom-format.js';
 
 function resolveColour(val: string | number): number {
   return typeof val === 'string' ? COLOUR_VALUES[val] : val;
@@ -25,39 +33,56 @@ function resolveHead(val: string | number): number {
   return typeof val === 'string' ? HEAD_VALUES[val] : val;
 }
 
-function applyKitAttrs(attrs: Uint8Array, kit: Team['kit']): void {
-  let b = 8;
-  for (const prefix of ['first', 'second'] as const) {
+function applyKitAttrs(attrs: Uint8Array, kit: Team['kit']): Uint8Array {
+  const updated = attrs.slice();
+  (['first', 'second'] as const).forEach((prefix, index): void => {
+    const b = KIT_OFFSET + index * KIT_BYTES;
     const k = kit[prefix];
-    attrs[b] = resolveStyle(k.style);
-    attrs[b + 1] = resolveColour(k.shirt1);
-    attrs[b + 2] = resolveColour(k.shirt2);
-    attrs[b + 3] = resolveColour(k.shorts);
-    attrs[b + 4] = resolveColour(k.socks);
-    b += 5;
-  }
+    updated[b] = resolveStyle(k.style);
+    updated[b + 1] = resolveColour(k.shirt1);
+    updated[b + 2] = resolveColour(k.shirt2);
+    updated[b + 3] = resolveColour(k.shorts);
+    updated[b + 4] = resolveColour(k.socks);
+  });
+  return updated;
 }
 
-function applyTeamAttrs(attrs: Uint8Array, team: Team): void {
+function applyTeamAttrs(attrs: Uint8Array, team: Team): Uint8Array {
+  const updated = attrs.slice();
   const formation = FORMATION_VALUES[team.formation];
-  if (attrs[19] !== formation) { attrs[18] = formation; attrs[19] = formation; }
+  if (updated[FORMATION_ACTIVE_OFFSET] !== formation) {
+    updated[FORMATION_DEFAULT_OFFSET] = formation;
+    updated[FORMATION_ACTIVE_OFFSET] = formation;
+  }
   const skill = team.skill ?? 0;
   const flag = team.flag ?? 0;
-  attrs[21] = (attrs[21] & ~0x39) | (skill << 3) | flag;
+  updated[TEAM_FLAGS_OFFSET] = (updated[TEAM_FLAGS_OFFSET] & ~TEAM_EDIT_MASK) | (skill << SKILL_SHIFT) | flag;
+  return updated;
 }
 
-function applyPlayerAttrs(attrs: Uint8Array, players: Team['players']): void {
-  const base = 22;
-  for (let i = 0; i < players.length; i++) {
-    const p = players[i];
-    const recOff = base + i * 8 + 2;
+function applyPlayerAttrs(attrs: Uint8Array, players: Team['players']): Uint8Array {
+  const updated = attrs.slice();
+  players.forEach((p, i): void => {
+    const recOff = PLAYER_RECORD_OFFSET + i * PLAYER_RECORD_BYTES + PLAYER_POSITION_OFFSET;
     const pos = resolvePosition(p.position);
     const role = resolveRole(p.role);
     const head = resolveHead(p.head);
     const star = p.star ? 1 : 0;
-    attrs[recOff] = ((pos & 0x0F) << 4) | ((p.number - 1) & 0x0F);
-    attrs[recOff + 1] = (attrs[recOff + 1] & 0xE0) | ((star & 0x01) << 4) | ((role & 0x03) << 2) | (head & 0x03);
-  }
+    updated[recOff] = ((pos & NIBBLE_MASK) << POSITION_SHIFT) | ((p.number - 1) & NIBBLE_MASK);
+    const appearanceOffset = recOff + PLAYER_APPEARANCE_OFFSET - PLAYER_POSITION_OFFSET;
+    updated[appearanceOffset] = (updated[appearanceOffset] & APPEARANCE_RESERVED_MASK) |
+      (star ? STAR_MASK : 0) | ((role & TWO_BIT_MASK) << ROLE_SHIFT) | (head & TWO_BIT_MASK);
+  });
+  return updated;
+}
+
+function concatBytes(parts: Uint8Array[]): Uint8Array {
+  const output = new Uint8Array(parts.reduce((length, part): number => length + part.length, 0));
+  parts.reduce((offset, part): number => {
+    output.set(part, offset);
+    return offset + part.length;
+  }, 0);
+  return output;
 }
 
 /**
@@ -66,54 +91,33 @@ function applyPlayerAttrs(attrs: Uint8Array, players: Team['players']): void {
  */
 export function buildRegion(rom: Uint8Array, blockOffsets: number[], teamsJson: Team[]): [Uint8Array, number] {
   const view = new DataView(rom.buffer, rom.byteOffset, rom.byteLength);
-
-  const attrBlocks = blockOffsets.map(off => rom.slice(off, off + ATTR_SIZE));
-
-  const parts: Uint8Array[] = [];
-  let changes = 0;
-
-  for (let i = 0; i < teamsJson.length; i++) {
-    const team = teamsJson[i];
+  const parts = teamsJson.map((team, i): { block: Uint8Array; changed: boolean } => {
     const textBytes = encodeTeamText(team);
     const positions = computePackedPositions(textBytes);
-
-    const attrs = new Uint8Array(attrBlocks[i]);
+    const sourceAttrs = rom.slice(blockOffsets[i], blockOffsets[i] + ATTR_SIZE);
+    const positionedAttrs = sourceAttrs.slice();
+    const positionsView = new DataView(positionedAttrs.buffer);
+    ATTR_OFFSETS.forEach((offset, index): void => positionsView.setUint16(offset, positions[index]));
+    const kitAttrs = team.kit ? applyKitAttrs(positionedAttrs, team.kit) : positionedAttrs;
+    const teamAttrs = applyTeamAttrs(kitAttrs, team);
+    const attrs = applyPlayerAttrs(teamAttrs, team.players);
     const attrsView = new DataView(attrs.buffer);
-    for (let strIdx = 0; strIdx < ATTR_OFFSETS.length; strIdx++) {
-      attrsView.setUint16(ATTR_OFFSETS[strIdx], positions[strIdx], false);
-    }
 
-    if (team.kit) applyKitAttrs(attrs, team.kit);
-    applyTeamAttrs(attrs, team);
-    applyPlayerAttrs(attrs, team.players);
-
-    const blockSize = ATTR_SIZE + textBytes.length + (textBytes.length % 2);
-    if (blockSize > 500) throw new Error('Encoded team block exceeds 500 bytes');
+    const blockSize = ATTR_SIZE + textBytes.length + (textBytes.length % WORD_BYTES);
+    if (blockSize > MAX_BLOCK_BYTES) throw new Error(`Encoded team block exceeds ${MAX_BLOCK_BYTES} bytes`);
     attrsView.setUint16(0, blockSize, false);
 
-    const pad = textBytes.length % 2 !== 0 ? 1 : 0;
-    const block = new Uint8Array(ATTR_SIZE + textBytes.length + pad);
+    const block = new Uint8Array(blockSize);
     block.set(attrs, 0);
     block.set(textBytes, ATTR_SIZE);
-    // pad byte is already 0
-
-    parts.push(block);
 
     const oldSize = view.getUint16(blockOffsets[i]);
-    if (block.length !== oldSize || block.some((v, j) => v !== rom[blockOffsets[i] + j])) changes++;
+    const changed = block.length !== oldSize || block.some((value, index): boolean => value !== rom[blockOffsets[i] + index]);
+    return { block, changed };
+  });
 
-  }
-
-  // Concatenate all blocks
-  const totalLen = parts.reduce((s, p) => s + p.length, 0);
-  const newRegion = new Uint8Array(totalLen);
-  let offset = 0;
-  for (const part of parts) {
-    newRegion.set(part, offset);
-    offset += part.length;
-  }
-
-  return [newRegion, changes];
+  return [concatBytes(parts.map(({ block }): Uint8Array => block)),
+    parts.filter(({ changed }): boolean => changed).length];
 }
 
 /**
@@ -121,28 +125,18 @@ export function buildRegion(rom: Uint8Array, blockOffsets: number[], teamsJson: 
  */
 export function updateRom(romBytes: Uint8Array, input: unknown): Uint8Array {
   const validation = validateTeams(extractRomStructure(romBytes), input);
-  if (!validation.valid) throw new Error(["Invalid team data", ...validation.global, ...Object.values(validation.teams).flatMap(cat => Object.values(cat).flatMap(e => [...e.team, ...e.formation, ...Object.values(e.players).flat()]))].join("\n"));
+  if (!validation.valid) throw new Error(["Invalid team data", ...validation.global,
+    ...Object.values(validation.teams).flatMap((category): string[] =>
+      Object.values(category).flatMap((errors): string[] =>
+        [...errors.team, ...errors.formation, ...Object.values(errors.players).flat()]))].join("\n"));
   const teamsJson = normalizeTeams(input);
   const rom = new Uint8Array(romBytes);
   const view = new DataView(rom.buffer, rom.byteOffset, rom.byteLength);
 
   const ptrs = findPointerTable(rom);
-  const regionInfo = [
-    ['national', ptrs.natStart, ptrs.natEnd],
-    ['club', ptrs.clubStart, ptrs.clubEnd],
-    ['custom', ptrs.custStart, ptrs.custEnd],
-  ] as const;
-
-  const allBlockOffsets: Record<string, number[]> = {};
-  for (const [cat, start, end] of regionInfo) {
-    allBlockOffsets[cat] = chainWalkRegion(rom, start, end);
-  }
-
-  const regionData: Record<string, Uint8Array> = {};
-  for (const [cat, , ] of regionInfo) {
-    const [data] = buildRegion(rom, allBlockOffsets[cat], teamsJson[cat]);
-    regionData[cat] = data;
-  }
+  const [nat] = buildRegion(rom, chainWalkRegion(rom, ptrs.natStart, ptrs.natEnd), teamsJson.national);
+  const [club] = buildRegion(rom, chainWalkRegion(rom, ptrs.clubStart, ptrs.clubEnd), teamsJson.club);
+  const [cust] = buildRegion(rom, chainWalkRegion(rom, ptrs.custStart, ptrs.custEnd), teamsJson.custom);
 
   // Calculate available space
   const natStart = ptrs.natStart;
@@ -150,16 +144,7 @@ export function updateRom(romBytes: Uint8Array, input: unknown): Uint8Array {
   const maxEnd = availableEnd(rom, custEnd);
 
   // Concatenate regions with 2-byte zero gaps
-  const nat = regionData['national'];
-  const club = regionData['club'];
-  const cust = regionData['custom'];
-  const combined = new Uint8Array(nat.length + 2 + club.length + 2 + cust.length);
-  let off = 0;
-  combined.set(nat, off); off += nat.length;
-  off += 2; // zero gap (already 0)
-  combined.set(club, off); off += club.length;
-  off += 2; // zero gap
-  combined.set(cust, off);
+  const combined = concatBytes([nat, new Uint8Array(REGION_GAP_BYTES), club, new Uint8Array(REGION_GAP_BYTES), cust]);
 
   const totalAvailable = maxEnd - natStart;
   if (combined.length > totalAvailable) {
@@ -172,9 +157,9 @@ export function updateRom(romBytes: Uint8Array, input: unknown): Uint8Array {
   // Compute new pointer values
   const newNatStart = natStart;
   const newNatEnd = natStart + nat.length;
-  const newClubStart = newNatEnd + 2;
+  const newClubStart = newNatEnd + REGION_GAP_BYTES;
   const newClubEnd = newClubStart + club.length;
-  const newCustStart = newClubEnd + 2;
+  const newCustStart = newClubEnd + REGION_GAP_BYTES;
   const newCustEnd = newCustStart + cust.length;
 
   // Write combined data into ROM
@@ -189,14 +174,14 @@ export function updateRom(romBytes: Uint8Array, input: unknown): Uint8Array {
   // Update all 6 pointers
   const tb = ptrs.tableBase;
   view.setUint32(tb + 0, newNatStart, false);
-  view.setUint32(tb + 4, newClubStart, false);
-  view.setUint32(tb + 8, newCustStart, false);
-  view.setUint32(tb + 12, newNatEnd, false);
-  view.setUint32(tb + 16, newClubEnd, false);
-  view.setUint32(tb + 20, newCustEnd, false);
+  view.setUint32(tb + LONG_BYTES, newClubStart, false);
+  view.setUint32(tb + 2 * LONG_BYTES, newCustStart, false);
+  view.setUint32(tb + 3 * LONG_BYTES, newNatEnd, false);
+  view.setUint32(tb + 4 * LONG_BYTES, newClubEnd, false);
+  view.setUint32(tb + 5 * LONG_BYTES, newCustEnd, false);
 
-  let checksum = 0;
-  for (let i = 0x200; i + 1 < rom.length; i += 2) checksum = (checksum + view.getUint16(i)) & 0xffff;
-  view.setUint16(0x18e, checksum);
+  const checksum = Array.from({ length: Math.floor((rom.length - ROM_CHECKSUM_START) / WORD_BYTES) }, (_, index): number =>
+    view.getUint16(ROM_CHECKSUM_START + index * WORD_BYTES)).reduce((sum, word): number => (sum + word) & ROM_CHECKSUM_MASK, 0);
+  view.setUint16(ROM_CHECKSUM_OFFSET, checksum);
   return rom;
 }

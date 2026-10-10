@@ -1,20 +1,14 @@
 import { CHARSET, ATTR_SIZE } from './constants.js';
+import { BITS_PER_BYTE, TEXT_BITS_PER_CHARACTER, TEXT_CHARACTER_MASK, TEXT_STRING_COUNT, WORD_BYTES } from './rom-format.js';
 
 /**
  * Encode a string as a list of 5-bit values (with null terminator).
  */
 export function encode5bitString(text: string): number[] {
-  if (typeof text !== 'string' || [...text.toUpperCase()].some(c => !CHARSET.slice(1).includes(c))) {
+  if (typeof text !== 'string' || [...text.toUpperCase()].some((character): boolean => !CHARSET.slice(1).includes(character))) {
     throw new Error("Text must contain only A-Z, space, dash, apostrophe, or period");
   }
-  const values: number[] = [];
-  for (const c of text.toUpperCase()) {
-    const idx = CHARSET.indexOf(c);
-    if (idx === -1) throw new Error(`Character '${c}' not in CHARSET`);
-    values.push(idx);
-  }
-  values.push(0); // null terminator
-  return values;
+  return [...[...text.toUpperCase()].map((character): number => CHARSET.indexOf(character)), 0];
 }
 
 /**
@@ -22,34 +16,23 @@ export function encode5bitString(text: string): number[] {
  * Returns { bytes: Uint8Array, totalBits: number }.
  */
 export function pack5bitValues(values: number[]): { bytes: Uint8Array; totalBits: number } {
-  let bitstream = 0;
-  let nbits = 0;
-  const result: number[] = [];
-  for (const val of values) {
-    bitstream = (bitstream << 5) | (val & 0x1F);
-    nbits += 5;
-    while (nbits >= 8) {
-      nbits -= 8;
-      result.push((bitstream >> nbits) & 0xFF);
-    }
-  }
-  const totalBits = values.length * 5;
-  if (nbits > 0) {
-    result.push((bitstream << (8 - nbits)) & 0xFF);
-  }
-  return { bytes: new Uint8Array(result), totalBits };
+  const totalBits = values.length * TEXT_BITS_PER_CHARACTER;
+  const bits = values.flatMap((value): number[] =>
+    Array.from({ length: TEXT_BITS_PER_CHARACTER }, (_, index): number =>
+      ((value & TEXT_CHARACTER_MASK) >> (TEXT_BITS_PER_CHARACTER - 1 - index)) & 1));
+  const bytes = Uint8Array.from(Array.from({ length: Math.ceil(totalBits / BITS_PER_BYTE) }, (_, index): number => {
+    const chunk = bits.slice(index * BITS_PER_BYTE, index * BITS_PER_BYTE + BITS_PER_BYTE);
+    return chunk.reduce((byte, bit): number => (byte << 1) | bit, 0) << (BITS_PER_BYTE - chunk.length);
+  }));
+  return { bytes, totalBits };
 }
 
 /**
  * Encode all 19 strings (team + country + coach + 16 players) into packed bytes.
  */
 export function encodeTeamText(team: { team: string; country: string; coach: string; players: { name: string }[] }): Uint8Array {
-  const allValues: number[] = [];
-  const names = [team.team, team.country, team.coach, ...team.players.map(p => p.name)];
-  for (const s of names) {
-    allValues.push(...encode5bitString(s));
-  }
-  const { bytes } = pack5bitValues(allValues);
+  const names = [team.team, team.country, team.coach, ...team.players.map((player): string => player.name)];
+  const { bytes } = pack5bitValues(names.flatMap((name): number[] => encode5bitString(name)));
   return bytes;
 }
 
@@ -60,63 +43,19 @@ export function encodeTeamText(team: { team: string; country: string; coach: str
  *
  * Returns list of 19 packed position values (16-bit words).
  *
- * IMPORTANT: The game uses 32-bit rotate operations. In JS, >> is signed, so
- * we must use >>> (unsigned right shift) and mask to keep values in 32-bit range.
  */
 export function computePackedPositions(textBytes: Uint8Array): number[] {
-  const block = new Uint8Array(ATTR_SIZE + textBytes.length);
-  block.set(textBytes, ATTR_SIZE);
-
-  let d3 = ATTR_SIZE; // byte offset starts at 150 (text start)
-  let d4 = 0;         // bit offset
-
-  const positions: number[] = [];
-
-  for (let iter = 0; iter < 19; iter++) {
-    positions.push((d3 << 5) | d4);
-
-    let charVal = 0;
-    do {
-      const addr = d3;
-      let d5: number;
-      if (addr + 4 <= block.length) {
-        d5 = (((block[addr] << 24) | (block[addr + 1] << 16) | (block[addr + 2] << 8) | block[addr + 3]) >>> 0);
-      } else {
-        const chunk = new Uint8Array(4);
-        chunk.set(block.slice(addr, Math.min(addr + 4, block.length)));
-        d5 = (((chunk[0] << 24) | (chunk[1] << 16) | (chunk[2] << 8) | chunk[3]) >>> 0);
-      }
-
-      if (d4 > 0) {
-        d5 = (((d5 << d4) | (d5 >>> (32 - d4))) >>> 0);
-      }
-
-      while (true) {
-        d4 += 5;
-        d5 = (((d5 << 5) | (d5 >>> 27)) >>> 0);
-        charVal = d5 & 0x1F;
-
-        if (charVal === 0) {
-          // null terminator
-          if (d4 >= 16) {
-            d4 -= 16;
-            d3 += 2;
-          }
-          break;
-        }
-
-        if (d4 >= 16) {
-          d4 -= 16;
-          d3 += 2;
-          break; // reload 32-bit value
-        }
-      }
-
-      if (charVal === 0) {
-        break; // string done
-      }
-    } while (true);
-  }
-
-  return positions;
+  const values = Array.from({ length: Math.floor(textBytes.length * BITS_PER_BYTE / TEXT_BITS_PER_CHARACTER) }, (_, index): number => {
+    const bit = index * TEXT_BITS_PER_CHARACTER;
+    const byte = Math.floor(bit / BITS_PER_BYTE);
+    const word = (textBytes[byte] << BITS_PER_BYTE) | (textBytes[byte + 1] ?? 0);
+    return (word >> (WORD_BYTES * BITS_PER_BYTE - TEXT_BITS_PER_CHARACTER - bit % BITS_PER_BYTE)) & TEXT_CHARACTER_MASK;
+  });
+  const starts = [0, ...values.flatMap((value, index): number[] => value === 0 ? [index + 1] : [])].slice(0, TEXT_STRING_COUNT);
+  if (starts.length !== TEXT_STRING_COUNT) throw new Error('Missing packed string terminator');
+  return starts.map((index): number => {
+    const bit = ATTR_SIZE * BITS_PER_BYTE + index * TEXT_BITS_PER_CHARACTER;
+    const wordBits = WORD_BYTES * BITS_PER_BYTE;
+    return (Math.floor(bit / wordBits) * WORD_BYTES << TEXT_BITS_PER_CHARACTER) | (bit % wordBits);
+  });
 }
