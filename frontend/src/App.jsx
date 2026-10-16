@@ -1,4 +1,19 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import ui from './components/ui';
+
+const styles = {
+  steps: 'mb-8 flex justify-between px-4',
+  step: "relative flex-1 text-center after:absolute after:top-[15px] after:left-1/2 after:-z-10 after:h-[2px] after:w-full after:bg-ui-surface-action after:content-[''] after:transition-colors after:duration-300 last:after:hidden",
+  completed: 'after:bg-[var(--color-border-top)]!',
+  stepNumber: 'mb-2 inline-block size-8 rounded-full bg-ui-surface-action font-semibold leading-8',
+  activeNumber: 'bg-ui-accent! text-ui-white!',
+  completedNumber: 'bg-ui-accent-bright! text-ui-background!',
+  stepLabel: 'text-[0.85rem] text-ui-text-muted',
+  activeLabel: 'text-ui-accent-bright!',
+  validationError: 'mb-4',
+  validationErrorList: 'mt-2 ml-6',
+  startOver: 'my-8 text-center',
+};
 import RomUpload from './components/RomUpload';
 import TeamEditor from './components/TeamEditor';
 import DownloadButton from './components/DownloadButton';
@@ -62,14 +77,14 @@ function App() {
   return (
     <>
       {/* Progress Steps */}
-      <div className="steps">
-        <div className={`step ${currentStep === 'upload' ? 'active' : 'completed'}`}>
-          <div className="step-number">1</div>
-          <div className="step-label">Open ROM</div>
+      <div className={styles.steps}>
+        <div className={`${styles.step} ${currentStep === 'upload' ? '' : styles.completed}`}>
+          <div className={`${styles.stepNumber} ${currentStep === 'upload' ? styles.activeNumber : styles.completedNumber}`}>1</div>
+          <div className={`${styles.stepLabel} ${currentStep === 'upload' ? styles.activeLabel : ''}`}>Open ROM</div>
         </div>
-        <div className={`step ${currentStep === 'edit' ? 'active' : ''}`}>
-          <div className="step-number">2</div>
-          <div className="step-label">Edit Teams</div>
+        <div className={styles.step}>
+          <div className={`${styles.stepNumber} ${currentStep === 'edit' ? styles.activeNumber : ''}`}>2</div>
+          <div className={`${styles.stepLabel} ${currentStep === 'edit' ? styles.activeLabel : ''}`}>Edit Teams</div>
         </div>
       </div>
 
@@ -99,10 +114,10 @@ function App() {
           <h2>Download ROM</h2>
 
           {validation && !validation.valid && (
-            <div className="error-message" style={{ marginBottom: '1rem' }}>
+            <div className={`${ui.errorMessage} ${styles.validationError}`}>
               {errorCount} validation error{errorCount !== 1 ? 's' : ''} must be fixed before downloading.
               {validation.global.length > 0 && (
-                <ul style={{ marginTop: '0.5rem', marginLeft: '1.5rem' }}>
+                <ul className={styles.validationErrorList}>
                   {validation.global.map((msg, i) => <li key={i}>{msg}</li>)}
                 </ul>
               )}
@@ -121,8 +136,8 @@ function App() {
 
       {/* Start Over Button */}
       {currentStep !== 'upload' && (
-        <div style={{ textAlign: 'center', marginBlock: '2rem' }}>
-          <button onClick={handleStartOver} className="secondary">
+        <div className={styles.startOver}>
+          <button onClick={handleStartOver} className={`${ui.button} ${ui.secondary}`}>
             Start Over (Open Another ROM)
           </button>
         </div>

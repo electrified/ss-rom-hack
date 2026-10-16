@@ -1,7 +1,32 @@
 import React, { useState, useRef, useCallback, useEffect, forwardRef } from 'react';
+import ui from './ui';
+
+const styles = {
+  teamEditor: 'mt-4 flex min-h-[500px] gap-6 max-[768px]:min-h-0 max-[768px]:flex-col',
+  teamEditorSidebar: 'flex w-[240px] shrink-0 flex-col gap-3 max-[768px]:w-full',
+  teamEditorMain: 'min-w-0 flex-1',
+  categoryTabs: 'flex gap-[2px] rounded-[6px] bg-ui-surface-raised p-[2px]',
+  categoryTab: 'min-w-0 flex-1 cursor-pointer rounded-sm border-0 bg-transparent px-1 py-2 text-[0.7rem] font-semibold text-ui-text-muted capitalize transition-all duration-200 enabled:hover:bg-ui-accent-bright-10 enabled:hover:text-ui-accent-bright max-[768px]:px-[0.2rem] max-[768px]:py-[0.4rem] max-[768px]:text-[0.6rem]',
+  active: 'bg-ui-accent! text-ui-white!',
+  teamSearch: 'relative',
+  searchInput: 'w-full rounded-[6px] border border-solid border-ui-border bg-ui-surface-raised px-3 py-2 text-[0.85rem] text-ui-text outline-none transition-colors duration-200 focus:border-ui-accent placeholder:text-ui-text-dim',
+  teamList: 'min-h-0 max-h-[500px] flex-1 overflow-y-auto rounded-[6px] border border-solid border-ui-border bg-ui-surface-raised max-[768px]:max-h-[200px]',
+  teamListItem: 'block w-full cursor-pointer rounded-none border-0 border-b border-solid border-b-ui-border bg-transparent px-3 py-2 text-left font-[inherit] text-[0.85rem] leading-[1.6] text-ui-text-soft transition-colors duration-150 last:border-b-0 hover:bg-ui-accent-bright-08 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ui-heading',
+  selected: 'border-l-[3px] border-l-ui-accent bg-ui-accent-20! pl-[calc(0.75rem-3px)]! text-ui-accent-bright!',
+  hasError: 'border-l-[3px]! border-l-ui-error! pl-[calc(0.75rem-3px)]!',
+  teamCountry: 'mt-px block text-[0.7rem] text-ui-text-muted',
+  teamListEmpty: 'p-6 text-center text-[0.85rem] text-ui-text-dim',
+  teamDetailEmpty: 'flex h-[300px] items-center justify-center rounded-lg border-2 border-dashed border-ui-border text-center text-[0.9rem] text-ui-text-dim',
+  jsonBar: 'flex flex-wrap items-center gap-2 [&_button]:px-3 [&_button]:py-[0.4rem] [&_button]:text-[0.8rem]',
+  jsonBarSpacer: 'flex-1',
+  jsonFileInput: 'hidden',
+  teamIssueDot: 'ml-[0.4rem] inline-block size-2 rounded-full align-middle',
+  error: 'bg-ui-error [box-shadow:0_0_4px_var(--color-error-60)]',
+  categoryIssueBadge: 'ml-[0.3rem] inline-block h-[14px] min-w-[14px] rounded-[7px] bg-ui-error text-center text-[0.55rem] leading-[14px] font-bold text-ui-white align-middle',
+  teamCount: 'text-xs text-ui-text-dim',
+};
 import TeamDetail from './TeamDetail';
 import { CATEGORIES, normalizeTeams, validateTeams } from '../lib/sslib/index';
-import './TeamEditor.css';
 
 const TeamEditor = forwardRef(function TeamEditor({ teamsJson, onTeamsChange, romStructure, validation }, ref) {
   const [category, setCategory] = useState('national');
@@ -103,58 +128,60 @@ const TeamEditor = forwardRef(function TeamEditor({ teamsJson, onTeamsChange, ro
     <div className="card" ref={ref}>
       <h2>Step 2: Edit Teams</h2>
 
-      <div className="json-bar">
-        <button className="secondary" onClick={handleExportJson} style={{ fontSize: '0.8rem', padding: '0.4rem 0.75rem' }}>
+      <div className={styles.jsonBar}>
+        <button className={`${ui.button} ${ui.secondary}`} onClick={handleExportJson}>
           Export JSON
         </button>
-        <button className="secondary" onClick={handleImportClick} style={{ fontSize: '0.8rem', padding: '0.4rem 0.75rem' }}>
+        <button className={`${ui.button} ${ui.secondary}`} onClick={handleImportClick}>
           Import JSON
         </button>
         <input
           ref={jsonInputRef}
           type="file"
-          className="json-file-input"
+          className={styles.jsonFileInput}
+          data-testid="json-file-input"
           accept=".json"
           onChange={handleImportJson}
         />
-        <div className="json-bar-spacer" />
-        <span style={{ fontSize: '0.75rem', color: '#3d5e3d' }}>
+        <div className={styles.jsonBarSpacer} />
+        <span className={styles.teamCount}>
           {(teamsJson.national?.length || 0) + (teamsJson.club?.length || 0) + (teamsJson.custom?.length || 0)} teams
         </span>
       </div>
 
-      {importError && <div className="error-message" role="alert">Import failed: {importError}</div>}
+      {importError && <div className={ui.errorMessage} role="alert">Import failed: {importError}</div>}
 
-      <div className="team-editor" style={{ marginTop: '1rem' }}>
+      <div className={styles.teamEditor} data-testid="team-editor">
         {/* Sidebar */}
-        <div className="team-editor-sidebar">
-          <div className="category-tabs">
+        <div className={styles.teamEditorSidebar}>
+          <div className={styles.categoryTabs}>
             {CATEGORIES.map(cat => (
               <button
                 key={cat}
-                className={`category-tab ${category === cat ? 'active' : ''}`}
+                className={`${styles.categoryTab} ${category === cat ? styles.active : ''}`}
                 onClick={() => handleCategoryChange(cat)}
               >
                 {cat} ({(teamsJson[cat] || []).length})
                 {categoryErrorCounts[cat] > 0 && (
-                  <span className="category-issue-badge">{categoryErrorCounts[cat]}</span>
+                  <span className={styles.categoryIssueBadge}>{categoryErrorCounts[cat]}</span>
                 )}
               </button>
             ))}
           </div>
 
-          <div className="team-search">
+          <div className={styles.teamSearch}>
             <input
               type="text"
+              className={styles.searchInput}
               aria-label="Search teams" placeholder="Search teams..."
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
           </div>
 
-          <div className="team-list">
+          <div className={styles.teamList}>
             {filteredWithIndex.length === 0 ? (
-              <div className="team-list-empty">
+              <div className={styles.teamListEmpty}>
                 {search ? 'No matches' : 'No teams'}
               </div>
             ) : (
@@ -164,12 +191,13 @@ const TeamEditor = forwardRef(function TeamEditor({ teamsJson, onTeamsChange, ro
                   <button
                     type="button" aria-pressed={selectedIndex === index}
                     key={index}
-                    className={`team-list-item ${selectedIndex === index ? 'selected' : ''} ${hasErrors ? 'has-error' : ''}`}
+                    className={`${styles.teamListItem} ${selectedIndex === index ? styles.selected : ''} ${hasErrors ? styles.hasError : ''}`}
+                    data-testid="team-list-item"
                     onClick={() => handleSelectTeam(index)}
                   >
                     {t.team}
-                    {hasErrors && <span className="team-issue-dot error" />}
-                    <span className="team-country">{t.country}</span>
+                    {hasErrors && <span className={`${styles.teamIssueDot} ${styles.error}`} />}
+                    <span className={styles.teamCountry}>{t.country}</span>
                   </button>
                 );
               })
@@ -178,7 +206,7 @@ const TeamEditor = forwardRef(function TeamEditor({ teamsJson, onTeamsChange, ro
         </div>
 
         {/* Detail */}
-        <div className="team-editor-main">
+        <div className={styles.teamEditorMain}>
           {selectedTeam ? (
             <TeamDetail
               key={`${category}-${selectedIndex}`}
@@ -187,7 +215,7 @@ const TeamEditor = forwardRef(function TeamEditor({ teamsJson, onTeamsChange, ro
               errors={selectedTeamErrors}
             />
           ) : (
-            <div className="team-detail-empty">
+            <div className={styles.teamDetailEmpty} data-testid="team-detail-empty">
               Select a team from the list to edit
             </div>
           )}
@@ -198,4 +226,3 @@ const TeamEditor = forwardRef(function TeamEditor({ teamsJson, onTeamsChange, ro
 });
 
 export default TeamEditor;
-

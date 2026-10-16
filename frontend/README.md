@@ -53,6 +53,8 @@ The frontend is built with React and uses Vite for fast development. ROM decodin
 
 The pixel font, Press Start 2P, is bundled through Fontsource and served from the site's own assets. Rendering does not depend on access to Google Fonts.
 
+React component styles use Tailwind utility classes, with reusable control classes in `src/components/ui.js`. The Vite plugin scans the component files; keep utility names as complete strings so they are included in the build. All UI colours, including translucent variants, live in `src/theme.css` and are mapped to `ui-*` Tailwind colours in `src/index.css`. A future theme can change those CSS variables at runtime. `src/index.css` also styles the static HTML guide before React loads.
+
 Key files and directories:
 - `src/App.jsx` - Main application component with step flow
 - `src/components/` - React components for each step

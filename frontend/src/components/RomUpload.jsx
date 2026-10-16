@@ -1,4 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ui from './ui';
+
+const styles = {
+  uploadArea: 'block w-full cursor-pointer rounded-lg border-2 border-dashed border-ui-border-upload bg-transparent px-8 py-12 text-center [font:inherit] text-inherit transition-all duration-300 hover:border-ui-accent-bright hover:bg-ui-accent-bright-05 focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-ui-heading [&_p]:mb-4 [&_p]:text-ui-text-muted',
+  dragover: 'border-ui-accent-bright! bg-ui-accent-bright-10!',
+  fileTypes: 'text-[0.85rem] text-ui-text-dim!',
+  fileInput: 'hidden',
+  tipBox: 'my-6 rounded-lg border border-solid border-ui-border-tip border-l-[3px] border-l-ui-accent bg-ui-surface-raised p-4 text-[0.9rem] text-ui-text-soft',
+  uploadIcon: 'mb-4 opacity-70',
+};
 import { decodeRom } from '../lib/sslib/index';
 
 function RomUpload({ onUploadSuccess }) {
@@ -81,12 +91,13 @@ function RomUpload({ onUploadSuccess }) {
     <div className="card">
       <h2>Step 1: Open ROM</h2>
       <p>Open your Sensible Soccer Mega Drive ROM to get started.</p>
-      <div className="tip-box" style={{ marginBottom: '1.5rem' }}>
+      <div className={styles.tipBox}>
         All processing happens locally in your browser, nothing is uploaded to a server.
       </div>
       
       <button type="button" aria-label="Open ROM file"
-        className={`upload-area ${isDragging ? 'dragover' : ''}`}
+        className={`${styles.uploadArea} ${isDragging ? styles.dragover : ''}`}
+        data-testid="upload-area"
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -94,18 +105,18 @@ function RomUpload({ onUploadSuccess }) {
       >
         {isLoading ? (
           <>
-            <div className="spinner"></div>
+            <div className={ui.spinner}></div>
             <p>Decoding ROM...</p>
           </>
         ) : (
           <>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3aab28" strokeWidth="2" style={{ marginBottom: '1rem', opacity: 0.7 }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2" className={styles.uploadIcon}>
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="17 8 12 3 7 8"></polyline>
               <line x1="12" y1="3" x2="12" y2="15"></line>
             </svg>
             <p>Drag and drop your ROM file here, or click to browse</p>
-            <p className="file-types">Supported: .md, .bin files</p>
+            <p className={styles.fileTypes}>Supported: .md, .bin files</p>
           </>
         )}
       </button>
@@ -113,13 +124,14 @@ function RomUpload({ onUploadSuccess }) {
       <input
         ref={fileInputRef}
         type="file"
-        className="file-input"
+        className={styles.fileInput}
+        data-testid="file-input"
         accept=".md,.bin"
         onChange={handleFileInput}
       />
 
       {error && (
-        <div className="error-message" role="alert">
+        <div className={ui.errorMessage} role="alert">
           <strong>Error:</strong> {error}
         </div>
       )}

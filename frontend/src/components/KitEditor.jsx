@@ -1,9 +1,33 @@
 import React, { useState, useRef, useEffect, useCallback, useId } from 'react';
+import ui from './ui';
 import { COLOUR_NAMES, STYLE_NAMES } from '../lib/sslib/index';
 
 const COLOURS = Object.values(COLOUR_NAMES);
 const STYLES = Object.values(STYLE_NAMES);
 
+const styles = {
+  kitSets: 'grid grid-cols-2 gap-4 max-[768px]:grid-cols-1',
+  kitSet: 'rounded-[6px] border border-solid border-ui-border bg-ui-surface p-3 [&_h5]:mb-3 [&_h5]:text-center [&_h5]:font-pixel [&_h5]:text-[0.5rem] [&_h5]:tracking-[0.1em] [&_h5]:text-ui-text-soft [&_h5]:uppercase',
+  kitMannequin: 'mb-3 flex flex-col items-center gap-px',
+  kitSvgShirt: 'h-[86px] w-[100px] max-[768px]:h-[69px] max-[768px]:w-[80px]',
+  kitSvgShorts: '-mt-[2px] h-10 w-[100px] max-[768px]:h-8 max-[768px]:w-[80px]',
+  kitSvgSocks: '-mt-[2px] h-[42px] w-[100px] max-[768px]:h-[34px] max-[768px]:w-[80px]',
+  kitControls: 'flex flex-col gap-2',
+  kitStyleRow: 'flex flex-col gap-[0.3rem]',
+  kitStyleButtons: 'flex gap-[2px] rounded bg-ui-surface-raised p-[2px]',
+  kitStyleBtn: 'flex-1 cursor-pointer rounded-[3px] border-0 bg-transparent px-[0.2rem] py-[0.3rem] text-[0.6rem] font-semibold text-ui-text-muted transition-all duration-150 hover:bg-ui-accent-bright-10 hover:text-ui-accent-bright',
+  active: 'bg-ui-accent! text-ui-white!',
+  kitColourPicker: 'relative',
+  kitColourTrigger: 'flex w-full cursor-pointer items-center gap-[0.4rem] rounded border border-solid border-ui-border bg-ui-surface-raised px-2 py-[0.3rem] transition-colors duration-150 hover:border-ui-accent',
+  kitColourTriggerSwatch: 'size-4 shrink-0 rounded-[3px] border border-solid border-ui-white-20',
+  kitColourTriggerLabel: 'shrink-0 text-[0.65rem] font-semibold tracking-[0.05em] text-ui-text-muted uppercase',
+  kitColourTriggerName: 'ml-auto text-[0.7rem] text-ui-text-soft capitalize',
+  kitColourPopover: 'absolute inset-x-0 top-full z-10 mt-[2px] grid grid-cols-5 gap-1 rounded-[6px] border border-solid border-ui-accent bg-ui-surface p-[6px] [box-shadow:0_4px_12px_var(--color-shadow-50)]',
+  kitColourOption: 'aspect-square w-full cursor-pointer rounded border-2 border-solid border-transparent p-0 transition-[border-color,transform] duration-100 hover:scale-110 hover:border-ui-accent-bright focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-ui-heading',
+  selectedColour: 'border-ui-white! [box-shadow:0_0_4px_var(--color-accent-bright-60)]',
+};
+
+// Fixed game palette for kit previews; these colours are independent of the UI theme.
 const COLOUR_CSS = {
   grey: '#acacac', white: '#ffffff', black: '#000000', orange: '#ff7400',
   red: '#ff0000', blue: '#0000ff', dark_red: '#740034', light_blue: '#9090ff',
@@ -71,7 +95,7 @@ function ShirtSvg({ style, color1, color2, id }) {
   }
 
   return (
-    <svg viewBox="0 0 60 50" className="kit-svg-shirt">
+    <svg viewBox="0 0 60 50" className={styles.kitSvgShirt}>
       {fill}
       {/* Crisp 16-bit outline */}
       <path d={shirtPath} fill="none" stroke="#000" strokeWidth="1.2" strokeLinejoin="miter" />
@@ -85,7 +109,7 @@ function ShortsSvg({ color }) {
   const shortsPath = "M30.0,0.2 L18.7,0.2 L15.2,21.3 L27.1,23.8 L28.4,19.3 L30.0,19.1 L31.6,19.3 L32.9,23.8 L44.8,21.3 L41.3,0.2 Z";
   
   return (
-    <svg viewBox="0 0 60 25" className="kit-svg-shorts">
+    <svg viewBox="0 0 60 25" className={styles.kitSvgShorts}>
       <path d={shortsPath} fill={c} stroke="#000" strokeWidth="1.2" strokeLinejoin="miter" />
     </svg>
   );
@@ -97,7 +121,7 @@ function SocksSvg({ color }) {
   const socksPath = "M15.2,0.0 L10.7,26.3 L16.5,27.5 L23.6,2.5 Z M44.8,0.0 L49.3,26.3 L43.5,27.5 L36.4,2.5 Z";
 
   return (
-    <svg viewBox="0 0 60 30" className="kit-svg-socks">
+    <svg viewBox="0 0 60 30" className={styles.kitSvgSocks}>
       <path d={socksPath} fill={c} stroke="#000" strokeWidth="1.2" strokeLinejoin="miter" />
     </svg>
   );
@@ -122,21 +146,22 @@ function ColourPicker({ selected, onSelect, label }) {
     }
   }, [open, handleClickOutside]);
 
-  useEffect(() => { if (open) ref.current?.querySelector('.kit-colour-option.active, .kit-colour-option')?.focus(); }, [open]);
+  useEffect(() => { if (open) ref.current?.querySelector('[data-colour-option][aria-pressed="true"], [data-colour-option]')?.focus(); }, [open]);
   const close = () => { setOpen(false); trigger.current?.focus(); };
   return (
-    <div onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); close(); } }} onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false); }} className="kit-colour-picker" ref={ref}>
-      <button type="button" ref={trigger} aria-expanded={open} aria-controls={id} aria-label={`${label}: ${selected}`} className="kit-colour-trigger" onClick={() => setOpen(!open)}>
-        <span className="kit-colour-trigger-swatch" style={{ background: COLOUR_CSS[selected] || '#888' }} />
-        <span className="kit-colour-trigger-label">{label}</span>
-        <span className="kit-colour-trigger-name">{selected.replace(/_/g, ' ')}</span>
+    <div onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); close(); } }} onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false); }} className={styles.kitColourPicker} ref={ref}>
+      <button type="button" ref={trigger} aria-expanded={open} aria-controls={id} aria-label={`${label}: ${selected}`} className={styles.kitColourTrigger} onClick={() => setOpen(!open)}>
+        <span className={styles.kitColourTriggerSwatch} style={{ background: COLOUR_CSS[selected] || '#888' }} />
+        <span className={styles.kitColourTriggerLabel}>{label}</span>
+        <span className={styles.kitColourTriggerName}>{selected.replace(/_/g, ' ')}</span>
       </button>
       {open && (
-        <div className="kit-colour-popover" id={id} role="group" aria-label={`${label} colours`}>
+        <div className={styles.kitColourPopover} id={id} role="group" aria-label={`${label} colours`}>
           {COLOURS.map(c => (
             <button
               key={c}
-              className={`kit-colour-option${c === selected ? ' active' : ''}`}
+              className={`${styles.kitColourOption} ${c === selected ? styles.selectedColour : ''}`}
+              data-colour-option
               style={{ background: COLOUR_CSS[c] || '#888' }}
               aria-label={c.replace(/_/g, ' ')} aria-pressed={c === selected} title={c.replace(/_/g, ' ')}
               onClick={() => { onSelect(c); close(); }}
@@ -154,21 +179,21 @@ function KitSetEditor({ kitSet, label, id, onChange }) {
   };
 
   return (
-    <div className="kit-set">
+    <div className={styles.kitSet}>
       <h5>{label}</h5>
-      <div className="kit-mannequin">
+      <div className={styles.kitMannequin}>
         <ShirtSvg style={kitSet.style} color1={kitSet.shirt1} color2={kitSet.shirt2} id={id} />
         <ShortsSvg color={kitSet.shorts} />
         <SocksSvg color={kitSet.socks} />
       </div>
-      <div className="kit-controls">
-        <div className="kit-style-row">
-          <span className="kit-colour-trigger-label">Style</span>
-          <div className="kit-style-buttons">
+      <div className={styles.kitControls}>
+        <div className={styles.kitStyleRow}>
+          <span className={styles.kitColourTriggerLabel}>Style</span>
+          <div className={styles.kitStyleButtons}>
             {STYLES.map(s => (
               <button
                 key={s}
-                aria-label={`${label} style: ${STYLE_LABELS[s]}`} aria-pressed={s === kitSet.style} className={`kit-style-btn${s === kitSet.style ? ' active' : ''}`}
+                aria-label={`${label} style: ${STYLE_LABELS[s]}`} aria-pressed={s === kitSet.style} className={`${styles.kitStyleBtn} ${s === kitSet.style ? styles.active : ''}`}
                 onClick={() => update('style', s)}
               >
                 {STYLE_LABELS[s] || s}
@@ -191,9 +216,9 @@ function KitEditor({ kit, onChange }) {
   };
 
   return (
-    <div className="editor-section">
+    <div className={ui.editorSection} data-testid="kit-section">
       <h4>Kit</h4>
-      <div className="kit-sets">
+      <div className={styles.kitSets} data-testid="kit-sets">
         <KitSetEditor
           kitSet={kit.first}
           label="First Kit"

@@ -1,4 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import ui from './ui';
+
+const styles = {
+  download: 'mt-6',
+  action: 'text-center',
+  button: 'min-w-[250px]',
+  spinner: 'mr-2 align-middle',
+  icon: 'mr-2 align-middle',
+};
 import { updateRom } from '../lib/sslib/index';
 
 function DownloadButton({ romBytes, teamsJson, jsonFileName, disabled, onSuccess }) {
@@ -59,21 +68,21 @@ function DownloadButton({ romBytes, teamsJson, jsonFileName, disabled, onSuccess
   };
 
   return (
-    <div style={{ marginTop: '1.5rem' }}>
-      <div style={{ textAlign: 'center' }}>
+    <div className={styles.download}>
+      <div className={styles.action}>
         <button
           onClick={handleDownload}
           disabled={disabled || isGenerating}
-          style={{ minWidth: '250px' }}
+          className={`${ui.button} ${styles.button}`}
         >
           {isGenerating ? (
             <>
-              <span className="spinner" style={{ marginRight: '0.5rem', verticalAlign: 'middle' }}></span>
+              <span className={`${ui.spinner} ${styles.spinner}`}></span>
               Building ROM...
             </>
           ) : (
             <>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ verticalAlign: 'middle', marginRight: '0.5rem' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.icon}>
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -85,13 +94,13 @@ function DownloadButton({ romBytes, teamsJson, jsonFileName, disabled, onSuccess
       </div>
 
       {error && (
-        <div className="error-message">
+        <div className={ui.errorMessage}>
           <strong>Error:</strong> {error}
         </div>
       )}
 
       {success && downloadedFileName && (
-        <div className="success-message">
+        <div className={ui.successMessage}>
           <strong>Success!</strong> Your modified ROM has been downloaded as <code>{downloadedFileName}</code>
         </div>
       )}

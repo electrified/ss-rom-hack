@@ -15,13 +15,13 @@ async function setup(strict = true) {
   vi.spyOn(HTMLAnchorElement.prototype,'click').mockImplementation(() => {});
   Element.prototype.scrollIntoView=vi.fn();
   render(strict ? <React.StrictMode><App /></React.StrictMode> : <App />);
-  fileRead('.file-input',{name:'test.md',size:rom.length,arrayBuffer:async()=>rom.buffer});
+  fileRead('[data-testid="file-input"]',{name:'test.md',size:rom.length,arrayBuffer:async()=>rom.buffer});
   await screen.findByRole('button',{name:/ALPHA/});
   fireEvent.click(screen.getByRole('button',{name:/ALPHA/}));
 }
 function readBlob(blob) {return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsArrayBuffer(blob);});}
 async function exportJSON(){fireEvent.click(screen.getByRole('button',{name:'Export JSON'}));return JSON.parse(new TextDecoder().decode(await readBlob(downloaded)));}
-function importJSON(value){fileRead('.json-file-input',{name:'teams.json',text:async()=>JSON.stringify(value)});}
+function importJSON(value){fileRead('[data-testid="json-file-input"]',{name:'teams.json',text:async()=>JSON.stringify(value)});}
 
 describe('editor document lifecycle',()=>{
   it('offers exactly the ten game-supported kit colours',async()=>{
@@ -40,7 +40,7 @@ describe('editor document lifecycle',()=>{
     let d=await exportJSON();expect(d.national[0].team).toBe('EDITED');expect(d.national[0].players[0]).toMatchObject({name:'NEW NAME',number:2,star:true});
     fireEvent.click(screen.getByRole('button',{name:'Download Modified ROM'}));
     expect(decodeRom(new Uint8Array(await readBlob(downloaded))).national[0].players[0].name).toBe('NEW NAME');
-    importJSON(fixtureTeams());await waitFor(()=>expect(document.querySelector('.team-detail-empty')).not.toBeNull());
+    importJSON(fixtureTeams());await waitFor(()=>expect(document.querySelector('[data-testid="team-detail-empty"]')).not.toBeNull());
     await act(async()=>{await new Promise(r=>setTimeout(r,650));});
     d=await exportJSON();expect(d).toEqual(fixtureTeams());
   });
@@ -53,18 +53,18 @@ describe('editor document lifecycle',()=>{
     await setup();importJSON({national:{},club:[],custom:[]});await screen.findByRole('alert');expect(await exportJSON()).toEqual(fixtureTeams());
   });
   it('resets selected editor and rejects older ROM read completions',async()=>{
-    await setup();let release;fileRead('.file-input',{name:'old.md',arrayBuffer:()=>new Promise(r=>release=r)});
+    await setup();let release;fileRead('[data-testid="file-input"]',{name:'old.md',arrayBuffer:()=>new Promise(r=>release=r)});
     const d=fixtureTeams();d.national[0].team='NEW';const replacement=updateRom(rom,d);
-    fileRead('.file-input',{name:'new.md',arrayBuffer:async()=>replacement.buffer});
-    await screen.findByRole('button',{name:/NEW/});expect(document.querySelector('.team-detail-empty')).not.toBeNull();
+    fileRead('[data-testid="file-input"]',{name:'new.md',arrayBuffer:async()=>replacement.buffer});
+    await screen.findByRole('button',{name:/NEW/});expect(document.querySelector('[data-testid="team-detail-empty"]')).not.toBeNull();
     await act(async()=>release(rom.buffer));expect((await exportJSON()).national[0].team).toBe('NEW');
     fireEvent.click(screen.getByRole('button',{name:/NEW/}));expect(screen.getByLabelText('Team Name').value).toBe('NEW');
   });
   it('ignores JSON reads after a ROM replacement and ROM reads after reset',async()=>{
-    await setup();let releaseJSON;fileRead('.json-file-input',{name:'old.json',text:()=>new Promise(r=>releaseJSON=r)});
-    const d=fixtureTeams();d.national[0].team='NEW';const replacement=updateRom(rom,d);fileRead('.file-input',{name:'new.md',arrayBuffer:async()=>replacement.buffer});
+    await setup();let releaseJSON;fileRead('[data-testid="json-file-input"]',{name:'old.json',text:()=>new Promise(r=>releaseJSON=r)});
+    const d=fixtureTeams();d.national[0].team='NEW';const replacement=updateRom(rom,d);fileRead('[data-testid="file-input"]',{name:'new.md',arrayBuffer:async()=>replacement.buffer});
     await screen.findByRole('button',{name:/NEW/});await act(async()=>releaseJSON(JSON.stringify(fixtureTeams())));expect((await exportJSON()).national[0].team).toBe('NEW');
-    let releaseROM;fileRead('.file-input',{name:'old.md',arrayBuffer:()=>new Promise(r=>releaseROM=r)});
+    let releaseROM;fileRead('[data-testid="file-input"]',{name:'old.md',arrayBuffer:()=>new Promise(r=>releaseROM=r)});
     fireEvent.click(screen.getByRole('button',{name:/Start Over/}));await act(async()=>releaseROM(rom.buffer));expect(screen.queryByRole('button',{name:'Export JSON'})).toBeNull();
   });
 });

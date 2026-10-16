@@ -1,16 +1,60 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import './theme.css';
+
+/* UI utilities resolve through the runtime theme variables in theme.css. */
+@theme inline {
+  --font-pixel: 'Press Start 2P', monospace;
+  --color-ui-background: var(--color-background);
+  --color-ui-surface: var(--color-surface);
+  --color-ui-surface-raised: var(--color-surface-raised);
+  --color-ui-surface-action: var(--color-surface-action);
+  --color-ui-border: var(--color-border);
+  --color-ui-border-tip: var(--color-border-tip);
+  --color-ui-border-upload: var(--color-border-upload);
+  --color-ui-border-control: var(--color-border-control);
+  --color-ui-accent: var(--color-accent);
+  --color-ui-accent-hover: var(--color-accent-hover);
+  --color-ui-accent-bright: var(--color-accent-bright);
+  --color-ui-secondary-hover: var(--color-secondary-hover);
+  --color-ui-text: var(--color-text);
+  --color-ui-text-soft: var(--color-text-soft);
+  --color-ui-text-muted: var(--color-text-muted);
+  --color-ui-text-dim: var(--color-text-dim);
+  --color-ui-error: var(--color-error);
+  --color-ui-white: var(--color-white);
+  --color-ui-heading: var(--color-heading);
+  --color-ui-intro: var(--color-intro);
+  --color-ui-accent-bright-04: var(--color-accent-bright-04);
+  --color-ui-accent-bright-05: var(--color-accent-bright-05);
+  --color-ui-accent-bright-08: var(--color-accent-bright-08);
+  --color-ui-accent-bright-10: var(--color-accent-bright-10);
+  --color-ui-accent-bright-30: var(--color-accent-bright-30);
+  --color-ui-accent-15: var(--color-accent-15);
+  --color-ui-accent-20: var(--color-accent-20);
+  --color-ui-error-08: var(--color-error-08);
+  --color-ui-error-10: var(--color-error-10);
+  --color-ui-error-12: var(--color-error-12);
+  --color-ui-error-20: var(--color-error-20);
+  --color-ui-white-20: var(--color-white-20);
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  background-color: #071a07;
+  background-color: var(--color-background);
   background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.018) 60px, rgba(255,255,255,0.018) 62px),
-    repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.018) 60px, rgba(255,255,255,0.018) 62px);
-  color: #e8f0e8;
+    repeating-linear-gradient(0deg, transparent, transparent 60px, var(--color-grid-line) 60px, var(--color-grid-line) 62px),
+    repeating-linear-gradient(90deg, transparent, transparent 60px, var(--color-grid-line) 60px, var(--color-grid-line) 62px);
+  color: var(--color-text);
   min-height: 100vh;
   line-height: 1.6;
 }
@@ -42,7 +86,7 @@ header {
   font-size: 2.5rem;
   line-height: 1;
   image-rendering: pixelated;
-  filter: drop-shadow(0 0 6px rgba(100, 220, 100, 0.6));
+  filter: drop-shadow(0 0 6px var(--color-ball-glow));
   animation: pixel-bob 2s steps(2) infinite;
 }
 
@@ -62,19 +106,19 @@ header {
   font-family: 'Press Start 2P', monospace;
   font-size: 1.8rem;
   line-height: 1.2;
-  color: #c8e8c8;
-  text-shadow: 2px 2px 0 #1a3a1a;
+  color: var(--color-heading);
+  text-shadow: 2px 2px 0 var(--color-border);
   image-rendering: pixelated;
 }
 
 .logo-soccer {
   font-family: 'Press Start 2P', monospace;
   font-size: 1.8rem;
-  color: #6dde52;
+  color: var(--color-accent-bright);
   text-shadow:
-    3px 3px 0 #1a5c1a,
-    6px 6px 0 #0d2e0d,
-    0 0 20px rgba(109, 222, 82, 0.4);
+    3px 3px 0 var(--color-logo-shadow-soft),
+    6px 6px 0 var(--color-logo-shadow-deep),
+    0 0 20px var(--color-accent-bright-40);
   image-rendering: pixelated;
   line-height: 1.2;
 }
@@ -82,13 +126,13 @@ header {
 header h1 {
   font-size: clamp(1.1rem, 3vw, 1.5rem);
   line-height: 1.5;
-  color: #c8e8c8;
+  color: var(--color-heading);
 }
 
 .site-intro {
   max-width: 45rem;
   margin: 0.75rem auto 0;
-  color: #c8ddc8;
+  color: var(--color-intro);
 }
 
 .editor-guide { line-height: 1.8; }
@@ -113,353 +157,47 @@ header h1 {
 
 /* ── Card Component ── */
 .card {
-  background: #0d220d;
-  border: 1px solid #1a3a1a;
-  border-top: 3px solid #2a5c2a;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-border-top);
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 16px var(--color-shadow-50);
   transition: border-top-color 0.2s ease;
 }
 
 .card:hover {
-  border-top-color: #3aab28;
+  border-top-color: var(--color-accent);
 }
 
 .card h2 {
   font-family: 'Press Start 2P', monospace;
-  color: #6dde52;
+  color: var(--color-accent-bright);
   margin-bottom: 1.25rem;
   font-size: 0.9rem;
   line-height: 1.6;
-  text-shadow: 2px 2px 0 #1a3a1a;
+  text-shadow: 2px 2px 0 var(--color-border);
 }
 
 .card h3 {
   font-family: 'Press Start 2P', monospace;
   font-size: 0.7rem;
   line-height: 1.6;
-  text-shadow: 1px 1px 0 #1a3a1a;
+  text-shadow: 1px 1px 0 var(--color-border);
 }
-
-/* ── Upload Area ── */
-.upload-area {
-  display: block;
-  width: 100%;
-  background: transparent;
-  font: inherit;
-  color: inherit;
-  border: 2px dashed #1e421e;
-  border-radius: 8px;
-  padding: 3rem 2rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.upload-area:hover {
-  border-color: #6dde52;
-  background: rgba(109, 222, 82, 0.05);
-}
-
-.upload-area.dragover {
-  border-color: #6dde52;
-  background: rgba(109, 222, 82, 0.1);
-}
-
-.upload-area p {
-  color: #5a8a5a;
-  margin-bottom: 1rem;
-}
-
-.upload-area .file-types {
-  font-size: 0.85rem;
-  color: #3d5e3d;
-}
-
-.file-input {
-  display: none;
-}
-
-/* ── Buttons ── */
-button:where(:not(.upload-area, .team-list-item)) {
-  background: #3aab28;
-  color: #fff;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-button:where(:not(.upload-area, .team-list-item)):hover:not(:disabled) {
-  background: #4dcc38;
-  transform: translateY(-1px);
-}
-
-button:where(:not(.upload-area, .team-list-item)):disabled {
-  background: #1a321a;
-  color: #3d5e3d;
-  cursor: not-allowed;
-}
-
-button.secondary {
-  background: #1a321a;
-  color: #e8f0e8;
-}
-
-button.secondary:hover:not(:disabled) {
-  background: #234823;
-}
-
-/* ── Info Display ── */
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.info-item {
-  background: #112211;
-  border: 1px solid #1a3a1a;
-  padding: 1rem;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.info-item .label {
-  font-size: 0.85rem;
-  color: #5a8a5a;
-  margin-bottom: 0.25rem;
-}
-
-.info-item .value {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #6dde52;
-}
-
-.info-item .value.text-value {
-  font-size: 1rem;
-  text-transform: capitalize;
-  letter-spacing: 0.05em;
-}
-
-/* ── Validation Results ── */
-.validation-list {
-  list-style: none;
-  margin: 1rem 0;
-}
-
-.validation-item {
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 6px;
-  word-break: break-word;
-  overflow-wrap: anywhere;
-}
-
-.validation-item.error {
-  background: rgba(231, 76, 60, 0.2);
-  border-left: 3px solid #e74c3c;
-}
-
-.validation-item.warning {
-  background: rgba(241, 196, 15, 0.2);
-  border-left: 3px solid #f1c40f;
-}
-
-.validation-item .path {
-  font-family: monospace;
-  font-size: 0.85rem;
-  color: #5a8a5a;
-  margin-right: 0.5rem;
-}
-
-.validation-status {
-  text-align: center;
-  padding: 2rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-}
-
-.validation-status.valid {
-  background: rgba(58, 171, 40, 0.15);
-  border: 2px solid #3aab28;
-}
-
-.validation-status.invalid {
-  background: rgba(231, 76, 60, 0.2);
-  border: 2px solid #e74c3c;
-}
-
-.validation-status h3 {
-  margin-bottom: 0.5rem;
-}
-
-/* ── Loading Spinner ── */
-.spinner {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 3px solid rgba(109, 222, 82, 0.3);
-  border-radius: 50%;
-  border-top-color: #6dde52;
-  animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* ── Progress Steps ── */
-.steps {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-  padding: 0 1rem;
-}
-
-.step {
-  flex: 1;
-  text-align: center;
-  position: relative;
-}
-
-.step::after {
-  content: '';
-  position: absolute;
-  top: 15px;
-  left: 50%;
-  width: 100%;
-  height: 2px;
-  background: #1a321a;
-  z-index: -1;
-  transition: background 0.3s ease;
-}
-
-.step.completed::after {
-  background: #2a5c2a;
-}
-
-.step:last-child::after {
-  display: none;
-}
-
-.step-number {
-  display: inline-block;
-  width: 32px;
-  height: 32px;
-  background: #1a321a;
-  border-radius: 50%;
-  line-height: 32px;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.step.active .step-number {
-  background: #3aab28;
-  color: #fff;
-}
-
-.step.completed .step-number {
-  background: #6dde52;
-  color: #071a07;
-}
-
-.step-label {
-  font-size: 0.85rem;
-  color: #5a8a5a;
-}
-
-.step.active .step-label {
-  color: #6dde52;
-}
-
-/* ── Error / Success Messages ── */
-.error-message {
-  background: rgba(231, 76, 60, 0.2);
-  border: 1px solid #e74c3c;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-top: 1rem;
-  color: #e74c3c;
-}
-
-.success-message {
-  background: rgba(58, 171, 40, 0.15);
-  border: 1px solid #3aab28;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-top: 1rem;
-  color: #6dde52;
-}
-
-/* ── File Info ── */
-.file-info {
-  background: #112211;
-  border: 1px solid #1a3a1a;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-top: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.file-info .filename {
-  font-weight: 500;
-}
-
-.file-info .filesize {
-  color: #5a8a5a;
-  font-size: 0.9rem;
-}
-
-/* ── Tip / Info Box ── */
-.tip-box {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background: #112211;
-  border: 1px solid #1e3a1e;
-  border-left: 3px solid #3aab28;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  color: #c0d8c0;
-}
-
-.tip-box strong {
-  color: #6dde52;
-}
-
-.tip-box ul {
-  margin-top: 0.5rem;
-  margin-left: 1.5rem;
-}
-
-.tip-box li {
-  margin-bottom: 0.25rem;
-}
-
 code {
-  background: #112211;
-  border: 1px solid #1e3a1e;
-  color: #6dde52;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-tip);
+  color: var(--color-accent-bright);
   padding: 0.1em 0.4em;
   border-radius: 4px;
   font-size: 0.9em;
 }
 
-/* ── Footer ── */
 footer {
   text-align: center;
   margin-top: 3rem;
-  color: #3d5e3d;
+  color: var(--color-text-dim);
   font-size: 0.8rem;
 }
-
-button.upload-area:focus-visible { outline: 2px solid #c8e8c8; outline-offset: 3px; }

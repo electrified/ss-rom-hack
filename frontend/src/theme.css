@@ -1,0 +1,47 @@
+/* Theme colours. A future theme can override these variables as a group. */
+:root {
+  --color-background: #071a07;
+  --color-surface: #0d220d;
+  --color-surface-raised: #112211;
+  --color-surface-action: #1a321a;
+  --color-border: #1a3a1a;
+  --color-border-tip: #1e3a1e;
+  --color-border-upload: #1e421e;
+  --color-border-top: #2a5c2a;
+  --color-border-control: #3a5c3a;
+  --color-border-error: #3a1a1a;
+  --color-accent: #3aab28;
+  --color-accent-hover: #4dcc38;
+  --color-accent-bright: #6dde52;
+  --color-secondary-hover: #234823;
+  --color-text: #e8f0e8;
+  --color-text-soft: #c0d8c0;
+  --color-text-muted: #5a8a5a;
+  --color-text-dim: #3d5e3d;
+  --color-error: #e74c3c;
+  --color-white: #fff;
+  --color-heading: #c8e8c8;
+  --color-intro: #c8ddc8;
+
+  --color-accent-bright-04: rgba(109, 222, 82, 0.04);
+  --color-accent-bright-05: rgba(109, 222, 82, 0.05);
+  --color-accent-bright-08: rgba(109, 222, 82, 0.08);
+  --color-accent-bright-10: rgba(109, 222, 82, 0.1);
+  --color-accent-bright-30: rgba(109, 222, 82, 0.3);
+  --color-accent-bright-40: rgba(109, 222, 82, 0.4);
+  --color-accent-bright-60: rgba(109, 222, 82, 0.6);
+  --color-accent-15: rgba(58, 171, 40, 0.15);
+  --color-accent-20: rgba(58, 171, 40, 0.2);
+  --color-error-08: rgba(231, 76, 60, 0.08);
+  --color-error-10: rgba(231, 76, 60, 0.1);
+  --color-error-12: rgba(231, 76, 60, 0.12);
+  --color-error-20: rgba(231, 76, 60, 0.2);
+  --color-error-60: rgba(231, 76, 60, 0.6);
+  --color-white-20: rgba(255,255,255,0.2);
+  --color-grid-line: rgba(255,255,255,0.018);
+  --color-shadow-40: rgba(0,0,0,0.4);
+  --color-shadow-50: rgba(0,0,0,0.5);
+  --color-ball-glow: rgba(100, 220, 100, 0.6);
+  --color-logo-shadow-soft: #1a5c1a;
+  --color-logo-shadow-deep: #0d2e0d;
+}

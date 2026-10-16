@@ -20,12 +20,13 @@ test('serves football favicons at the configured site base', async ({page, reque
 test('keyboard workflow, labels, validation, imports and immediate downloads', async ({page}) => {
   const exceptions=[];page.on('pageerror',e=>exceptions.push(e.message));
   await page.goto('./');
+  await expect(page.getByText('All processing happens locally in your browser, nothing is uploaded to a server.')).toHaveCSS('border-left-width','3px');
   // Native button activation opens the chooser without pointer input.
   const open=page.getByRole('button',{name:'Open ROM file'});await open.focus();
   const chooserPromise=page.waitForEvent('filechooser');await page.keyboard.press('Enter');const chooser=await chooserPromise;await chooser.setFiles(upload);
   const team=page.getByRole('button',{name:/ALPHA/});await expect(team).toBeVisible();await team.focus();await page.keyboard.press('Enter');
   await expect(page.getByLabel('Team Name',{exact:true})).toHaveValue('ALPHA');
-  expect(await page.locator('.team-detail-sections input,.team-detail-sections select').evaluateAll(nodes=>nodes.filter(e=>!e.labels.length&&!e.getAttribute('aria-label')).length)).toBe(0);
+  expect(await page.locator('[data-testid="team-detail-sections"] input,[data-testid="team-detail-sections"] select').evaluateAll(nodes=>nodes.filter(e=>!e.labels.length&&!e.getAttribute('aria-label')).length)).toBe(0);
   await page.getByLabel('Team Name',{exact:true}).fill('EDITED');
   await page.getByLabel('Coach',{exact:true}).fill('NEW COACH');
   await page.getByLabel('Country',{exact:true}).fill('USA');
@@ -47,9 +48,9 @@ test('keyboard workflow, labels, validation, imports and immediate downloads', a
   await expect(page.getByLabel('Player 1: Shirt number',{exact:true})).toHaveAttribute('aria-invalid','true');
   await page.getByLabel('Player 1: Shirt number',{exact:true}).fill('1');
   const romDownload=page.waitForEvent('download');await page.getByRole('button',{name:'Download Modified ROM'}).press('Enter');await romDownload;
-  await page.locator('.json-file-input').setInputFiles({name:'bad.json',mimeType:'application/json',buffer:Buffer.from('{"national":{},"club":[],"custom":[]}')});
+  await page.locator('[data-testid="json-file-input"]').setInputFiles({name:'bad.json',mimeType:'application/json',buffer:Buffer.from('{"national":{},"club":[],"custom":[]}')});
   await expect(page.getByRole('alert')).toContainText('Import failed');await expect(page.getByLabel('Team Name',{exact:true})).toHaveValue('EDITED');
-  await page.locator('.json-file-input').setInputFiles({name:'teams.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(teams))});
+  await page.locator('[data-testid="json-file-input"]').setInputFiles({name:'teams.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(teams))});
   await expect(page.getByText('Select a team from the list to edit')).toBeVisible();
   await team.focus();await page.keyboard.press('Enter');await expect(page.getByLabel('Team Name',{exact:true})).toHaveValue('ALPHA');
   expect(exceptions).toEqual([]);
@@ -59,9 +60,9 @@ for (const width of [1280, 375]) test(`combined positions, overrides and clash f
   await page.setViewportSize({width, height: 900});
   await page.route('https://www.googletagmanager.com/gtag/js?*', route => route.fulfill({body: ''}));
   await page.goto('./');
-  await page.locator('.file-input').setInputFiles(upload);
+  await page.locator('[data-testid="file-input"]').setInputFiles(upload);
   await page.getByRole('button',{name:/ALPHA/}).click();
-  const advanced = page.locator('.advanced-player-settings');
+  const advanced = page.locator('[data-testid="advanced-player-settings"]');
   await expect(advanced).not.toHaveAttribute('open');
   await expect(page.getByLabel('Player 6: Position',{exact:true})).toHaveValue('right_midfielder');
   await expect(page.getByLabel('Player 6: Stored role',{exact:true})).toHaveValue('forward');

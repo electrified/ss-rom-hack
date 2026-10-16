@@ -5,7 +5,7 @@ import {fileURLToPath} from 'node:url';
 
 const here = fileURLToPath(new URL('.', import.meta.url));
 const romPath = resolve(here, '../../ssint_orig.md');
-const screenshotDir = resolve(here, '../../docs/screenshots');
+const screenshotDir = process.env.DOC_SCREENSHOT_DIR || resolve(here, '../../docs/screenshots');
 
 async function capture(page, name, locator) {
   mkdirSync(screenshotDir, {recursive: true});
@@ -41,24 +41,24 @@ test('stock ROM documentation: edit, validate, export, import and download', asy
   await page.setViewportSize({width: 1440, height: 900});
   await page.route('https://www.googletagmanager.com/gtag/js?*', route => route.fulfill({body: ''}));
   await page.goto('./');
-  await capture(page, '01-open-rom', page.locator('.upload-area'));
+  await capture(page, '01-open-rom', page.locator('[data-testid="upload-area"]'));
   await chooseFile(page, 'Open ROM file', romPath);
   await expect(page.getByRole('button', {name: 'national (51)'})).toBeVisible();
   await expect(page.getByRole('button', {name: 'club (64)'})).toBeVisible();
   await expect(page.getByRole('button', {name: 'custom (64)'})).toBeVisible();
-  await capture(page, '02-team-browser', page.locator('.team-editor'));
+  await capture(page, '02-team-browser', page.locator('[data-testid="team-editor"]'));
 
   for (const category of ['club (64)', 'custom (64)', 'national (51)']) {
     await page.getByRole('button', {name: category}).click();
-    await expect(page.locator('.team-list-item').first()).toBeVisible();
+    await expect(page.locator('[data-testid="team-list-item"]').first()).toBeVisible();
   }
-  const firstTeam = (await page.locator('.team-list-item').first().innerText()).split('\n')[0];
+  const firstTeam = (await page.locator('[data-testid="team-list-item"]').first().innerText()).split('\n')[0];
   const search = page.getByRole('textbox', {name: 'Search teams'});
   await search.fill('NO SUCH TEAM');
   await expect(page.getByText('No matches', {exact: true})).toBeVisible();
   await search.fill(firstTeam);
-  await expect(page.locator('.team-list-item')).toHaveCount(1);
-  await page.locator('.team-list-item').first().click();
+  await expect(page.locator('[data-testid="team-list-item"]')).toHaveCount(1);
+  await page.locator('[data-testid="team-list-item"]').first().click();
   await search.clear();
 
   const teamName = page.getByLabel('Team Name', {exact: true});
@@ -75,7 +75,7 @@ test('stock ROM documentation: edit, validate, export, import and download', asy
   await page.getByLabel('Skill (0=best, 7=worst)', {exact: true}).selectOption('2');
   await page.getByLabel('Flag', {exact: true}).selectOption('1');
   await expect(teamName).toHaveValue('DEMO FC');
-  await capture(page, '03-team-info', page.locator('.team-detail-sections .editor-section').first());
+  await capture(page, '03-team-info', page.locator('[data-testid="team-info-section"]').first());
   await teamName.fill('BAD!');
   await expect(page.getByRole('button', {name: 'Download Modified ROM'})).toBeDisabled();
   await teamName.fill('DEMO FC');
@@ -100,7 +100,7 @@ test('stock ROM documentation: edit, validate, export, import and download', asy
     {name: 'green', colour: 'rgb(52, 144, 0)'},
     {name: 'yellow', colour: 'rgb(255, 255, 0)'},
   ]);
-  await page.locator('.kit-sets').evaluate(element => element.scrollIntoView({block: 'start'}));
+  await page.locator('[data-testid="kit-sets"]').evaluate(element => element.scrollIntoView({block: 'start'}));
   await page.screenshot({path: resolve(screenshotDir, '04-colour-options.png'), animations: 'disabled'});
   await page.getByRole('group', {name: 'First Kit: Shirt 1 colours'})
     .getByRole('button', {name: 'red', exact: true}).click();
@@ -111,7 +111,7 @@ test('stock ROM documentation: edit, validate, export, import and download', asy
   await setColour(page, 'Second Kit: Shirt 2', 'black');
   await setColour(page, 'Second Kit: Shorts', 'black');
   await setColour(page, 'Second Kit: Socks', 'yellow');
-  await capture(page, '04-kits', page.locator('.kit-sets'));
+  await capture(page, '04-kits', page.locator('[data-testid="kit-sets"]'));
 
   await expect(page.getByLabel('Player 2: Shirt number', {exact: true})).toHaveValue('12');
   await expect(page.getByLabel('Player 3: Shirt number', {exact: true})).toHaveValue('2');
@@ -120,19 +120,19 @@ test('stock ROM documentation: edit, validate, export, import and download', asy
   await page.getByLabel('Player 1: Name', {exact: true}).fill('DEMO KEEPER');
   await page.getByLabel('Player 1: Skin/Hair', {exact: true}).selectOption('white_blonde');
   await page.getByLabel('Player 1: Star player', {exact: true}).check();
-  await capture(page, '05-players', page.locator('.player-table-wrapper'));
+  await capture(page, '05-players', page.locator('[data-testid="player-table-wrapper"]'));
 
-  await page.locator('.advanced-player-settings summary').click();
+  await page.locator('[data-testid="advanced-player-settings"] summary').click();
   await page.getByLabel('Player 1: Stored role', {exact: true}).selectOption('forward');
   await expect(page.getByText('Stored role: Forward')).toBeVisible();
-  await capture(page, '06-advanced-roles', page.locator('.advanced-player-settings'));
+  await capture(page, '06-advanced-roles', page.locator('[data-testid="advanced-player-settings"]'));
   await page.getByLabel('Player 1: Use usual role', {exact: true}).click();
   await expect(page.getByLabel('Player 1: Stored role', {exact: true})).toHaveValue('goalkeeper');
-  await page.locator('.advanced-player-settings summary').click();
+  await page.locator('[data-testid="advanced-player-settings"] summary').click();
 
   await page.getByLabel('Player 1: Position', {exact: true}).selectOption('sub:goalkeeper');
   await expect(page.getByRole('button', {name: 'Download Modified ROM'})).toBeDisabled();
-  await capture(page, '07-validation', page.locator('.team-detail-sections'));
+  await capture(page, '07-validation', page.locator('[data-testid="team-detail-sections"]'));
   await page.getByLabel('Player 1: Position', {exact: true}).selectOption(originalPosition);
   await page.getByLabel('Player 1: Shirt number', {exact: true}).fill('17');
   await expect(page.getByLabel('Player 1: Shirt number', {exact: true})).toHaveAttribute('aria-invalid', 'true');
@@ -162,9 +162,9 @@ test('stock ROM documentation: edit, validate, export, import and download', asy
   await chooseFile(page, 'Import JSON', {name: 'teams.json', mimeType: 'application/json',
     buffer: Buffer.from(JSON.stringify(exported))});
   await expect(page.getByText('Select a team from the list to edit')).toBeVisible();
-  await page.locator('.team-list-item').first().click();
+  await page.locator('[data-testid="team-list-item"]').first().click();
   await expect(teamName).toHaveValue('IMPORT FC');
-  await capture(page, '08-imported-team', page.locator('.team-editor'));
+  await capture(page, '08-imported-team', page.locator('[data-testid="team-editor"]'));
   await capture(page, '09-download-rom', page.getByRole('heading', {name: 'Download ROM'}).locator('..'));
 
   const romPromise = page.waitForEvent('download');
@@ -178,7 +178,7 @@ test('stock ROM documentation: edit, validate, export, import and download', asy
   await page.getByRole('button', {name: 'Start Over (Open Another ROM)'}).click();
   await expect(page.getByRole('button', {name: 'Export JSON'})).toHaveCount(0);
   await chooseFile(page, 'Open ROM file', {name: 'modified.md', mimeType: 'application/octet-stream', buffer: modifiedRom});
-  await page.locator('.team-list-item').first().click();
+  await page.locator('[data-testid="team-list-item"]').first().click();
   await expect(teamName).toHaveValue('IMPORT FC');
   await expect(page.getByLabel('Player 1: Name', {exact: true})).toHaveValue('DEMO KEEPER');
   expect(exceptions).toEqual([]);
@@ -187,13 +187,13 @@ test('stock ROM documentation: edit, validate, export, import and download', asy
 test('stock ROM documentation: mobile editor', async ({page}) => {
   await page.setViewportSize({width: 390, height: 844});
   await openStockRom(page);
-  await page.locator('.team-list-item').first().click();
+  await page.locator('[data-testid="team-list-item"]').first().click();
   await expect(page.getByLabel('Team Name', {exact: true})).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   mkdirSync(screenshotDir, {recursive: true});
   await page.evaluate(async () => {
     await document.fonts.ready;
-    document.querySelector('.team-editor').scrollIntoView({block: 'start'});
+    document.querySelector('[data-testid="team-editor"]').scrollIntoView({block: 'start'});
   });
   await page.screenshot({path: resolve(screenshotDir, '10-mobile-editor.png'), animations: 'disabled'});
 });
